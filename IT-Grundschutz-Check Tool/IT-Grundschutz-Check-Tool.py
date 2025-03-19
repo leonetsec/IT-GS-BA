@@ -4,8 +4,10 @@ import shutil
 import openpyxl
 import openpyxl.utils
 import pandas as pd
+from openpyxl.worksheet.datavalidation import DataValidation
 
 import mapping
+
 
 # Gibt zurück, ob eine Datei dem Format der Checkliste entspricht
 def is_format(filename_or_path):
@@ -432,6 +434,69 @@ def wiba_transfer(path):
         else: print("Keine Dateien im Ordner, die auch in WiBA vorkommen")
     else: print("Datei oder Ordner nicht gefunden")
 
+# Handler für Datei oder Ordner
+def scale_setter_handler(file_or_dir):
+    user_choice = input("Möchten Sie eine eigene Skala angeben? (ja/Nein) Sonst wird der im Code definierte Default verwendet: ").strip().lower()
+    values = None
+    if user_choice == "ja":
+        num_values = int(input("Wie viele Werte? ").strip())
+        values_list = []
+
+        for i in range(num_values):
+            value = input(f"Geben Sie Wert {i+1} ein: ").strip()
+            values_list.append(f"{value}")
+        values = '"' + ", ".join(values_list) + '"'
+        print("Starte Modifikation...")
+    else: print("Default Skala verwendet. Starte Modifikation...")
+
+    if os.path.isfile(file_or_dir) and is_format(file_or_dir):
+        scale_setter(file_or_dir, values)
+        print(f"{file_or_dir} modifiziert und gespeichert!")
+    elif os.path.isdir(file_or_dir):
+        for file_name in os.listdir(file_or_dir):
+            file_path = os.path.join(file_or_dir, file_name)
+            if is_format(file_name):
+                scale_setter(file_path, values)
+        print(f"Alle Dateien in {file_or_dir} modifiziert und gespeichert!")
+    else: print("Keine Datei gefunden")
+
+# Ändert die Skala der Umsetzung in einer Tabelle
+def scale_setter(file_path, values):
+    df = load_data(file_path)
+    cell_max = len(df) + 5
+    if values is None:
+        values = '"Ja, Teilweise, Nein"'
+
+    wb = openpyxl.load_workbook(file_path)
+    sheet_name = get_name(file_path, True)
+    sheet = wb[sheet_name]
+
+    new_validations = []
+
+    # Entfernt bestehende Skala
+    for dv in sheet.data_validations.dataValidation:
+        if any("H" in str(rng) for rng in dv.ranges):
+            continue
+        new_validations.append(dv)  # Behalte die anderen Validierungen
+
+    sheet.data_validations.dataValidation = new_validations
+
+    rule = DataValidation(type="list", formula1=values, allow_blank=True)
+
+    sheet.add_data_validation(rule)
+    rule.add(f'H6:H{cell_max}')
+
+    # Datei speichern
+    original_dir = os.path.dirname(file_path)
+    output_dir = os.path.join(original_dir, "Modifizierte Dateien")
+
+    os.makedirs(output_dir, exist_ok=True)
+
+    filename = f"Checkliste_{get_name(file_path, True)}_modified.xlsx"
+    output_path = os.path.join(output_dir, filename)
+    wb.save(output_path)
+
+
 
 def main():
     parser = argparse.ArgumentParser(description='Arbeitet mit IT-Grundschutz-Check Excel Tabellen')
@@ -444,6 +509,7 @@ def main():
     parser.add_argument('--fully', action='store_true', help='(Mit --ignore-[...]) Setzt auch Anforderungen mit Umsetzung = Ja/Nein/Teilweise auf entbehrlich')
     parser.add_argument('--list', action='store_true', help='Listet Dateien eines Ordners nach verschiedene Kriterien (Menü öffnet sich)')
     parser.add_argument('--wiba-transfer', action='store_true', help='Markiert alle leeren, in WiBA enthaltenen Anforderungen als umgesetzt')
+    parser.add_argument('--set-scale', action='store_true', help='Ändert die Umsetzungsskala')
 
     args = parser.parse_args()
 
@@ -467,6 +533,9 @@ def main():
 
     elif args.wiba_transfer:
         wiba_transfer(args.file_or_dir)
+
+    elif args.set_scale:
+        scale_setter_handler(args.file_or_dir)
 
     elif os.path.isfile(args.file_or_dir):
         analyze_single_file(args.file_or_dir)

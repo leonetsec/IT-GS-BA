@@ -5,7 +5,7 @@ Dieses Tool vereinfacht den IT-Grundschutz-Check ([Version 2023](https://www.bsi
 
 ## Installation
 - Aktuelle IT-Grundschutz-Checklisten herunterladen
-- Dateien des Tool herunterladen 
+- Dateien des Tools herunterladen 
 - Requirements installieren
 
 ## Nutzung
@@ -26,6 +26,7 @@ Weitere Funktionen mittels Parameter, die sowohl auf einzelne Dateien als auch g
 - ```--fully```: (Mit ```--ignore-X```) Setzt auch Anforderungen wo Umsetzung Ja/Nein/Teilweise ist auf entbehrlich
 - ```--list```: Listet alle Dateien eines Ordners nach 15 verschiedenen Kriterien absteigend auf
 - ```--wiba-transfer```: Setzt alle leeren WiBA-Anforderungen als umgesetzt
+- ```--set-scale```: Modifiziert die Skala in der Umsetzungsspalte
 
 
 Hinweis: Aus Sicherheitsgründen können Basis-Anforderungen und als nicht entbehrlich markierte Anforderungen nicht automatisch als entbehrlich gesetzt werden.
