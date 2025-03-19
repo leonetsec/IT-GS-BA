@@ -26,7 +26,7 @@ Weitere Funktionen mittels Parameter, die sowohl auf einzelne Dateien als auch g
 - ```--fully```: (Mit ```--ignore-X```) Setzt auch Anforderungen wo Umsetzung Ja/Nein/Teilweise ist auf entbehrlich
 - ```--list```: Listet alle Dateien eines Ordners nach 15 verschiedenen Kriterien absteigend auf
 - ```--wiba-transfer```: Setzt alle leeren WiBA-Anforderungen als umgesetzt
-- ```--set-scale```: Modifiziert die Skala in der Umsetzungsspalte
+- ```--set-scale```: Modifiziert die Skala in der Umsetzungsspalte. Im Code können Default-Werte festgelegt werden.
 
 
 Hinweis: Aus Sicherheitsgründen können Basis-Anforderungen und als nicht entbehrlich markierte Anforderungen nicht automatisch als entbehrlich gesetzt werden.
