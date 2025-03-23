@@ -496,7 +496,106 @@ def scale_setter(file_path, values):
     output_path = os.path.join(output_dir, filename)
     wb.save(output_path)
 
+def export_handler(file_or_dir):
+    file_format, columns, omitted, unnecessary = get_export_settings()
 
+    if os.path.isfile(file_or_dir) and is_format(file_or_dir):
+        export(file_or_dir, file_format, columns, omitted, unnecessary)
+        print("Datei erfolgreich exportiert")
+    elif os.path.isdir(file_or_dir):
+        for file_name in os.listdir(file_or_dir):
+            file_path = os.path.join(file_or_dir, file_name)
+            if is_format(file_name):
+                export(file_path, file_format, columns, omitted, unnecessary)
+        print("Dateien erfolgreich exportiert")
+    else:
+        print("Keine passende Excel-Datei gefunden.")
+
+def get_export_settings():
+
+    print("Wählen Sie das Exportformat:")
+    print("1. CSV\n2. JSON\n3. Leerzeichengetrennt\n4. Tabstoppgetrennt\n5. Benutzerdefiniertes Trennzeichen")
+
+    format_choice = input("Auswahl (1-5): ")
+
+    if format_choice == "1":
+        export_format = "csv"
+    elif format_choice == "2":
+        export_format = "json"
+    elif format_choice == "3":
+        export_format = "space"
+    elif format_choice == "4":
+        export_format = "tab"
+    elif format_choice == "5":
+        delimiter = input("Geben Sie das Trennzeichen ein: ")
+        export_format = f"delimited:{delimiter}"
+    else:
+        print("Ungültige Auswahl. CSV wird verwendet.")
+        export_format = "csv"
+
+    print("\nWählen Sie die Spalten zum Exportieren aus:")
+    columns = [
+        "ID-Anforderung", "Titel", "Inhalt", "Typ", "Entbehrlich",
+        "Begründung für Entbehrlichkeit", "Umsetzung", "Umsetzung bis",
+        "Verantwortlich", "Bemerkungen / Begründung für Nicht-Umsetzung", "Kostenschätzung"
+    ]
+    for i, col in enumerate(columns):
+        print(f"{i + 1}. {col}")
+
+    selected_columns = []
+    while True:
+        col_choice = input("\nSpaltenauswahl (z.B. 1,3,5 oder 'Alle': ")
+        if col_choice.lower() == "alle" or col_choice == "":
+            selected_columns = columns
+            break
+        else:
+            try:
+                col_indices = [int(c) - 1 for c in col_choice.split(",")]
+                selected_columns = [columns[i] for i in col_indices]
+                break
+            except (ValueError, IndexError):
+                print("Ungültige Eingabe.")
+
+    omitted_choice = input(
+        "\nMöchten Sie entfallene Anforderungen entfernen? (Ja/nein): ").strip().lower()
+    if omitted_choice == "nein":
+        omitted = False
+    else: omitted = True
+
+    unnecessary_choice = input(
+        "\nMöchten Sie als entbehrlich markierte Anforderungen entfernen? (Ja/nein): ").strip().lower()
+    if unnecessary_choice == "nein":
+        unnecessary = False
+    else:
+        unnecessary = True
+
+    return export_format, selected_columns, omitted, unnecessary
+
+def export(file_path, file_format, columns, omitted, unnecessary):
+    df = load_data(file_path)
+    if omitted:
+        df = remove_specific_requirements(df, "Titel", "ENTFALLEN")
+    if unnecessary:
+        df = remove_specific_requirements(df, "Entbehrlich", "Ja")
+    df = df[columns]  # Ausgewählte Spalten
+
+    export_dir = os.path.join(os.path.dirname(file_path), "Export")
+    os.makedirs(export_dir, exist_ok=True)
+
+    base_name = os.path.splitext(os.path.basename(file_path))[0]
+    export_file_path = os.path.join(export_dir, base_name)
+
+    if file_format == "csv":
+        df.to_csv(export_file_path + ".csv", index=False)
+    elif file_format == "json":
+        df.to_json(export_file_path + ".json", orient="records")
+    elif file_format == "space":
+        df.to_csv(export_file_path + ".txt", sep=" ", index=False)
+    elif file_format == "tab":
+        df.to_csv(export_file_path + ".tsv", sep="\t", index=False)
+    elif file_format.startswith("delimited:"):
+        delimiter = file_format.split(":")[1]
+        df.to_csv(export_file_path + ".txt", sep=delimiter, index=False)
 
 def main():
     parser = argparse.ArgumentParser(description='Arbeitet mit IT-Grundschutz-Check Excel Tabellen')
@@ -510,40 +609,33 @@ def main():
     parser.add_argument('--list', action='store_true', help='Listet Dateien eines Ordners nach verschiedene Kriterien (Menü öffnet sich)')
     parser.add_argument('--wiba-transfer', action='store_true', help='Markiert alle leeren, in WiBA enthaltenen Anforderungen als umgesetzt')
     parser.add_argument('--set-scale', action='store_true', help='Ändert die Umsetzungsskala')
+    parser.add_argument('--export', action='store_true', help='Exportiere beliebige Spalten der Dateien in verschiedene Formate')
 
     args = parser.parse_args()
 
-    if args.mapping:
-        map_xlsx_files(args.file_or_dir)
+    actions = {
+        args.mapping: lambda: map_xlsx_files(args.file_or_dir),
+        args.prozent: lambda: percentages(args.file_or_dir),
+        args.profil: lambda: profile_handler(args.file_or_dir),
+        args.ignore_standard: lambda: ignore_empty_requirements_handler(args.file_or_dir, "Typ", "Standard","Umsetzung", args.fully),
+        args.ignore_hoch: lambda: ignore_empty_requirements_handler(args.file_or_dir, "Typ", "Hoch", "Umsetzung", args.fully),
+        args.list: lambda: sort_list(args.file_or_dir),
+        args.wiba_transfer: lambda: wiba_transfer(args.file_or_dir),
+        args.set_scale: lambda: scale_setter_handler(args.file_or_dir),
+        args.export: lambda: export_handler(args.file_or_dir),
+    }
 
-    elif args.prozent:
-        percentages(args.file_or_dir)
+    for condition, action in actions.items():
+        if condition:
+            action()
+            return
 
-    elif args.profil:
-        profile_handler(args.file_or_dir)
-
-    elif args.ignore_standard:
-        ignore_empty_requirements_handler(args.file_or_dir, "Typ", "Standard", "Umsetzung", args.fully)
-
-    elif args.ignore_hoch:
-        ignore_empty_requirements_handler(args.file_or_dir, "Typ", "Hoch", "Umsetzung", args.fully)
-
-    elif args.list:
-        sort_list(args.file_or_dir)
-
-    elif args.wiba_transfer:
-        wiba_transfer(args.file_or_dir)
-
-    elif args.set_scale:
-        scale_setter_handler(args.file_or_dir)
-
-    elif os.path.isfile(args.file_or_dir):
+    if os.path.isfile(args.file_or_dir):
         analyze_single_file(args.file_or_dir)
-
     elif os.path.isdir(args.file_or_dir):
         analyze_all_files(args.file_or_dir)
-
-    else: print("Datei oder Ordner nicht gefunden")
+    else:
+        print("Datei oder Ordner nicht gefunden")
 
 
 if __name__ == '__main__':

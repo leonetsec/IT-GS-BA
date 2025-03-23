@@ -27,6 +27,7 @@ Weitere Funktionen mittels Parameter, die sowohl auf einzelne Dateien als auch g
 - ```--list```: Listet alle Dateien eines Ordners nach 15 verschiedenen Kriterien absteigend auf
 - ```--wiba-transfer```: Setzt alle leeren WiBA-Anforderungen als umgesetzt
 - ```--set-scale```: Modifiziert die Skala in der Umsetzungsspalte. Im Code können Default-Werte festgelegt werden.
+- ```--export```: Exportiert beliebige Spalten der Datei(en) in verschiedene Formate
 
 
 Hinweis: Aus Sicherheitsgründen können Basis-Anforderungen und als nicht entbehrlich markierte Anforderungen nicht automatisch als entbehrlich gesetzt werden.
