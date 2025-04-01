@@ -1,7 +1,7 @@
 # IT-Grundschutz-Check-Tool
 
 ## Einleitung
-Dieses Tool vereinfacht den IT-Grundschutz-Check ([Version 2023](https://www.bsi.bund.de/SharedDocs/Downloads/DE/BSI/Grundschutz/IT-GS-Kompendium/checklisten_2023.html)) nach BSI Standard 200-2, indem es diverse Analysen und repititive Aufgaben automatisiert durchführen kann.
+Dieses Tool vereinfacht den IT-Grundschutz-Check ([Version 2023](https://www.bsi.bund.de/SharedDocs/Downloads/DE/BSI/Grundschutz/IT-GS-Kompendium/checklisten_2023.html)) nach BSI Standard 200-2, indem es diverse Analysen und repetitive Aufgaben automatisiert durchführen kann.
 
 ## Installation
 - Aktuelle IT-Grundschutz-Checklisten herunterladen
@@ -11,7 +11,7 @@ Dieses Tool vereinfacht den IT-Grundschutz-Check ([Version 2023](https://www.bsi
 ## Nutzung
 ```python IT-Grundschutz-Check-Tool.py [--param] C://Path//To//FileOrDir```
 
-Das Tool funktioniert mit den Checklisten im Format "Checkliste_XXX.X.X_xlsx"
+Das Tool funktioniert mit den Checklisten im Format "Checkliste_XXX.X.X_xlsx", deren Blätter nach dem Kürzel des Bausteins benannt sind.
 
 Übergibt man dem Tool nur einen Pfad ohne Parameter werden folgende Analysen durchgeführt:
 - Einzelne Datei: Gesamtanzahl an Anforderungen, Umgesetzte Anforderungen, Teilweise umgesetzte Anforderungen, Entbehrliche Anforderungen, Nicht umgesetzte Anforderungen (aufgeschlüsselt nach Basis, Standard, erhöhter Schutzbedarf), Summierte Kostenschätzung, Verantwortliche.
@@ -28,6 +28,8 @@ Weitere Funktionen mittels Parameter, die sowohl auf einzelne Dateien als auch g
 - ```--wiba-transfer```: Setzt alle leeren WiBA-Anforderungen als umgesetzt
 - ```--set-scale```: Modifiziert die Skala in der Umsetzungsspalte. Im Code können Default-Werte festgelegt werden.
 - ```--export```: Exportiert beliebige Spalten der Datei(en) in verschiedene Formate
+- ```--report```: Erstellt mehrseitigen PDF-Report, in dem diverse Auswertungen stattfinden 
+- ```--merge```: Verbindet den Inhalt von zwei gleichartigen Tabellen inkl. Konfliktbehandlung
 
 
 Hinweis: Aus Sicherheitsgründen können Basis-Anforderungen und als nicht entbehrlich markierte Anforderungen nicht automatisch als entbehrlich gesetzt werden.

@@ -4,7 +4,16 @@ import shutil
 import openpyxl
 import openpyxl.utils
 import pandas as pd
+import numpy as np
+from datetime import datetime
+from io import BytesIO
 from openpyxl.worksheet.datavalidation import DataValidation
+import matplotlib.pyplot as plt
+from reportlab.lib.pagesizes import A4
+from reportlab.lib import colors
+from reportlab.platypus import Paragraph, SimpleDocTemplate, Image, Table, TableStyle, Spacer
+from reportlab.lib.styles import getSampleStyleSheet
+from collections import defaultdict
 
 import mapping
 
@@ -237,6 +246,7 @@ def percentages(path):
         print(f"Standard-Anforderungen: {standard_missing:.2f}%")
         print(f"Anforderungen des erhöhten Schutzbedarfs: {high_missing:.2f}%")
 
+    # Funktioniert nicht mit altem Windows cmd
     elif os.path.isdir(path):
         print("Baustein → Prozent erfüllt")
         for file_name in os.listdir(path):
@@ -300,6 +310,12 @@ def ignore_empty_requirements(file_path, column, value, second_empty_no_type, fu
         col_letter = openpyxl.utils.get_column_letter(df.columns.get_loc("Entbehrlich") + 1)
         ws[f"{col_letter}{excel_row}"].value = "Ja"
 
+        bemerkung_col = openpyxl.utils.get_column_letter(df.columns.get_loc("Begründung für Entbehrlichkeit") + 1)
+        if ws[f"{bemerkung_col}{excel_row}"].value:
+            ws[f"{bemerkung_col}{excel_row}"].value += f"- Alle Anforderungen des Typs {value} auf Entbehrlich gesetzt"
+        else:
+            ws[f"{bemerkung_col}{excel_row}"].value = f"Alle Anforderungen des Typs {value} auf Entbehrlich gesetzt"
+
     wb.save(file_path)
     if not fully:
         print(f"Alle leeren {value}-Anforderungen von {get_name(file_path, True)} wurden auf entbehrlich gesetzt und gespeichert.")
@@ -348,8 +364,7 @@ def sort_list(directory):
             not_unnecessary = len(df[df["Entbehrlich"].fillna("").astype(str).str.strip().str.lower() == "nein"])
             cost = cost_count(df)
             percentage = get_percentage_missing(df)
-            due_date = set(df["Umsetzung bis"].dropna().unique())
-
+            due_date = ", ".join(sorted(list(map(format_dates, df["Umsetzung bis"].dropna().unique()))))
             ni = get_specific_df_with_two_conditions_and_emptiness(df, "Umsetzung", "nein", "Entbehrlich", "nein")
             ni_basis, ni_standard, ni_high = type_count(ni)
 
@@ -411,8 +426,14 @@ def wiba_setter(file_path):
 
     for idx in df[mask].index:
         excel_row = idx + 6
-        col_letter = openpyxl.utils.get_column_letter(df.columns.get_loc("Umsetzung") + 1)
-        ws[f"{col_letter}{excel_row}"].value = "Ja"
+        umsetzung_col = openpyxl.utils.get_column_letter(df.columns.get_loc("Umsetzung") + 1)
+        bemerkung_col = openpyxl.utils.get_column_letter(df.columns.get_loc("Bemerkungen / Begründung für Nicht-Umsetzung") + 1)
+
+        ws[f"{umsetzung_col}{excel_row}"].value = "Ja"
+        if ws[f"{bemerkung_col}{excel_row}"].value:
+            ws[f"{bemerkung_col}{excel_row}"].value += "- WiBA Integration"
+        else:
+            ws[f"{bemerkung_col}{excel_row}"].value = "WiBA Integration"
     wb.save(file_path)
     return 1
 
@@ -496,6 +517,7 @@ def scale_setter(file_path, values):
     output_path = os.path.join(output_dir, filename)
     wb.save(output_path)
 
+# Handler für Datei oder Ordner
 def export_handler(file_or_dir):
     file_format, columns, omitted, unnecessary = get_export_settings()
 
@@ -511,6 +533,7 @@ def export_handler(file_or_dir):
     else:
         print("Keine passende Excel-Datei gefunden.")
 
+# Fragt den Nutzer, welches Format und welches Spalten er exportieren möchte
 def get_export_settings():
 
     print("Wählen Sie das Exportformat:")
@@ -571,6 +594,7 @@ def get_export_settings():
 
     return export_format, selected_columns, omitted, unnecessary
 
+# Exportiert den Tabelleninhalt in ein gewünschtes Format mit diversen Anpassungsmöglichkeiten
 def export(file_path, file_format, columns, omitted, unnecessary):
     df = load_data(file_path)
     if omitted:
@@ -597,9 +621,364 @@ def export(file_path, file_format, columns, omitted, unnecessary):
         delimiter = file_format.split(":")[1]
         df.to_csv(export_file_path + ".txt", sep=delimiter, index=False)
 
+# Überprüft, ob es nicht umgesetzte Basis-Anforderungen gibt
+def risk_check(file_path):
+    df = load_data(file_path)
+    df = df[["ID-Anforderung", "Titel", "Inhalt", "Typ", "Entbehrlich", "Umsetzung"]]
+    df = remove_specific_requirements(df, "Titel", "ENTFALLEN")
+
+    ni = get_specific_df_with_two_conditions_and_emptiness(df, "Umsetzung", "nein", "Entbehrlich", "nein")
+    ni_basis, ni_standard, ni_high = type_count(ni)
+    if ni_basis != 0:
+        return True
+    else: return False
+
+# Führt die erste Analyse für den Report durch
+def report_analysis(file_path):
+    df = load_data(file_path)
+    df = df[["ID-Anforderung", "Titel", "Inhalt", "Typ", "Entbehrlich", "Begründung für Entbehrlichkeit", "Umsetzung", "Umsetzung bis", "Verantwortlich", "Bemerkungen / Begründung für Nicht-Umsetzung", "Kostenschätzung"]]
+    df = remove_specific_requirements(df, "Titel", "ENTFALLEN")
+
+    not_implemented, partly_implemented, fully_implemented, unnecessary = implementation_count(df)
+    cost = cost_count(df)
+    due_date = ", ".join(sorted(list(map(format_dates, df["Umsetzung bis"].dropna().unique()))))
+    all_responsibles = f"{', '.join(get_responsible(df))}"
+    ni = get_specific_df_with_two_conditions_and_emptiness(df, "Umsetzung", "nein", "Entbehrlich", "nein")
+    ni_basis, ni_standard, ni_high = type_count(ni)
+
+    return {
+        "Gesamtanzahl Anforderungen": len(df),
+        "Umgesetzte Anforderungen": fully_implemented,
+        "Teilweise umgesetzte Anforderungen": partly_implemented,
+        "Entbehrliche Anforderungen": unnecessary,
+        "Nicht umgesetzte Anforderungen": not_implemented,
+        "Nicht umgesetzte Anforderungen nach Typ": {"Basis": ni_basis, "Standard": ni_standard, "Erhöhter Schutzbedarf": ni_high},
+        "Summierte Kostenschätzung": cost,
+        "Verantwortliche": all_responsibles,
+        "Deadlines einzelner Anforderungen": due_date
+    }
+
+# Handler um für Dateien oder alle Dateien eines Ordners Reports zu erstellen
+def report(file_or_dir):
+    if os.path.isfile(file_or_dir):
+        reports_dir = os.path.join(os.path.dirname(os.path.abspath(file_or_dir)), "Reports")
+        os.makedirs(reports_dir, exist_ok=True)
+        if is_format(file_or_dir):
+            results = report_analysis(file_or_dir)
+            risk = risk_check(file_or_dir)
+            if results:
+                save_results_to_pdf(results, os.path.basename(file_or_dir), reports_dir, risk, file_or_dir)
+            print("Report erstellt und gespeichert.")
+        else:
+            print("Keine Datei im Format Checkliste_XXX.X.X.xlsx")
+    elif os.path.isdir(file_or_dir):
+        reports_dir = os.path.join(os.path.abspath(file_or_dir), "Reports")
+        os.makedirs(reports_dir, exist_ok=True)
+        all_results = {}
+        all_risks = {}
+        print("Starte Analyse der Dateien...")
+        for file_name in os.listdir(file_or_dir):
+            file_path = os.path.join(file_or_dir, file_name)
+            if is_format(file_name):
+                results = report_analysis(file_path)
+                risk = risk_check(file_path)
+                all_results[file_name] = results
+                all_risks[file_name] = risk
+        if not all_results:
+            print("Keine gültigen Dateien gefunden.")
+            return
+        print("Analyse abgeschlossen\nErstelle Reports...")
+        for file_name, results in all_results.items():
+            save_results_to_pdf(results, file_name, reports_dir, all_risks[file_name], os.path.join(file_or_dir, file_name))
+        print("Reports erstellt und gespeichert.")
+    else:
+        print(f"Ungültiger Pfad: {file_or_dir}")
+
+# Baut die PDF zusammen, führt dabei Berechnungen durch um festzustellen, ob bestimmte Teile benötigt werden
+def save_results_to_pdf(results, file_name, reports_dir, risk, file_path):
+    df = load_data(file_path)
+    pdf_path = os.path.join(reports_dir, f"Report_{get_name(file_name, True)}.pdf")
+    doc = SimpleDocTemplate(pdf_path, pagesize=A4, title=f"Report für {get_name(file_name, True)} - {get_name(file_name, False)}")
+    story = []
+    image_path2 = None
+
+    styles = getSampleStyleSheet()
+    title_style = styles["Title"]
+    story.append(Paragraph(f"Analysebericht für {file_name} - {get_name(file_name, False)}", title_style))
+
+    normal_style = styles["Normal"]
+    for key, value in results.items():
+        if isinstance(value, dict):
+            story.append(Paragraph(f"<b>{key}:</b>", normal_style))
+            for sub_key, sub_value in value.items():
+                story.append(Paragraph(f"    {sub_key}: {sub_value}", normal_style))
+        else:
+            story.append(Paragraph(f"<b>{key}:</b> {value}", normal_style))
+
+    if risk:
+        story.append(Paragraph("<font color=red>WARNUNG: Es sind nicht alle Basis-Anforderungen umgesetzt!</font>", normal_style))
+
+    image_path1 = plot_pie_chart_to_image({
+        "Umgesetzt": results["Umgesetzte Anforderungen"],
+        "Teilweise umgesetzt": results["Teilweise umgesetzte Anforderungen"],
+        "Nicht umgesetzt": results["Nicht umgesetzte Anforderungen"],
+        "Entbehrlich": results["Entbehrliche Anforderungen"]
+    }, "Umsetzungsstatus")
+    story.append(Image(image_path1, width=400, height=300))
+
+    ni_df = df
+    ni_df = ni_df[["ID-Anforderung", "Titel", "Inhalt", "Typ", "Umsetzung", "Entbehrlich"]]
+    ni_df = remove_specific_requirements(ni_df, "Titel", "ENTFALLEN")
+    ni_df = get_specific_df_with_two_conditions_and_emptiness(ni_df, "Umsetzung", "nein", "Entbehrlich", "nein")
+    if not ni_df.empty:
+        story.append(Paragraph(f"Nicht umgesetzte Anforderungen", title_style))
+        grouped_data = defaultdict(list)
+        for _, row in ni_df.iterrows():
+            grouped_data[row["ID-Anforderung"]].append(row)
+
+        table_data = [["ID-Anforderung", "Anzahl der Teil-Anforderungen", "Titel", "Typ"]]
+        for id_anforderung, rows in grouped_data.items():
+            first_row = rows[0]
+            table_data.append([id_anforderung, len(rows), first_row["Titel"], first_row["Typ"]])
+
+        table = get_custom_table(table_data)
+        story.append(table)
+
+        story.append(Spacer(1, 20))
+        image_path2 = plot_pie_chart_to_image(results["Nicht umgesetzte Anforderungen nach Typ"],
+                                          "Nicht umgesetzte Anforderungen nach Typ aufgeschlüsselt")
+        story.append(Image(image_path2, width=400, height=300))
+
+    if results["Deadlines einzelner Anforderungen"]:
+        dl_df = df
+        dl_df = remove_specific_requirements(dl_df, "Titel", "ENTFALLEN")
+        dl_df = remove_specific_requirements(dl_df, "Umsetzung", "Ja")
+        dl_df = dl_df[["ID-Anforderung", "Titel", "Typ", "Umsetzung bis"]]
+        dl_df = dl_df.dropna(subset=["Umsetzung bis"])
+
+        story.append(Paragraph(f"Offene Deadlines", title_style))
+        table_data = [["ID-Anforderung", "Titel", "Typ", "Umsetzung bis"]]
+        for _, row in dl_df.iterrows():
+            formatted_date = format_dates(row["Umsetzung bis"])
+            table_data.append([row["ID-Anforderung"], row["Titel"], row["Typ"], formatted_date])
+
+        table = get_custom_table(table_data)
+        story.append(table)
+
+    resp_df = df
+    resp_df = remove_specific_requirements(resp_df, "Verantwortlich", "ENTFALLEN")
+    resp_df = resp_df[["ID-Anforderung", "Verantwortlich"]]
+    resp_df = resp_df.dropna(subset=["Verantwortlich"])
+    if not resp_df.empty:
+        story.append(Spacer(1, 5))
+        story.append(Paragraph(f"Verantwortliche für Anforderungen", title_style))
+        unique_verantwortliche = resp_df["Verantwortlich"].unique()
+        table_data = [["Verantwortlich", "ID-Anforderungen"]]
+        for verantwortlicher in unique_verantwortliche:
+                id_anforderungen = ", ".join(resp_df[resp_df["Verantwortlich"] == verantwortlicher]["ID-Anforderung"].tolist())
+                table_data.append([verantwortlicher, id_anforderungen])
+
+        table = get_custom_table(table_data)
+        story.append(table)
+
+    cost_df = df
+    cost_df = remove_specific_requirements(cost_df, "ID-Anforderung", "ENTFALLEN")
+    cost_df = cost_df[["ID-Anforderung", "Kostenschätzung"]]
+    cost_df = cost_df.dropna(subset=["Kostenschätzung"])
+    if not cost_df.empty:
+        story.append(Spacer(1, 10))
+        grouped_data = cost_df.groupby("ID-Anforderung")["Kostenschätzung"].sum().reset_index()
+        plt.figure(figsize=(10, 6))
+        plt.bar(grouped_data["ID-Anforderung"], grouped_data["Kostenschätzung"])
+        plt.xlabel("ID der Anforderung")
+        plt.ylabel("Geschätzte Kosten")
+        plt.title("Kostenschätzung pro Anforderung (Summe aus Teilanforderungen)")
+        plt.xticks(rotation=45, ha="right")
+        plt.tight_layout()
+
+        img_data = BytesIO()
+        plt.savefig(img_data, format="png")
+        img_data.seek(0)
+        story.append(Image(img_data, width=400, height=300))
+        plt.close()
+
+    entb_df = df
+    entb_df = remove_specific_requirements(entb_df, "Titel", "ENTFALLEN")
+    entb_df = entb_df[["ID-Anforderung", "Entbehrlich", "Begründung für Entbehrlichkeit"]]
+    entb_df = entb_df[(entb_df["Entbehrlich"] == "Ja") & (entb_df["Begründung für Entbehrlichkeit"].isna())]
+    if not entb_df.empty:
+        story.append(Spacer(1, 15))
+        story.append(Paragraph(f"Fehlende Begründung für entbehrliche Anforderungen:", title_style))
+        bullet_list = []
+        for _, row in entb_df.iterrows():
+            bullet_list.append(Paragraph(f"- {row['ID-Anforderung']}", normal_style))
+            story.extend(bullet_list)
+
+    ums_df = df
+    ums_df = remove_specific_requirements(ums_df, "Titel", "ENTFALLEN")
+    ums_df = remove_specific_requirements(ums_df, "Entbehrlich", "Ja")
+    ums_df = ums_df[["ID-Anforderung", "Umsetzung", "Bemerkungen / Begründung für Nicht-Umsetzung"]]
+    ums_df = ums_df[(ums_df["Umsetzung"] == "Nein") & (ums_df["Bemerkungen / Begründung für Nicht-Umsetzung"].isna())]
+    if not ums_df.empty:
+        story.append(Spacer(1, 15))
+        story.append(Paragraph(f"Fehlende Begründung für nicht umgesetzte Anforderungen:", title_style))
+        bullet_list = []
+        for _, row in ums_df.iterrows():
+            bullet_list.append(Paragraph(f"- {row['ID-Anforderung']}", normal_style))
+            story.extend(bullet_list)
+
+    doc.build(story)
+
+    os.remove(image_path1) # Temporäre Bilder entfernen, weil es früher nicht möglich ist
+    if not ni_df.empty:
+        os.remove(image_path2)
+
+# Definiert wie Tabellen im Report aussehen sollen und ermöglicht Zeilenumbrüche
+def get_custom_table(table_data):
+    styles = getSampleStyleSheet()
+    normal_style = styles["Normal"]
+
+    paragraph_table_data = []
+    for row in table_data:
+        paragraph_row = []
+        for cell in row:
+            paragraph_row.append(Paragraph(str(cell), normal_style))
+        paragraph_table_data.append(paragraph_row)
+
+    table = Table(paragraph_table_data)
+    table.setStyle(TableStyle([('BACKGROUND', (0, 0), (-1, 0), colors.whitesmoke),
+                               ('TEXTCOLOR', (0, 0), (-1, 0), colors.black),
+                               ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+                               ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+                               ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+                               ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+                               ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+                               ('GRID', (0, 0), (-1, -1), 1, colors.black)]))
+    return table
+
+# Vereinheitlicht die Daten in der "Umsetzung bis" Spalte
+def format_dates(date_value):
+    if isinstance(date_value, np.datetime64):
+        return pd.to_datetime(date_value).strftime('%Y-%m-%d')
+    elif isinstance(date_value, datetime):
+        return date_value.strftime('%Y-%m-%d')
+    else:
+        return date_value
+
+# Erstellt ein Kreisdiagramm und speichert es temporär
+def plot_pie_chart_to_image(data, title):
+    labels = []
+    values = []
+    for label, value in data.items():
+        if value > 0:
+            labels.append(label)
+            values.append(value)
+
+    plt.figure(figsize=(8, 6))
+    plt.pie(values, labels=labels, autopct='%1.1f%%', startangle=140)
+    plt.title(title)
+    plt.axis('equal')
+
+    temp_image_path = f"{title}.png"
+    plt.savefig(temp_image_path)
+    plt.close()
+    return temp_image_path
+
+# Löst Konflikte für verschiedene Werte in "Entbehrlich", "Umsetzung", "Umsetzung bis"
+def resolve_conflict(values, column_name, file1_path, file2_path):
+    unique_values = values.unique()
+    if len(unique_values) == 1:
+        return unique_values[0]
+    else:
+        if column_name == "Umsetzung bis":
+            unique_values = [format_dates(val) for val in unique_values]
+        conflict_row_index = values.index[0]
+        conflict_row_number = conflict_row_index + 6
+
+        print(f"\nKonflikt in Spalte '{column_name}' in Zeile {conflict_row_number}:\n")
+
+        wb1 = openpyxl.load_workbook(file1_path)
+        ws1 = wb1.active
+
+        af_id = ws1.cell(row=conflict_row_number, column=2).value
+        titel = ws1.cell(row=conflict_row_number, column=3).value
+        inhalt = ws1.cell(row=conflict_row_number, column=4).value
+        typ = ws1.cell(row=conflict_row_number, column=5).value
+
+        print(f"  ID: {af_id}")
+        print(f"  Titel: {titel}")
+        print(f"  Inhalt: {inhalt}")
+        print(f"  Typ: {typ}")
+
+        print(f"\n  Verschiedene Werte:")
+        print(f"    {os.path.basename(file1_path)}: {unique_values[0]}")
+        print(f"    {os.path.basename(file2_path)}: {unique_values[1]}")
+
+        while True:
+            if column_name == "Umsetzung":
+                unique_values = "Ja", "Nein", "Teilweise"
+            choice = input(f"\nWählen Sie einen Wert für '{column_name}' ({'/'.join(map(str, unique_values))}): ")
+            if choice in map(str, unique_values):
+                return choice
+            else:
+                print("Ungültige Eingabe.")
+
+# Vereint zwei gleichartige Tabellen
+def merge_tables(file1_path, file2_path):
+    try:
+        df1 = pd.read_excel(file1_path, sheet_name=0, skiprows=4)
+        df2 = pd.read_excel(file2_path, sheet_name=0, skiprows=4)
+        if len(df1) != len(df2):
+            print("Verschiedene Tabellen. Vorgang wird abgebrochen.")
+            exit(1)
+    except PermissionError:
+        print(f"Fehler: Eine der Dateien ist möglicherweise geöffnet und kann nicht gelesen werden. Vorgang wird abgebrochen.")
+        exit(1)
+    except Exception as e:
+        print(f"Ein unerwarteter Fehler ist beim Öffnen der Datei aufgetreten: {e}")
+        exit(1)
+
+    columns_to_sum = ["Begründung für Entbehrlichkeit", "Verantwortlich", "Bemerkungen / Begründung für Nicht-Umsetzung", "Kostenschätzung"]
+
+    # Hilfsfunktion zum Zusammenfassen von Feldern
+    def concatenate_values(series):
+        return " / ".join(map(str, series.dropna().unique()))
+
+    agg_dict = {
+        **{col: "first" for col in ["ID-Anforderung", "Titel", "Inhalt", "Typ"]},
+        **{col: concatenate_values for col in columns_to_sum},
+        "Umsetzung": lambda x: resolve_conflict(x, "Umsetzung", file1_path, file2_path),
+        "Entbehrlich": lambda x: resolve_conflict(x, "Entbehrlich", file1_path, file2_path),
+        "Umsetzung bis": lambda x: resolve_conflict(x, "Umsetzung bis", file1_path, file2_path)
+    }
+    merged_df = pd.concat([df1, df2]).groupby(["ID-Anforderung", "Titel", "Inhalt", "Typ"], sort=False, as_index=False).agg(agg_dict)
+
+    merged_df = merged_df[
+        ["ID-Anforderung", "Titel", "Inhalt", "Typ", "Entbehrlich", "Begründung für Entbehrlichkeit", "Umsetzung",
+         "Umsetzung bis", "Verantwortlich", "Bemerkungen / Begründung für Nicht-Umsetzung", "Kostenschätzung"]]
+
+    output_file_name = os.path.basename(file1_path)
+    output_dir = os.path.join(os.path.dirname(file1_path), "Merged")
+    os.makedirs(output_dir, exist_ok=True)
+    output_file_path = os.path.join(output_dir, output_file_name)
+
+    wb = openpyxl.load_workbook(file1_path)
+
+    ws = wb.active
+    for idx, row in merged_df.iterrows():
+        excel_row = 6 + idx
+        for col_name, value in row.items():
+            col_letter = openpyxl.utils.get_column_letter(merged_df.columns.get_loc(col_name)+2)
+            ws[f"{col_letter}{excel_row}"].value = value
+
+    wb.save(output_file_path)
+
+    print(f"\n{os.path.basename(file1_path)} und {os.path.basename(file2_path)} erfolgreich zusammengeführt und gespeichert unter: {output_file_path}")
+
+
 def main():
     parser = argparse.ArgumentParser(description='Arbeitet mit IT-Grundschutz-Check Excel Tabellen')
-    parser.add_argument('file_or_dir', help='Pfad zur Datei oder zum Ordner')
+    parser.add_argument('file_or_dir', nargs="?", help='Pfad zur Datei oder zum Ordner')
     parser.add_argument('--mapping', action='store_true', help='Ordne der/den Tabelle(n) den Namen des Bausteins zu')
     parser.add_argument('--prozent', action='store_true', help='Zeigt wie viel Prozent eines Bausteins umgesetzt sind (ENTFALLEN und Entbehrlich wird ignoriert, Teilweise zählt als nicht umgesetzt)')
     parser.add_argument('--profil', action='store_true', help='Verschiebt nicht relevante Bausteine in einen Ordner nach IT-Grundschutz-Profilen (Menü öffnet sich); Auch für IT-Grundschutz-PDFs nutzbar')
@@ -610,6 +989,8 @@ def main():
     parser.add_argument('--wiba-transfer', action='store_true', help='Markiert alle leeren, in WiBA enthaltenen Anforderungen als umgesetzt')
     parser.add_argument('--set-scale', action='store_true', help='Ändert die Umsetzungsskala')
     parser.add_argument('--export', action='store_true', help='Exportiere beliebige Spalten der Dateien in verschiedene Formate')
+    parser.add_argument('--report', action='store_true', help='Erstelle einen PDF-Report für eine oder alle Dateien')
+    parser.add_argument("--merge", nargs=2, metavar=("file1", "file2"), help="Führt zwei Tabellen der selben Art zusammen und behandelt Konflikte")
 
     args = parser.parse_args()
 
@@ -623,6 +1004,7 @@ def main():
         args.wiba_transfer: lambda: wiba_transfer(args.file_or_dir),
         args.set_scale: lambda: scale_setter_handler(args.file_or_dir),
         args.export: lambda: export_handler(args.file_or_dir),
+        args.report: lambda: report(args.file_or_dir),
     }
 
     for condition, action in actions.items():
@@ -630,12 +1012,18 @@ def main():
             action()
             return
 
-    if os.path.isfile(args.file_or_dir):
-        analyze_single_file(args.file_or_dir)
-    elif os.path.isdir(args.file_or_dir):
-        analyze_all_files(args.file_or_dir)
-    else:
-        print("Datei oder Ordner nicht gefunden")
+    if args.merge:
+        merge_tables(args.merge[0], args.merge[1])
+        return
+
+    if args.file_or_dir:
+        if os.path.isfile(args.file_or_dir):
+            analyze_single_file(args.file_or_dir)
+        elif os.path.isdir(args.file_or_dir):
+            analyze_all_files(args.file_or_dir)
+        else:
+            print("Datei oder Ordner nicht gefunden")
+    else: print("Fehlendes Argument file_or_dir")
 
 
 if __name__ == '__main__':
