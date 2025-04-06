@@ -2,6 +2,9 @@ import os
 import re
 import time
 import PyPDF2
+import subprocess
+import platform
+import shutil
 from langchain_chroma import Chroma
 from langchain.prompts import ChatPromptTemplate
 from langchain_ollama import OllamaLLM
@@ -304,9 +307,39 @@ def command_handler(chat_history, numbered_sources, query_text):
         print(f"Unknown command: {query_text}")
     return True
 
+# Startet Ollama automatisch im Hintergrund
+def start_ollama():
+    ollama_path = None
+    os_type = platform.system()
 
+    if os_type == "Windows":
+        potential_names = ["ollama app.exe", "ollama.exe", "ollama"]
+    elif os_type in ["Linux", "Darwin"]:  # Darwin ist macOS
+        potential_names = ["ollama"]
+    else:
+        potential_names = []
+
+    for name in potential_names:
+        found_path = shutil.which(name)
+        if found_path:
+            ollama_path = found_path
+            break
+
+    if ollama_path:
+        try:
+            subprocess.Popen([ollama_path])
+            print("Started Ollama in the background...")
+        except FileNotFoundError:
+            print(f"Error: {ollama_path} not found. Manually start Ollama.")
+        except PermissionError:
+            print(f"Error: No permission to start {ollama_path}. Manually start Ollama.")
+        except Exception as e:
+            print(f"Error while starting ({ollama_path}): {e}")
+    else:
+        print("Ollama not found in PATH. It needs to be started manually.")
 
 def main():
+    start_ollama()
     print("Starting chat! Type '/exit' to end the conversation. Type '/help' for help\n")
     numbered_sources = {}
     chat_history = []

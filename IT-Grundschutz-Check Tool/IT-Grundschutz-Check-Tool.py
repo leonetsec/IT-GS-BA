@@ -1,6 +1,7 @@
 import argparse
 import os
 import shutil
+import re
 import openpyxl
 import openpyxl.utils
 import pandas as pd
@@ -14,6 +15,9 @@ from reportlab.lib import colors
 from reportlab.platypus import Paragraph, SimpleDocTemplate, Image, Table, TableStyle, Spacer
 from reportlab.lib.styles import getSampleStyleSheet
 from collections import defaultdict
+from docx import Document
+from docx.oxml.table import CT_Tbl
+from docx.oxml.text.paragraph import CT_P
 
 import mapping
 
@@ -44,6 +48,18 @@ def get_name(filename, short):
 # Überprüft, ob eine PDF den Namen eines IT-Grundschutz Bausteins hat
 def is_pdf(file):
     if file.endswith(".pdf") or file.endswith(".pdf.clean"):
+        split = file.split()
+        if split:
+            ref = split[0]
+            if ref.startswith("CCON"):
+                ref = "CON" + ref[4:]
+            if ref in mapping.bsi_ref_titles:
+                return True
+    return False
+
+# Überprüft, ob eine PDF den Namen eines IT-Grundschutz Bausteins hat
+def is_docx(file):
+    if file.endswith(".docx"):
         split = file.split()
         if split:
             ref = split[0]
@@ -509,7 +525,7 @@ def scale_setter(file_path, values):
 
     # Datei speichern
     original_dir = os.path.dirname(file_path)
-    output_dir = os.path.join(original_dir, "Modifizierte Dateien")
+    output_dir = os.path.join(original_dir, "Modified")
 
     os.makedirs(output_dir, exist_ok=True)
 
@@ -519,37 +535,46 @@ def scale_setter(file_path, values):
 
 # Handler für Datei oder Ordner
 def export_handler(file_or_dir):
-    file_format, columns, omitted, unnecessary = get_export_settings()
+    file_format, columns, omitted, unnecessary, implemented, index_numbers, types_to_remove = get_export_settings()
 
     if os.path.isfile(file_or_dir) and is_format(file_or_dir):
-        export(file_or_dir, file_format, columns, omitted, unnecessary)
-        print("Datei erfolgreich exportiert")
+        export(file_or_dir, file_format, columns, omitted, unnecessary, implemented, index_numbers, types_to_remove)
+        print("\nDatei erfolgreich exportiert")
     elif os.path.isdir(file_or_dir):
+        exported_count = 0
         for file_name in os.listdir(file_or_dir):
             file_path = os.path.join(file_or_dir, file_name)
-            if is_format(file_name):
-                export(file_path, file_format, columns, omitted, unnecessary)
-        print("Dateien erfolgreich exportiert")
+            if os.path.isfile(file_path) and is_format(file_name):  # Stelle sicher, dass es eine Datei ist
+                export(file_path, file_format, columns, omitted, unnecessary, implemented, index_numbers, types_to_remove)
+                exported_count += 1
+        if exported_count > 0:
+            print(f"\n{exported_count} Dateien erfolgreich exportiert")
+        else:
+            print("Keine passenden Excel-Dateien im Ordner gefunden.")
     else:
-        print("Keine passende Excel-Datei gefunden.")
+        print(f"'{file_or_dir}' ist weder eine passende Excel-Datei noch ein Ordner.")
 
 # Fragt den Nutzer, welches Format und welches Spalten er exportieren möchte
 def get_export_settings():
 
     print("Wählen Sie das Exportformat:")
-    print("1. CSV\n2. JSON\n3. Leerzeichengetrennt\n4. Tabstoppgetrennt\n5. Benutzerdefiniertes Trennzeichen")
+    print("1. CSV\n2. JSON\n3. Markdown\n4. HTML\n5. Leerzeichengetrennt\n6. Tabstoppgetrennt\n7. Benutzerdefiniertes Trennzeichen")
 
-    format_choice = input("Auswahl (1-5): ")
+    format_choice = input("\nAuswahl (1-7): ")
 
     if format_choice == "1":
         export_format = "csv"
     elif format_choice == "2":
         export_format = "json"
     elif format_choice == "3":
-        export_format = "space"
+        export_format = "markdown"
     elif format_choice == "4":
-        export_format = "tab"
+        export_format = "html"
     elif format_choice == "5":
+        export_format = "space"
+    elif format_choice == "6":
+        export_format = "tab"
+    elif format_choice == "7":
         delimiter = input("Geben Sie das Trennzeichen ein: ")
         export_format = f"delimited:{delimiter}"
     else:
@@ -567,7 +592,7 @@ def get_export_settings():
 
     selected_columns = []
     while True:
-        col_choice = input("\nSpaltenauswahl (z.B. 1,3,5 oder 'Alle': ")
+        col_choice = input("\nSpaltenauswahl (z.B. 1,3,5 oder 'Alle'): ")
         if col_choice.lower() == "alle" or col_choice == "":
             selected_columns = columns
             break
@@ -592,15 +617,50 @@ def get_export_settings():
     else:
         unnecessary = True
 
-    return export_format, selected_columns, omitted, unnecessary
+    implemented_choice = input(
+        "\nMöchten Sie bereits umgesetzte Anforderungen entfernen? (ja/Nein): ").strip().lower()
+    if implemented_choice == "ja":
+        implemented = True
+    else:
+        implemented = False
+
+    index_choice = input(
+        "\nMöchten Sie nummerierte Zeilen? (Ja/nein): ").strip().lower()
+    if index_choice == "nein":
+        index_numbers = False
+    else:
+        index_numbers = True
+
+    if export_format == "json" and index_numbers:
+        print("\nNummerierte Zeilen bei JSON nicht möglich")
+
+    types_input = input(
+        "\nMöchten Sie Schutzbedarfstypen entfernen (Basis, Standard, Hoch)? \n"
+        "(Auswahl z.B. 'Standard, Hoch', Default=Keine): ").strip()
+
+    types_to_remove = []
+    if types_input:
+        types_to_remove = [t.strip().title() for t in types_input.split(',') if t.strip()]
+        valid_types = {"Basis", "Standard", "Hoch"}
+        original_input_types = set(types_to_remove)
+        types_to_remove = [t for t in types_to_remove if t in valid_types]
+        removed_invalid = original_input_types - set(types_to_remove)
+        if removed_invalid:
+            print(f"Warnung: Ungültige Typen ignoriert: {', '.join(removed_invalid)}")
+    return export_format, selected_columns, omitted, unnecessary, implemented, index_numbers, types_to_remove
 
 # Exportiert den Tabelleninhalt in ein gewünschtes Format mit diversen Anpassungsmöglichkeiten
-def export(file_path, file_format, columns, omitted, unnecessary):
+def export(file_path, file_format, columns, omitted, unnecessary, implemented, index_numbers, types_to_remove):
     df = load_data(file_path)
     if omitted:
         df = remove_specific_requirements(df, "Titel", "ENTFALLEN")
     if unnecessary:
         df = remove_specific_requirements(df, "Entbehrlich", "Ja")
+    if implemented:
+        df = remove_specific_requirements(df, "Umsetzung", "Ja")
+    if types_to_remove:
+        for t in types_to_remove:
+            df = remove_specific_requirements(df, "Typ", t)
     df = df[columns]  # Ausgewählte Spalten
 
     export_dir = os.path.join(os.path.dirname(file_path), "Export")
@@ -610,16 +670,20 @@ def export(file_path, file_format, columns, omitted, unnecessary):
     export_file_path = os.path.join(export_dir, base_name)
 
     if file_format == "csv":
-        df.to_csv(export_file_path + ".csv", index=False)
+        df.to_csv(export_file_path + ".csv", index=index_numbers)
     elif file_format == "json":
         df.to_json(export_file_path + ".json", orient="records")
+    elif file_format == "markdown":
+        df.to_markdown(export_file_path + ".md", index=index_numbers)
+    elif file_format == "html":
+        df.to_markdown(export_file_path + ".html", index=index_numbers)
     elif file_format == "space":
-        df.to_csv(export_file_path + ".txt", sep=" ", index=False)
+        df.to_csv(export_file_path + ".txt", sep=" ", index=index_numbers)
     elif file_format == "tab":
-        df.to_csv(export_file_path + ".tsv", sep="\t", index=False)
+        df.to_csv(export_file_path + ".tsv", sep="\t", index=index_numbers)
     elif file_format.startswith("delimited:"):
         delimiter = file_format.split(":")[1]
-        df.to_csv(export_file_path + ".txt", sep=delimiter, index=False)
+        df.to_csv(export_file_path + ".txt", sep=delimiter, index=index_numbers)
 
 # Überprüft, ob es nicht umgesetzte Basis-Anforderungen gibt
 def risk_check(file_path):
@@ -975,6 +1039,166 @@ def merge_tables(file1_path, file2_path):
 
     print(f"\n{os.path.basename(file1_path)} und {os.path.basename(file2_path)} erfolgreich zusammengeführt und gespeichert unter: {output_file_path}")
 
+# Behandelt die Modifizierung von allen Word-Dokumenten eines Ordners
+def modify(directory):
+    if not os.path.isdir(directory):
+        print(f"Fehler: '{directory}' ist kein gültiges Verzeichnis.")
+        return
+
+    output_directory = os.path.join(directory, "Modified")
+    os.makedirs(output_directory, exist_ok=True)
+
+    section_titles = [
+        "Beschreibung",
+        "Gefährdungslage",
+        "Anforderungen",
+        "Basis-Anforderungen",
+        "Standard-Anforderungen",
+        "Anforderungen bei erhöhtem Schutzbedarf",
+        "Weiterführende Informationen",
+    ]
+
+    anforderungen_subsections = [
+        "Basis-Anforderungen",
+        "Standard-Anforderungen",
+        "Anforderungen bei erhöhtem Schutzbedarf",
+    ]
+
+    sections_to_remove_flags = {}
+    anforderungen_selected = False
+
+    print("Wählen Sie die Abschnitte aus, die entfernt werden sollen:")
+    for title in section_titles:
+        if title in anforderungen_subsections and anforderungen_selected:
+            sections_to_remove_flags[title] = True
+            continue
+
+        sections_to_remove_flags[title] = False
+
+        eingabe = input(f"- '{title}' entfernen? (ja/Nein): ")
+        if eingabe.lower() in ["j", "ja"]:
+            sections_to_remove_flags[title] = True
+            if title == "Anforderungen":
+                anforderungen_selected = True
+
+    remove_entfallen = input("\n- Entfallene Anforderungen entfernen? (Ja/nein): ")
+    if remove_entfallen.strip().lower() in ["nein", "n"]:
+        delete_entfallen = False
+    else: delete_entfallen = True
+
+    sections_for_removal = [title for title, remove in sections_to_remove_flags.items() if remove]
+
+    if not sections_for_removal and not delete_entfallen:
+        print("Keine Abschnitte oder Anforderungen zum Entfernen ausgewählt.")
+        return
+
+    for filename in os.listdir(directory):
+        if is_docx(filename):
+            original_file_path = os.path.join(directory, filename)
+            output_file_path = os.path.join(output_directory, filename)
+
+            dokument = Document(original_file_path)
+            if sections_for_removal:
+                remove_sections(dokument, sections_for_removal, section_titles)
+            if delete_entfallen:
+                remove_entfallene_anforderungen(dokument)
+            try:
+                dokument.save(output_file_path)
+            except Exception as e:
+                print(f" Fehler beim Speichern von {filename}: {e}")
+
+    if not any(is_docx(f) for f in os.listdir(directory)):
+        print("\nKeine .docx-Dateien im Verzeichnis gefunden.")
+    else:
+        print(f"\nDateien erfolgreich gespeichert.")
+
+# Entfernt gewünschte Abschnitte eines Word-Dokuments
+def remove_sections(dokument, sections_to_remove, section_titles):
+    paragraphs = dokument.paragraphs
+    num_paragraphs = len(paragraphs)
+
+    found_sections_indices = {}
+    for i, p in enumerate(paragraphs):
+        p_text = p.text.strip()
+        for title in sorted(section_titles, key=len, reverse=True): # Wichtig, damit 'Anforderungen' und 'Anforderungen des erhöhten Schutzbedarfs' nicht vertauscht werden
+            if p_text.startswith(title) and title not in found_sections_indices:
+                found_sections_indices[title] = i
+                break
+
+    section_ranges = {}
+    sorted_found_keys = sorted(
+        found_sections_indices.items(),
+        key=lambda item: section_titles.index(item[0]) if item[0] in section_titles else float('inf')
+    )
+    sorted_found_keys.sort(key=lambda item: item[1])
+
+    for i, (title, start_index) in enumerate(sorted_found_keys):
+        end_index = num_paragraphs
+        if i + 1 < len(sorted_found_keys):
+            _, next_start_index = sorted_found_keys[i + 1]
+            end_index = next_start_index
+        if start_index < end_index:
+            section_ranges[title] = {"start": start_index, "end": end_index}
+
+    elements_to_delete = []
+    paragraph_ranges_to_delete = [section_ranges[title] for title in sections_to_remove if title in section_ranges]
+    paragraph_ranges_to_delete.sort(key=lambda r: r["start"], reverse=True)
+
+    body_elements = list(dokument.element.body.iterchildren())
+    for range_info in paragraph_ranges_to_delete:
+        start_idx = range_info["start"]
+        end_idx = range_info["end"]
+
+        try:
+            start_paragraph = paragraphs[start_idx]
+            start_element = start_paragraph._element
+            end_element = paragraphs[end_idx]._element if end_idx < num_paragraphs else None
+        except IndexError:
+            continue
+
+        body_end_idx = len(body_elements)
+        if end_element in body_elements:
+            body_end_idx = body_elements.index(end_element)
+
+        for i in range(body_end_idx - 1, -1, -1):
+            element = body_elements[i]
+            if element == start_element:
+                if isinstance(element, CT_P):
+                    elements_to_delete.append(element)
+                break
+            if isinstance(element, (CT_P, CT_Tbl)):
+                elements_to_delete.append(element)
+
+    for element in elements_to_delete:
+        if element.getparent() is not None:
+            element.getparent().remove(element)
+    return
+
+
+def remove_entfallene_anforderungen(dokument):
+    paragraphs = dokument.paragraphs
+    body_elements = list(dokument.element.body.iterchildren())
+
+    entfallen_pattern = re.compile(r"\b[A-Z]{2,}\.(\d+\.){1,3}A\d+\s+ENTFALLEN\b")
+    anforderung_heading_pattern = re.compile(r"\b[A-Z]{2,}\.(\d+\.){1,3}A\d+\b")
+
+    i = 0
+    while i < len(paragraphs):
+        para = paragraphs[i]
+        if entfallen_pattern.search(para.text):
+            start_index = i
+            i += 1
+            while i < len(paragraphs):
+                next_para_text = paragraphs[i].text.strip()
+                if anforderung_heading_pattern.match(next_para_text) or next_para_text == "Weiterführende Informationen": # Falls letzte Anforderung entfällt
+                    break
+                i += 1
+            for j in range(start_index, i):
+                el = paragraphs[j]._element
+                if el in body_elements and el.getparent() is not None:
+                    el.getparent().remove(el)
+            continue
+        i += 1
 
 def main():
     parser = argparse.ArgumentParser(description='Arbeitet mit IT-Grundschutz-Check Excel Tabellen')
@@ -990,7 +1214,8 @@ def main():
     parser.add_argument('--set-scale', action='store_true', help='Ändert die Umsetzungsskala')
     parser.add_argument('--export', action='store_true', help='Exportiere beliebige Spalten der Dateien in verschiedene Formate')
     parser.add_argument('--report', action='store_true', help='Erstelle einen PDF-Report für eine oder alle Dateien')
-    parser.add_argument("--merge", nargs=2, metavar=("file1", "file2"), help="Führt zwei Tabellen der selben Art zusammen und behandelt Konflikte")
+    parser.add_argument('--merge', nargs=2, metavar=("file1", "file2"), help="Führt zwei Tabellen der selben Art zusammen und behandelt Konflikte")
+    parser.add_argument('--modify', action='store_true', help='Modifiziert alle Bausteine eines Ordners im docx-Format (Menü öffnet sich)')
 
     args = parser.parse_args()
 
@@ -1005,6 +1230,7 @@ def main():
         args.set_scale: lambda: scale_setter_handler(args.file_or_dir),
         args.export: lambda: export_handler(args.file_or_dir),
         args.report: lambda: report(args.file_or_dir),
+        args.modify: lambda: modify(args.file_or_dir),
     }
 
     for condition, action in actions.items():

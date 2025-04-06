@@ -30,6 +30,7 @@ Weitere Funktionen mittels Parameter, die sowohl auf einzelne Dateien als auch g
 - ```--export```: Exportiert beliebige Spalten der Datei(en) in verschiedene Formate
 - ```--report```: Erstellt mehrseitigen PDF-Report, in dem diverse Auswertungen stattfinden 
 - ```--merge```: Verbindet den Inhalt von zwei gleichartigen Tabellen inkl. Konfliktbehandlung
+- ```--modify```: Modifiziert alle Bausteine eines Ordners im Docx Format, indem gewünschte Abschnitte oder Anforderungen entfernt werden
 
 
 Hinweis: Aus Sicherheitsgründen können Basis-Anforderungen und als nicht entbehrlich markierte Anforderungen nicht automatisch als entbehrlich gesetzt werden.
