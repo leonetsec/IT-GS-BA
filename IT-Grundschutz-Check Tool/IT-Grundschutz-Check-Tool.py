@@ -2,6 +2,7 @@ import argparse
 import os
 import shutil
 import re
+import docx2pdf
 import openpyxl
 import openpyxl.utils
 import pandas as pd
@@ -544,7 +545,7 @@ def export_handler(file_or_dir):
         exported_count = 0
         for file_name in os.listdir(file_or_dir):
             file_path = os.path.join(file_or_dir, file_name)
-            if os.path.isfile(file_path) and is_format(file_name):  # Stelle sicher, dass es eine Datei ist
+            if os.path.isfile(file_path) and is_format(file_name):  
                 export(file_path, file_format, columns, omitted, unnecessary, implemented, index_numbers, types_to_remove)
                 exported_count += 1
         if exported_count > 0:
@@ -1081,16 +1082,49 @@ def modify(directory):
             if title == "Anforderungen":
                 anforderungen_selected = True
 
-    remove_entfallen = input("\n- Entfallene Anforderungen entfernen? (Ja/nein): ")
-    if remove_entfallen.strip().lower() in ["nein", "n"]:
-        delete_entfallen = False
-    else: delete_entfallen = True
+    delete_entfallen = True
+    integrate_checklists = False
+    implemented = True
+    partly_implemented = False
+    not_implemented = False
+    unnecessary = True
+    if not anforderungen_selected:
+        remove_entfallen = input("\n- Entfallene Anforderungen entfernen? (Ja/nein): ")
+        if remove_entfallen.strip().lower() in ["nein", "n"]:
+            delete_entfallen = False
+        checklisten_choice = input("\n- Excel Checklisten integrieren? (ja/Nein): ")
+        if checklisten_choice.strip().lower() in ["j", "ja"]:
+            integrate_checklists = True
+            while True:
+                checklist_path = input("\nPfad zum Ordner mit den Checklisten: ").strip().strip('"')
+                if os.path.isdir(checklist_path):
+                    break
+                else:
+                    print("Kein gültiger Pfad zu einem Ordner")
+            print("Hinweis: Es werden nur Anforderungen entfernt, die vollständig die nachfolgenden Auswahlmöglichkeiten erfüllen.\n")
+            implemented_choice = input("- In Tabellen bereits umgesetzte Anforderungen entfernen? (Ja/nein): ")
+            if implemented_choice.strip().lower() in ["nein", "n"]:
+                implemented = False
+            partly_implemented_choice = input("- In Tabellen teilweise umgesetzte Anforderungen entfernen? (ja/Nein): ")
+            if partly_implemented_choice.strip().lower() in ["ja", "j"]:
+                partly_implemented = True
+            not_implemented_choice = input("- In Tabellen nicht umgesetzte Anforderungen entfernen? (ja/Nein): ")
+            if not_implemented_choice.strip().lower() in ["ja", "j"]:
+                not_implemented = True
+            unnecessary_choice = input("- In Tabellen entbehrliche Anforderungen entfernen? (Ja/nein): ")
+            if unnecessary_choice.strip().lower() in ["nein", "n"]:
+                unnecessary = False
+
+
+    save_as_pdf = input("\n- Dokumente auch als PDF speichern? Hinweis: Diese Operation ist sehr rechenaufwendig.\n  Antwort (ja/Nein): ")
+    save_as_pdf = save_as_pdf.strip().lower() in ["ja", "j"]
 
     sections_for_removal = [title for title, remove in sections_to_remove_flags.items() if remove]
 
-    if not sections_for_removal and not delete_entfallen:
-        print("Keine Abschnitte oder Anforderungen zum Entfernen ausgewählt.")
+    if not sections_for_removal and not delete_entfallen and not save_as_pdf and not integrate_checklists:
+        print("Keine Aktion ausgewählt.")
         return
+
 
     for filename in os.listdir(directory):
         if is_docx(filename):
@@ -1102,8 +1136,16 @@ def modify(directory):
                 remove_sections(dokument, sections_for_removal, section_titles)
             if delete_entfallen:
                 remove_entfallene_anforderungen(dokument)
+            if integrate_checklists:
+                checklist_integration(checklist_path, filename, dokument, implemented, partly_implemented, not_implemented, unnecessary)
             try:
                 dokument.save(output_file_path)
+                if save_as_pdf:
+                    pdf_directory = os.path.join(output_directory, "PDFs")
+                    os.makedirs(pdf_directory, exist_ok=True)
+                    pdf_filename = os.path.splitext(filename)[0] + ".pdf"
+                    pdf_path = os.path.join(pdf_directory, pdf_filename)
+                    docx2pdf.convert(output_file_path, pdf_path)
             except Exception as e:
                 print(f" Fehler beim Speichern von {filename}: {e}")
 
@@ -1200,6 +1242,79 @@ def remove_entfallene_anforderungen(dokument):
             continue
         i += 1
 
+# Integriert die Werte der Checklisten ins Dokument, indem Anforderungen, die nicht die Bedingungen erfüllen, entfernt werden
+def checklist_integration(checklist_path, filename, dokument, implemented, partly_implemented, not_implemented, unnecessary):
+    docx_short = filename.split()[0]
+    if docx_short.startswith("CCON"):
+        docx_short = "CON" + docx_short[4:]
+
+    found_checklist = None
+    for checklist in os.listdir(checklist_path):
+        if get_name(checklist, True) == docx_short:
+            found_checklist = os.path.join(checklist_path, checklist)
+    if found_checklist is None:
+        print(f"Keine passende Checkliste für {filename} gefunden")
+
+    df = load_data(found_checklist)
+    df = remove_specific_requirements(df, "Inhalt", "ENTFALLEN")
+    if implemented:
+        df = remove_specific_requirements(df, "Umsetzung", "Ja")
+    if partly_implemented:
+        df = remove_specific_requirements(df, "Umsetzung", "Teilweise")
+    if not_implemented:
+        df2 = get_specific_df_with_two_conditions_and_emptiness(df, "Umsetzung", "Nein", "Entbehrlich", "Nein")
+        contents_to_remove = set(df2["Inhalt"].unique())
+        df = df[~df["Inhalt"].isin(contents_to_remove)] # ~not
+    if unnecessary:
+        df = remove_specific_requirements(df, "Entbehrlich", "Ja")
+
+    df = df[["ID-Anforderung", "Inhalt"]]
+
+    paragraphs = dokument.paragraphs
+    body_elements = list(dokument.element.body.iterchildren())
+
+    valid_ids = set(df["ID-Anforderung"].unique())
+
+    # Falls keine Anforderung übrig ist, gesamten Abschnitt entfernen
+    if not valid_ids:
+        section_titles = [
+            "Beschreibung",
+            "Anforderungen",
+            "Weiterführende Informationen",
+        ]
+        sections_to_remove_flags = {}
+        sections_to_remove_flags["Anforderungen"] = True
+        sections_for_removal = [title for title, remove in sections_to_remove_flags.items() if remove]
+        remove_sections(dokument, sections_for_removal, section_titles)
+
+    heading_pattern = re.compile(r"\b([A-Z]{2,}\.(\d+\.){1,3}A\d+)\b")
+
+    i = 0
+    while i < len(paragraphs):
+        para = paragraphs[i]
+        heading_match = heading_pattern.match(para.text.strip())
+        if heading_match:
+            current_id = heading_match.group(1)
+            start_index = i
+            i += 1
+            while i < len(paragraphs):
+                next_para_text = paragraphs[i].text.strip()
+                if (heading_pattern.match(next_para_text) or next_para_text in
+                        ["Standard-Anforderungen", "Anforderungen bei erhöhtem Schutzbedarf", "Weiterführende Informationen"]):
+                    break
+                i += 1
+            end_index = i
+
+            if current_id not in valid_ids:
+                for j in range(start_index, end_index):
+                    el = paragraphs[j]._element
+                    if el in body_elements and el.getparent() is not None:
+                        el.getparent().remove(el)
+        else:
+            i += 1
+
+
+
 def main():
     parser = argparse.ArgumentParser(description='Arbeitet mit IT-Grundschutz-Check Excel Tabellen')
     parser.add_argument('file_or_dir', nargs="?", help='Pfad zur Datei oder zum Ordner')
@@ -1215,7 +1330,7 @@ def main():
     parser.add_argument('--export', action='store_true', help='Exportiere beliebige Spalten der Dateien in verschiedene Formate')
     parser.add_argument('--report', action='store_true', help='Erstelle einen PDF-Report für eine oder alle Dateien')
     parser.add_argument('--merge', nargs=2, metavar=("file1", "file2"), help="Führt zwei Tabellen der selben Art zusammen und behandelt Konflikte")
-    parser.add_argument('--modify', action='store_true', help='Modifiziert alle Bausteine eines Ordners im docx-Format (Menü öffnet sich)')
+    parser.add_argument('--modify', action='store_true', help='Modifiziert alle Bausteine eines Ordners im docx-Format, wahlweise Export zu PDF (Menü öffnet sich)')
 
     args = parser.parse_args()
 

@@ -6,6 +6,7 @@
 - Modelle installieren:
   - `ollama run llama3.2`
   - `ollama pull jina/jina-embeddings-v2-base-de`
+- PDFs in data-Ordner einfügen (Siehe Readme dort)
 
 ## PDFs einpflegen
 - Bei Bedarf: Datenbank zurücksetzen: `python populate_database.py --reset`

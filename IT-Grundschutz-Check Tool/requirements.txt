@@ -4,3 +4,4 @@ matplotlib
 reportlab
 docx
 tabulate
+docx2pdf
