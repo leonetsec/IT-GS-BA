@@ -5,6 +5,7 @@ Dieses Tool vereinfacht den IT-Grundschutz-Check ([Version 2023](https://www.bsi
 
 ## Installation
 - Aktuelle IT-Grundschutz-Checklisten herunterladen
+- Ggf. Kompendium im Docx-Format herunterladen
 - Dateien des Tools herunterladen 
 - Requirements installieren
 

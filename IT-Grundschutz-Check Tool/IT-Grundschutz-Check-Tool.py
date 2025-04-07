@@ -559,9 +559,9 @@ def export_handler(file_or_dir):
 def get_export_settings():
 
     print("Wählen Sie das Exportformat:")
-    print("1. CSV\n2. JSON\n3. Markdown\n4. HTML\n5. Leerzeichengetrennt\n6. Tabstoppgetrennt\n7. Benutzerdefiniertes Trennzeichen")
+    print("1. CSV\n2. JSON\n3. Markdown\n4. HTML\n5. XML\n6. Leerzeichengetrennt\n7. Tabstoppgetrennt\n8. Benutzerdefiniertes Trennzeichen")
 
-    format_choice = input("\nAuswahl (1-7): ")
+    format_choice = input("\nAuswahl (1-8): ")
 
     if format_choice == "1":
         export_format = "csv"
@@ -572,10 +572,12 @@ def get_export_settings():
     elif format_choice == "4":
         export_format = "html"
     elif format_choice == "5":
-        export_format = "space"
+        export_format = "xml"
     elif format_choice == "6":
-        export_format = "tab"
+        export_format = "space"
     elif format_choice == "7":
+        export_format = "tab"
+    elif format_choice == "8":
         delimiter = input("Geben Sie das Trennzeichen ein: ")
         export_format = f"delimited:{delimiter}"
     else:
@@ -678,6 +680,8 @@ def export(file_path, file_format, columns, omitted, unnecessary, implemented, i
         df.to_markdown(export_file_path + ".md", index=index_numbers)
     elif file_format == "html":
         df.to_markdown(export_file_path + ".html", index=index_numbers)
+    elif file_format == "xml":
+        df.to_xml(export_file_path + ".xml", index=index_numbers)
     elif file_format == "space":
         df.to_csv(export_file_path + ".txt", sep=" ", index=index_numbers)
     elif file_format == "tab":
