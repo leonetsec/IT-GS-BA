@@ -436,7 +436,7 @@ ressort_forschungseinrichtungen_profil = {
 }
 
 e_akte_profil = {
-'ISMS.1': 'Sicherheitsmanagement',
+    'ISMS.1': 'Sicherheitsmanagement',
     'ORP.1': 'Organisation',
     'ORP.2': 'Personal',
     'ORP.3': 'Sensibilisierung und Schulung zur Informationssicherheit',
@@ -1085,7 +1085,7 @@ ikfz_profil = {
 
 # Platzhalter, es muss erst eine Modellierung stattfinden, um nicht relevante Bausteine ausschließen zu können
 finanzen_sa_profil = {
-'ISMS.1': 'Sicherheitsmanagement',
+    'ISMS.1': 'Sicherheitsmanagement',
     'ORP.1': 'Organisation',
     'ORP.2': 'Personal',
     'ORP.3': 'Sensibilisierung und Schulung zur Informationssicherheit',
@@ -1782,7 +1782,7 @@ oberste_landesbehoerden_profil = {
 
 # Platzhalter, da mur für Mitglieder
 handwerksbetriebe_profil = {
-'ISMS.1': 'Sicherheitsmanagement',
+    'ISMS.1': 'Sicherheitsmanagement',
     'ORP.1': 'Organisation',
     'ORP.2': 'Personal',
     'ORP.3': 'Sensibilisierung und Schulung zur Informationssicherheit',

@@ -46,7 +46,7 @@ def get_name(filename, short):
         return mapping.bsi_ref_titles[ref]
     return None
 
-# Überprüft, ob eine PDF den Namen eines IT-Grundschutz Bausteins hat
+# Überprüft, ob eine PDF-Datei den Namen eines IT-Grundschutz-Bausteins hat
 def is_pdf(file):
     if file.endswith(".pdf") or file.endswith(".pdf.clean"):
         split = file.split()
@@ -58,7 +58,7 @@ def is_pdf(file):
                 return True
     return False
 
-# Überprüft, ob eine PDF den Namen eines IT-Grundschutz Bausteins hat
+# Überprüft, ob eine DOCX-Datei den Namen eines IT-Grundschutz-Bausteins hat
 def is_docx(file):
     if file.endswith(".docx"):
         split = file.split()
@@ -107,7 +107,7 @@ def get_specific_df(df, column, value):
 
 # Gibt Dataframe zurück, bei dem zwei Zeilen entweder leer sind oder einen bestimmten Wert haben
 def get_specific_df_with_two_conditions_and_emptiness(df, column, value, column2, value2):
-    return df[(df[column].isna() | (df[column].fillna('').str.strip().str.lower() == value)) & (df[column2].isna() | (df[column2].fillna('').str.strip().str.lower() == value2))]
+    return df[(df[column].isna() | (df[column].fillna('').str.strip().str.lower() == value.lower())) & (df[column2].isna() | (df[column2].fillna('').str.strip().str.lower() == value2.lower()))]
 
 # Gibt Zahlen zurück, wie viele Anforderungen entbehrlich sowie nicht, teilweise oder ganz erfüllt sind
 def implementation_count(df):
@@ -524,7 +524,6 @@ def scale_setter(file_path, values):
     sheet.add_data_validation(rule)
     rule.add(f'H6:H{cell_max}')
 
-    # Datei speichern
     original_dir = os.path.dirname(file_path)
     output_dir = os.path.join(original_dir, "Modified")
 
@@ -664,7 +663,7 @@ def export(file_path, file_format, columns, omitted, unnecessary, implemented, i
     if types_to_remove:
         for t in types_to_remove:
             df = remove_specific_requirements(df, "Typ", t)
-    df = df[columns]  # Ausgewählte Spalten
+    df = df[columns]
 
     export_dir = os.path.join(os.path.dirname(file_path), "Export")
     os.makedirs(export_dir, exist_ok=True)
@@ -730,22 +729,31 @@ def report_analysis(file_path):
 # Handler um für Dateien oder alle Dateien eines Ordners Reports zu erstellen
 def report(file_or_dir):
     if os.path.isfile(file_or_dir):
-        reports_dir = os.path.join(os.path.dirname(os.path.abspath(file_or_dir)), "Reports")
-        os.makedirs(reports_dir, exist_ok=True)
         if is_format(file_or_dir):
+            reports_dir = os.path.join(os.path.dirname(os.path.abspath(file_or_dir)), "Reports")
+            os.makedirs(reports_dir, exist_ok=True)
             results = report_analysis(file_or_dir)
             risk = risk_check(file_or_dir)
-            if results:
-                save_results_to_pdf(results, os.path.basename(file_or_dir), reports_dir, risk, file_or_dir)
+            save_results_to_pdf(results, os.path.basename(file_or_dir), reports_dir, risk, file_or_dir)
             print("Report erstellt und gespeichert.")
         else:
             print("Keine Datei im Format Checkliste_XXX.X.X.xlsx")
     elif os.path.isdir(file_or_dir):
         reports_dir = os.path.join(os.path.abspath(file_or_dir), "Reports")
         os.makedirs(reports_dir, exist_ok=True)
+
+        choice = input("Welche Reports sollen erstellt werden?\n\n1 - Für jede Datei einen Report\n2 - Einen Gesamtreport für alle Dateien\n3 - Beides\n\nAuswahl (1-3): ")
+        if choice == "2":
+            whole_report(file_or_dir, reports_dir)
+            return
+        if choice == "3":
+            whole_report(file_or_dir, reports_dir)
+        if choice not in ["1", "2", "3"]:
+            print("Keine gültige Auswahl, es werden Berichte für jede Datei einzeln erstellt.")
+
         all_results = {}
         all_risks = {}
-        print("Starte Analyse der Dateien...")
+        print("Starte Analyse der Dateien für Einzelreports...")
         for file_name in os.listdir(file_or_dir):
             file_path = os.path.join(file_or_dir, file_name)
             if is_format(file_name):
@@ -952,6 +960,235 @@ def plot_pie_chart_to_image(data, title):
     plt.savefig(temp_image_path)
     plt.close()
     return temp_image_path
+
+# Erstellt einen Gesamtreport für alle Dateien
+def whole_report(directory, output_directory):
+    print("Starte Analysen für Gesamtreport...")
+    total_files = 0
+    total_df_count = 0
+    total_fully_implemented = 0
+    total_partly_implemented = 0
+    total_unnecessary = 0
+    total_not_implemented = 0
+    total_cost = 0
+    total_basis = 0
+    total_standard = 0
+    total_high = 0
+    for file_name in os.listdir(directory):
+        file_path = os.path.join(directory, file_name)
+        if is_format(file_path):
+            total_files += 1
+            df = load_data(file_path)
+            df = df[["Titel", "Typ", "Entbehrlich", "Umsetzung", "Kostenschätzung"]]
+            df = remove_specific_requirements(df, "Titel", "ENTFALLEN")
+
+            not_implemented, partly_implemented, fully_implemented, unnecessary = implementation_count(df)
+            cost = cost_count(df)
+
+            ni = get_specific_df_with_two_conditions_and_emptiness(df, "Umsetzung", "nein", "Entbehrlich", "nein")
+            ni_basis, ni_standard, ni_high = type_count(ni)
+
+            total_df_count += len(df)
+            total_fully_implemented += fully_implemented
+            total_partly_implemented += partly_implemented
+            total_unnecessary += unnecessary
+            total_not_implemented += not_implemented
+            total_cost += cost
+            total_basis += ni_basis
+            total_standard += ni_standard
+            total_high += ni_high
+    if total_files == 0:
+        print("Keine Dateien im Format Checkliste_XXX.X.X.xlsx gefunden")
+        return
+
+    results = {
+    "Analysierte Tabellen": total_files,
+    "Gesamtanzahl Anforderungen": total_df_count,
+    "Umgesetzte Anforderungen": total_fully_implemented,
+    "Teilweise umgesetzte Anforderungen": total_partly_implemented,
+    "Entbehrliche Anforderungen": total_unnecessary,
+    "Nicht umgesetzte Anforderungen": total_not_implemented,
+    "Nicht umgesetzte Anforderungen nach Typ": {"Basis": total_basis, "Standard": total_standard, "Erhöhter Schutzbedarf": total_high},
+    "Summierte Kostenschätzung": total_cost,
+    }
+
+    print("Erstelle Tabellen und Grafiken...")
+
+    save_whole_results_to_pdf(directory, results, output_directory)
+
+    print("Gesamtreport erstellt und gespeichert")
+
+# Erstellt Tabellen, Grafiken und speichert den Gesamtreport
+def save_whole_results_to_pdf(directory, results, reports_dir):
+    pdf_path = os.path.join(reports_dir, f"Gesamtreport_{datetime.today().strftime('%d-%m-%Y')}.pdf")
+    doc = SimpleDocTemplate(pdf_path, pagesize=A4,
+                            title=f"IT-Grundschutz-Report")
+    story = []
+
+    styles = getSampleStyleSheet()
+    title_style = styles["Title"]
+    story.append(Paragraph(f"Analysebericht vom {datetime.today().strftime('%d-%m-%Y')}", title_style))
+
+    normal_style = styles["Normal"]
+    for key, value in results.items():
+        if isinstance(value, dict):
+            story.append(Paragraph(f"<b>{key}:</b>", normal_style))
+            for sub_key, sub_value in value.items():
+                story.append(Paragraph(f"    {sub_key}: {sub_value}", normal_style))
+        else:
+            story.append(Paragraph(f"<b>{key}:</b> {value}", normal_style))
+
+    files_in_dir = {get_name(file, True) for file in os.listdir(directory) if is_format(file)}
+
+    matching_profiles = []
+    for profile_name, profile_files in mapping.profiles_mapping.items():
+        profile_set = set(getattr(mapping, profile_files))
+        if files_in_dir == profile_set:
+            matching_profiles.append(mapping.profile_names[profile_name])
+
+    if matching_profiles:
+        if len(matching_profiles) == 1:
+            story.append(Paragraph(f"<b>IT-Grundschutz-Profil: {matching_profiles[0]}</b>", normal_style))
+        else:
+            story.append(Paragraph(f"<b>Passende IT-Grundschutz-Profile: {', '.join(matching_profiles)})</b>", normal_style))
+
+    risk_files = []
+    not_implemented = {}
+    ni_types ={}
+    deadlines = {}
+    responsible = {}
+    cost = {}
+    missing_reason_entb = {}
+    missing_reason_ni = {}
+    for file_name in os.listdir(directory):
+        file_path = os.path.join(directory, file_name)
+        if is_format(file_path):
+            df = load_data(file_path)
+            df = df[["ID-Anforderung", "Titel", "Inhalt", "Typ", "Umsetzung", "Umsetzung bis", "Bemerkungen / Begründung für Nicht-Umsetzung", "Entbehrlich", "Begründung für Entbehrlichkeit", "Verantwortlich", "Kostenschätzung"]]
+            df = remove_specific_requirements(df, "Titel", "ENTFALLEN")
+            if risk_check(file_path):
+                risk_files.append(get_name(file_path, True))
+            ni_df = get_specific_df_with_two_conditions_and_emptiness(df, "Umsetzung", "nein", "Entbehrlich", "nein")
+            if not ni_df.empty:
+                not_implemented[get_name(file_name, True)] = len(ni_df)
+                ni_types[get_name(file_name, True)] = type_count(ni_df)
+            dl_df = df.dropna(subset=["Umsetzung bis"])
+            if not dl_df.empty:
+                deadlines[get_name(file_name, True)] = []
+                for _, row in dl_df.iterrows():
+                    deadlines[get_name(file_name, True)].append(format_dates(row["Umsetzung bis"]))
+            resp_df = df.dropna(subset=["Verantwortlich"])
+            if not resp_df.empty:
+                unique_verantwortliche = resp_df["Verantwortlich"].unique()
+                responsible[get_name(file_name, True)] = unique_verantwortliche
+            cost_df = df.dropna(subset=["Kostenschätzung"])
+            if not cost_df.empty:
+                cost_sum = sum(cost_df["Kostenschätzung"])
+                if cost_sum != 0:
+                    cost[get_name(file_name, True)] = cost_sum
+            entb_df = df[(df["Entbehrlich"] == "Ja") & (df["Begründung für Entbehrlichkeit"].isna())]
+            if not entb_df.empty:
+                missing_reason_entb[get_name(file_name, True)] = len(entb_df)
+            ums_df = remove_specific_requirements(df, "Entbehrlich", "Ja")
+            ums_df = ums_df[(ums_df["Umsetzung"] == "Nein") & (ums_df["Bemerkungen / Begründung für Nicht-Umsetzung"].isna())]
+            if not ums_df.empty:
+                missing_reason_ni[get_name(file_name, True)] = len(ums_df)
+        else: print(f"Datei/Ordner ausgelassen: {file_name}")
+
+    print("Analysen abgeschlossen")
+
+    if risk_files:
+        story.append(Paragraph(f"<font color=red>WARNUNG: In den folgenden Bausteinen sind nicht alle Basis-Anforderungen umgesetzt: {', '.join(risk_files)}</font>",
+                               normal_style))
+
+    image_path1 = plot_pie_chart_to_image({
+        "Umgesetzt": results["Umgesetzte Anforderungen"],
+        "Teilweise umgesetzt": results["Teilweise umgesetzte Anforderungen"],
+        "Nicht umgesetzt": results["Nicht umgesetzte Anforderungen"],
+        "Entbehrlich": results["Entbehrliche Anforderungen"]
+    }, "Umsetzungsstatus")
+    story.append(Image(image_path1, width=400, height=300))
+
+
+    story.append(Spacer(1, 20))
+    image_path2 = plot_pie_chart_to_image(results["Nicht umgesetzte Anforderungen nach Typ"],
+                                              "Insgesamt nicht umgesetzte Anforderungen nach Typ aufgeschlüsselt")
+    story.append(Image(image_path2, width=400, height=300))
+
+    if not_implemented:
+        story.append(Spacer(1, 10))
+        story.append(Paragraph(f"Nicht umgesetzte Anforderungen", title_style))
+        table_data = [["Baustein", "Anzahl", "Basis", "Standard", "Erhöhter Schutzbedarf"]]
+        for name, count in not_implemented.items():
+            basis, standard, high = ni_types[name]
+            table_data.append([name, count, basis, standard, high])
+        table = get_custom_table(table_data)
+        story.append(table)
+
+    if deadlines:
+        story.append(Spacer(1, 10))
+        story.append(Paragraph(f"Deadlines", title_style))
+        table_data = [["Baustein", "Deadlines"]]
+        for name, deadlines in deadlines.items():
+            deadline_str =  ", ".join(deadlines)
+            table_data.append([name, deadline_str])
+        table = get_custom_table(table_data)
+        story.append(table)
+
+    if responsible:
+        story.append(Spacer(1, 10))
+        story.append(Paragraph(f"Verantwortliche", title_style))
+        table_data = [["Baustein", "Verantwortliche"]]
+        for name, verantwortliche in responsible.items():
+            verantwortliche_str = ", ".join(verantwortliche)
+            table_data.append([name, verantwortliche_str])
+        table = get_custom_table(table_data)
+        story.append(table)
+
+    if cost:
+        story.append(Spacer(1, 10))
+        story.append(Paragraph(f"Kostenschätzung", title_style))
+        names = list(cost.keys())
+        costs = list(cost.values())
+        plt.figure(figsize=(10, 6))
+        plt.bar(names, costs)
+        plt.xlabel("Baustein")
+        plt.ylabel("Kostenschätzung")
+        plt.title("Summierte Kostenschätzung")
+        plt.xticks(rotation=45, ha="right")
+        plt.tight_layout()
+
+        img_data = BytesIO()
+        plt.savefig(img_data, format="png")
+        img_data.seek(0)
+        story.append(Image(img_data, width=400, height=300))
+        plt.close()
+
+    if missing_reason_entb:
+        story.append(Spacer(1, 10))
+        story.append(Paragraph(f"Fehlende Begründungen für Entbehrlichkeit", title_style))
+        table_data = [["Baustein", "Anzahl fehlender Begründungen"]]
+        for name, count in missing_reason_entb.items():
+            table_data.append([name, count])
+        table = get_custom_table(table_data)
+        story.append(table)
+
+    if missing_reason_ni:
+        story.append(Spacer(1, 10))
+        story.append(Paragraph(f"Fehlende Begründungen für Nicht-Umsetzung", title_style))
+        table_data = [["Baustein", "Anzahl fehlender Begründungen"]]
+        for name, count in missing_reason_ni.items():
+            table_data.append([name, count])
+        table = get_custom_table(table_data)
+        story.append(table)
+
+    print("Tabellen und Grafiken erstellt")
+
+    doc.build(story)
+
+    os.remove(image_path1)
+    if not ni_df.empty:
+        os.remove(image_path2)
 
 # Löst Konflikte für verschiedene Werte in "Entbehrlich", "Umsetzung", "Umsetzung bis"
 def resolve_conflict(values, column_name, file1_path, file2_path):
@@ -1236,7 +1473,7 @@ def remove_entfallene_anforderungen(dokument):
             i += 1
             while i < len(paragraphs):
                 next_para_text = paragraphs[i].text.strip()
-                if anforderung_heading_pattern.match(next_para_text) or next_para_text == "Weiterführende Informationen": # Falls letzte Anforderung entfällt
+                if anforderung_heading_pattern.match(next_para_text) or next_para_text in ["Standard-Anforderungen", "Anforderungen bei erhöhtem Schutzbedarf", "Weiterführende Informationen"]:
                     break
                 i += 1
             for j in range(start_index, i):
@@ -1260,7 +1497,7 @@ def checklist_integration(checklist_path, filename, dokument, implemented, partl
         print(f"Keine passende Checkliste für {filename} gefunden")
 
     df = load_data(found_checklist)
-    df = remove_specific_requirements(df, "Inhalt", "ENTFALLEN")
+    df = remove_specific_requirements(df, "Titel", "ENTFALLEN")
     if implemented:
         df = remove_specific_requirements(df, "Umsetzung", "Ja")
     if partly_implemented:

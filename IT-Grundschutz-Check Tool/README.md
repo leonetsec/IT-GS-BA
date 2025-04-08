@@ -29,7 +29,7 @@ Weitere Funktionen mittels Parameter, die sowohl auf einzelne Dateien als auch g
 - ```--wiba-transfer```: Setzt alle leeren WiBA-Anforderungen als umgesetzt
 - ```--set-scale```: Modifiziert die Skala in der Umsetzungsspalte. Im Code können Default-Werte festgelegt werden.
 - ```--export```: Exportiert beliebige Spalten der Datei(en) in verschiedene Formate
-- ```--report```: Erstellt mehrseitigen PDF-Report, in dem diverse Auswertungen stattfinden 
+- ```--report```: Erstellt mehrseitigen PDF-Report, in dem diverse Auswertungen stattfinden, für einzelne oder alle Bausteine zusammen
 - ```--merge```: Verbindet den Inhalt von zwei gleichartigen Tabellen inkl. Konfliktbehandlung
 - ```--modify```: Modifiziert alle Bausteine eines Ordners im Docx Format, indem gewünschte Abschnitte oder Anforderungen entfernt werden
 
