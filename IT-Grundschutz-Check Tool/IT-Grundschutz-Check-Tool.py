@@ -1046,7 +1046,7 @@ def save_whole_results_to_pdf(directory, results, reports_dir):
         if files_in_dir == profile_set:
             matching_profiles.append(mapping.profile_names[profile_name])
 
-    if matching_profiles:
+    if matching_profiles and len(files_in_dir)<111:
         if len(matching_profiles) == 1:
             story.append(Paragraph(f"<b>IT-Grundschutz-Profil: {matching_profiles[0]}</b>", normal_style))
         else:

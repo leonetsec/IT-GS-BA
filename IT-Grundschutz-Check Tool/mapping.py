@@ -1780,7 +1780,7 @@ oberste_landesbehoerden_profil = {
     'INF.10': 'Besprechungs-, Veranstaltungs- und Schulungsräume'
 }
 
-# Platzhalter, da mur für Mitglieder
+# Platzhalter, da nur für Mitglieder
 handwerksbetriebe_profil = {
     'ISMS.1': 'Sicherheitsmanagement',
     'ORP.1': 'Organisation',
