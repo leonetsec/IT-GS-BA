@@ -17,7 +17,7 @@
 <br>
 
 ### Modifizierte Dateien
-- package.lock: npm start Skript eingefügt
+- package.json: npm start Skript eingefügt
 - /web/viewer.hmtl: neue Buttons eingefügt
 - /web/viewer.js Logik für die neuen Funktionen eingefügt
 - diese Readme.md
