@@ -19,6 +19,7 @@ from collections import defaultdict
 from docx import Document
 from docx.oxml.table import CT_Tbl
 from docx.oxml.text.paragraph import CT_P
+import duckdb
 
 import mapping
 
@@ -88,7 +89,7 @@ def load_data(file_path):
     try:
         return pd.read_excel(file_path, sheet_name=sheet_name, skiprows=4)
     except PermissionError:
-        print(f"Fehler: Die Datei zu {get_name(file_path, True)} ist möglicherweise geöffnet und kann nicht gelesen werden. Vorgang wird abgebrochen.")
+        print(f"Fehler: Die Datei {get_name(file_path, True)} ist möglicherweise geöffnet und kann nicht gelesen werden. Vorgang wird abgebrochen.")
     except Exception as e:
         print(f"Ein unerwarteter Fehler ist beim Öffnen der Datei {file_path} aufgetreten: {e}")
     exit(1)
@@ -1554,6 +1555,81 @@ def checklist_integration(checklist_path, filename, dokument, implemented, partl
         else:
             i += 1
 
+def save_df(df, export_file_path, index_number):
+    file_format = input("In welchem Format soll die Tabelle gespeichert werden?\n\n"
+                        "1. Excel\n2. CSV\n3. JSON\n4. Markdown\n5. HTML\n6. XML\n"
+                        "7. Leerzeichengetrennt\n8. Tabstoppgetrennt\n9. Benutzerdefiniertes Trennzeichen\n\n"
+                        "Auswahl (1-9): ")
+
+    if file_format == "1":
+        df.to_excel(export_file_path + ".xlsx", index=index_number)
+    elif file_format == "2":
+        df.to_csv(export_file_path + ".csv", index=index_number)
+    elif file_format == "3":
+        df.to_json(export_file_path + ".json", orient="records")
+    elif file_format == "4":
+        df.to_markdown(export_file_path + ".md", index=index_number)
+    elif file_format == "5":
+        df.to_markdown(export_file_path + ".html", index=index_number)
+    elif file_format == "6":
+        df.to_xml(export_file_path + ".xml", index=index_number)
+    elif file_format == "7":
+        df.to_csv(export_file_path + ".txt", sep=" ", index=index_number)
+    elif file_format == "8":
+        df.to_csv(export_file_path + ".tsv", sep="\t", index=index_number)
+    elif file_format == "9":
+        delimiter = input("\nTrennzeichen: ")
+        df.to_csv(export_file_path + ".txt", sep=delimiter, index=index_number)
+    else: print("Keine gültige Auswahl, wird als .xlsx Datei gespeichert")
+    print("Datei erfolgreich gespeichert")
+
+
+
+def search(directory):
+    if not os.path.isdir(directory):
+        print(f"Fehler: '{directory}' ist kein gültiges Verzeichnis.")
+        return
+
+    all_dfs = []
+    print("Lade Dateien...")
+    for file_name in os.listdir(directory):
+        file_path = os.path.join(directory, file_name)
+        if is_format(file_name):
+            df = load_data(file_path)
+            if df is not None:
+                all_dfs.append(df)
+
+    if all_dfs:
+        df = pd.concat(all_dfs, ignore_index=True)
+    else:
+        print("Keine Datei im Format Checkliste_XXX.X.X.xlsx gefunden")
+        return
+    df = df[["ID-Anforderung", "Titel", "Inhalt", "Typ", "Entbehrlich", "Begründung für Entbehrlichkeit", "Umsetzung", "Umsetzung bis", "Verantwortlich", "Bemerkungen / Begründung für Nicht-Umsetzung", "Kostenschätzung"]]
+
+    choice = input("Auf welche Art sollen die Tabellen durchsucht werden?\n\n1 - Text\n2 - Regex\n3 - SQL\n\nAuswahl (1-3): ")
+    if choice == "1":
+        search_term = input("\nSuchbegriff: ")
+        mask = df.apply(lambda row: row.astype(str).str.contains(search_term, case=False).any(), axis=1)
+        df = df[mask]
+    elif choice == "2":
+        regex_pattern = input("\nRegulärer Ausdruck: ")
+        mask = df.apply(lambda row: row.astype(str).str.contains(regex_pattern, regex=True).any(), axis=1)
+        df = df[mask]
+    elif choice == "3":
+        sql_pattern = input("\nDie SQL-Abfrage muss \"FROM df\" beinhalten.\nEingabe: ")
+        df = duckdb.query(sql_pattern).df()
+    else: print("Ungültige Auswahl, Vorgang wird abgebrochen")
+
+    if len(df) == 1:
+        print("1 Ergebnis gefunden")
+    else: print(f"{len(df)} Ergebnisse gefunden")
+    if len(df) == 0:
+        return
+
+    export_dir = os.path.join(os.path.abspath(directory), "Search result")
+    os.makedirs(export_dir, exist_ok=True)
+    export_file_path = os.path.join(export_dir, f"Search result {datetime.today().strftime('%d-%m-%Y')}")
+    save_df(df, export_file_path, False)
 
 
 def main():
@@ -1572,6 +1648,7 @@ def main():
     parser.add_argument('--report', action='store_true', help='Erstelle einen PDF-Report für eine oder alle Dateien')
     parser.add_argument('--merge', nargs=2, metavar=("file1", "file2"), help="Führt zwei Tabellen der selben Art zusammen und behandelt Konflikte")
     parser.add_argument('--modify', action='store_true', help='Modifiziert alle Bausteine eines Ordners im docx-Format, wahlweise Export zu PDF (Menü öffnet sich)')
+    parser.add_argument('--search', action='store_true', help='Durchsuche alle Tabellen eines Ordners auf verschiedene Arten')
 
     args = parser.parse_args()
 
@@ -1587,6 +1664,7 @@ def main():
         args.export: lambda: export_handler(args.file_or_dir),
         args.report: lambda: report(args.file_or_dir),
         args.modify: lambda: modify(args.file_or_dir),
+        args.search: lambda: search(args.file_or_dir),
     }
 
     for condition, action in actions.items():
