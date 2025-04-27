@@ -14,7 +14,7 @@
 - `python populate_database.py` ausführen
 
 ## Nutzung
-- `python chat.py` ausführen (Ollama wird automatisch im Hintergrund gestartet, solange es in PATH hinterlegt ist)
+- `python chat.py` ausführen (Ollama wird automatisch im Hintergrund gestartet und beendet, solange es in PATH hinterlegt ist)
 - Beliebig viele Fragen in der Kommandozeile stellen 
 - Dokumente (.pdf, .md, .txt) können per Pfad in der Nachricht übergeben werden
 - Quellen können mit "/Sources" oder "/Source n" angezeigt werden

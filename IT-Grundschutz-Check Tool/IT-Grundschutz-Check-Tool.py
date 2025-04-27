@@ -335,10 +335,6 @@ def ignore_empty_requirements(file_path, column, value, second_empty_no_type, fu
             ws[f"{bemerkung_col}{excel_row}"].value = f"Alle Anforderungen des Typs {value} auf Entbehrlich gesetzt"
 
     wb.save(file_path)
-    if not fully:
-        print(f"Alle leeren {value}-Anforderungen von {get_name(file_path, True)} wurden auf entbehrlich gesetzt und gespeichert.")
-    else:
-        print(f"Alle {value}-Anforderungen von {get_name(file_path, True)} wurden auf entbehrlich gesetzt und gespeichert.")
 
 # Handler für Datei oder Ordner
 def ignore_empty_requirements_handler(path, column, value, second_empty_type, fully):
@@ -347,8 +343,16 @@ def ignore_empty_requirements_handler(path, column, value, second_empty_type, fu
             if is_format(file):
                 file_path = os.path.join(path, file)
                 ignore_empty_requirements(file_path, column, value, second_empty_type, fully)
+        if not fully:
+            print(f"Alle leeren {value}-Anforderungen aus {path} wurden auf entbehrlich gesetzt und gespeichert.")
+        else:
+            print(f"Alle {value}-Anforderungen aus {path} wurden auf entbehrlich gesetzt und gespeichert.")
     elif os.path.isfile(path) and is_format(path):
         ignore_empty_requirements(path, column, value, second_empty_type, fully)
+        if not fully:
+            print(f"Alle leeren {value}-Anforderungen von {get_name(path, True)} wurden auf entbehrlich gesetzt und gespeichert.")
+        else:
+            print(f"Alle {value}-Anforderungen von {get_name(path, True)} wurden auf entbehrlich gesetzt und gespeichert.")
     else: print("Keine Datei(en) mit passendem Format gefunden")
 
 # Sortiert Dateien nach verschiedenen Kriterien

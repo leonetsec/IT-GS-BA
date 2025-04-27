@@ -36,6 +36,8 @@ EMB_PROMPT_TEMPLATE = """
         Antworte ausschließlich welche Informationen der User anfordert, beantworte die Frage nicht und sage nichts darüber hinaus.
         """
 
+ollama_process = None
+
 # Holt gewünschte Quelle aus der Datenbank
 def get_source_by_id(source_id: str):
     db = get_database()
@@ -272,7 +274,7 @@ def query_rag(query_text: str, chat_history: list):
 # Listet mögliche Befehle bei /help auf
 def list_commands():
     commands = {
-        "/exit": "Exit the chat and optionally save the chat history.",
+        "/exit": "Exit the chat, optionally save the chat history and stop Ollama.",
         "/repeat": "Repeat the last query with twice as many sources for the LLM.",
         "/source [n]": "Show the content of source number [n].",
         "/sources": "Show all sources.",
@@ -290,6 +292,7 @@ def command_handler(chat_history, numbered_sources, query_text):
     command = query_text[1:].lower()
     if command == "exit":
         save_file(chat_history)
+        stop_ollama()
         print("\nGoodbye!")
         return False
     elif command in ("repeat", "retry"):
@@ -309,6 +312,7 @@ def command_handler(chat_history, numbered_sources, query_text):
 
 # Startet Ollama automatisch im Hintergrund
 def start_ollama():
+    global ollama_process
     ollama_path = None
     os_type = platform.system()
 
@@ -327,7 +331,7 @@ def start_ollama():
 
     if ollama_path:
         try:
-            subprocess.Popen([ollama_path])
+            ollama_process = subprocess.Popen([ollama_path])
             print("Started Ollama in the background...")
         except FileNotFoundError:
             print(f"Error: {ollama_path} not found. Manually start Ollama.")
@@ -337,6 +341,16 @@ def start_ollama():
             print(f"Error while starting ({ollama_path}): {e}")
     else:
         print("Ollama not found in PATH. It needs to be started manually.")
+
+# Beendet Ollama automatisch im Hintergund
+def stop_ollama():
+    global ollama_process
+    if ollama_process:
+        print("Stopping Ollama...")
+        ollama_process.terminate()
+        ollama_process.wait()
+    else:
+        print("Ollama needs to be stopped manually.")
 
 def main():
     start_ollama()
