@@ -20,6 +20,11 @@ default_parent = [
 ]
 
 def generate_bsi_link(reference):
+
+    # Verschiedene Schreibweisen abfangen
+    reference = reference.replace("-", ".").replace(" ", "")
+    reference = re.sub(r'([A-Za-z]+)(\d+)', r'\1.\2', reference)
+
     
     # Finde Referenzen auf einzelne Anforderungen
     position = reference.lower().find('.a')
