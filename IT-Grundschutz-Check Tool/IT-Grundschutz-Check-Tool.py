@@ -124,7 +124,9 @@ def implementation_count(df):
 
 # Summiert die Kostenspalte
 def cost_count(df):
-    return (df["Kostenschätzung"]).sum()
+    df["Kostenschätzung_cleaned"] = df["Kostenschätzung"].astype(str).str.replace('€', '').str.replace(',', '.').str.findall(r'\d+\.?\d*').str[0]
+    df["Kostenschätzung_cleaned"] = pd.to_numeric(df["Kostenschätzung_cleaned"], errors='coerce')
+    return df["Kostenschätzung_cleaned"].fillna(0).sum()
 
 # Zählt wie viele Basis, Standard und erhöhte Schutzbedarfsanforderungen vorliegen
 def type_count(df):
@@ -186,6 +188,9 @@ def analyze_single_file(file_path):
     ni = get_specific_df_with_two_conditions_and_emptiness(df, "Umsetzung", "nein", "Entbehrlich", "nein")
     ni_basis, ni_standard, ni_high = type_count(ni)
 
+    # Analyse elementarer Gefährdungen
+    covered_risks, covered_cia = risk_analysis(file_path)
+
     # Statistik ausgeben
     print(f"Gesamtanzahl Anforderungen: {len(df)}")
     print(f"Umgesetzte Anforderungen: {fully_implemented}")
@@ -195,6 +200,9 @@ def analyze_single_file(file_path):
     print(f"(davon Basis: {ni_basis}, Standard: {ni_standard}, Erhöhter Schutzbedarf: {ni_high})")
     print(f"Summierte Kostenschätzung: {cost}€")
     print(f"Verantwortliche: {all_responsibles}")
+    print(f"(Teilweise) abgedeckte elementare Gefährdungen: {len(covered_risks)}/47")
+    print(f"(Teilweise) abgedeckte Schutzziele: {len(covered_cia)}/3")
+
 
 # Analysiere alle Tabellen nach diversen Aspekten
 def analyze_all_files(folder_path):
@@ -208,6 +216,9 @@ def analyze_all_files(folder_path):
     total_basis = 0
     total_standard = 0
     total_high = 0
+    total_risks = set()
+    total_cia = set()
+
     for file_name in os.listdir(folder_path):
         file_path = os.path.join(folder_path, file_name)
         if is_format(file_path):
@@ -228,6 +239,9 @@ def analyze_all_files(folder_path):
             ni = get_specific_df_with_two_conditions_and_emptiness(df, "Umsetzung", "nein", "Entbehrlich", "nein")
             ni_basis, ni_standard, ni_high = type_count(ni)
 
+            # Analyse elementarer Gefährdungen
+            covered_risks, covered_cia = risk_analysis(file_path)
+
             # Analyse den Gesamtzählern hinzufügen
             total_df_count += len(df)
             total_fully_implemented += fully_implemented
@@ -238,9 +252,13 @@ def analyze_all_files(folder_path):
             total_basis += ni_basis
             total_standard += ni_standard
             total_high += ni_high
+            total_risks.update(covered_risks)
+            total_cia.update(covered_cia)
     if total_files == 0:
         print("Keine Dateien im Format Checkliste_XXX.X.X.xlsx gefunden")
         return
+    total_risks_num = len(total_risks)
+    total_cia_num = len(total_cia)
 
     print(f"Analysierte Tabellen: {total_files}")
     print(f"Gesamtanzahl Anforderungen: {total_df_count}")
@@ -250,6 +268,8 @@ def analyze_all_files(folder_path):
     print(f"Nicht umgesetzte Anforderungen: {total_not_implemented}")
     print(f"(davon Basis: {total_basis}, Standard: {total_standard}, Erhöhter Schutzbedarf: {total_high})")
     print(f"Summierte Kostenschätzung: {total_cost}€")
+    print(f"(Teilweise) abgedeckte elementare Gefährdungen: {(total_risks_num)}/47")
+    print(f"(Teilweise) abgedeckte Schutzziele: {total_cia_num}/3")
 
 # Behandelt die Prozentzahl an umgesetzten Anforderungen für eine Datei oder einen Ordner
 def percentages(path):
@@ -732,7 +752,7 @@ def report_analysis(file_path):
         "Nicht umgesetzte Anforderungen nach Typ": {"Basis": ni_basis, "Standard": ni_standard, "Erhöhter Schutzbedarf": ni_high},
         "Summierte Kostenschätzung": cost,
         "Verantwortliche": all_responsibles,
-        "Deadlines einzelner Anforderungen": due_date
+        "Deadlines einzelner Anforderungen": due_date,
     }
 
 # Handler um für Dateien oder alle Dateien eines Ordners Reports zu erstellen
@@ -871,9 +891,20 @@ def save_results_to_pdf(results, file_name, reports_dir, risk, file_path):
     cost_df = remove_specific_requirements(cost_df, "ID-Anforderung", "ENTFALLEN")
     cost_df = cost_df[["ID-Anforderung", "Kostenschätzung"]]
     cost_df = cost_df.dropna(subset=["Kostenschätzung"])
+
+    cost_df["Kostenschätzung"] = cost_df["Kostenschätzung"].astype(str) \
+        .str.replace('€', '') \
+        .str.replace(',', '.') \
+        .str.findall(r'\d+\.?\d*').str[0]
+
+    cost_df["Kostenschätzung"] = pd.to_numeric(cost_df["Kostenschätzung"], errors='coerce')
+
+    cost_df = cost_df.dropna(subset=["Kostenschätzung"])
+
     if not cost_df.empty:
         story.append(Spacer(1, 10))
         grouped_data = cost_df.groupby("ID-Anforderung")["Kostenschätzung"].sum().reset_index()
+
         plt.figure(figsize=(10, 6))
         plt.bar(grouped_data["ID-Anforderung"], grouped_data["Kostenschätzung"])
         plt.xlabel("ID der Anforderung")
@@ -887,6 +918,34 @@ def save_results_to_pdf(results, file_name, reports_dir, risk, file_path):
         img_data.seek(0)
         story.append(Image(img_data, width=400, height=300))
         plt.close()
+
+    implemented = get_specific_df(df, "Umsetzung", "ja")
+    grouped_items = {}
+
+    for req_id in implemented["ID-Anforderung"].unique():
+        for item in mapping.krt:
+            if item['id'] == req_id:
+                for risk_krz in item.get('gefahren', []):
+                    if req_id not in grouped_items:
+                        grouped_items[req_id] = []
+                    grouped_items[req_id].append(risk_krz)
+                break
+
+    if grouped_items:
+        story.append(Spacer(1, 15))
+        story.append(Paragraph(f"(Teilweise) abgedeckte elementare Gefährdungen:", title_style))
+        table_data = [["ID-Anforderung", "Elementare Gefährdungen"]]
+
+        for req_id, risks_krz_list in grouped_items.items():
+            risk_names = []
+            for risk_krz in risks_krz_list:
+                risk_names.append(f"{risk_krz}: {mapping.gefahren[risk_krz]}")
+
+            hazards_combined = "<br/>".join(risk_names)
+            table_data.append([req_id, hazards_combined])
+
+        table = get_custom_table(table_data)
+        story.append(table)
 
     entb_df = df
     entb_df = remove_specific_requirements(entb_df, "Titel", "ENTFALLEN")
@@ -996,6 +1055,7 @@ def whole_report(directory, output_directory):
 
             ni = get_specific_df_with_two_conditions_and_emptiness(df, "Umsetzung", "nein", "Entbehrlich", "nein")
             ni_basis, ni_standard, ni_high = type_count(ni)
+            covered_risks, covered_cia = risk_analysis(file_path)
 
             total_df_count += len(df)
             total_fully_implemented += fully_implemented
@@ -1069,6 +1129,8 @@ def save_whole_results_to_pdf(directory, results, reports_dir):
     cost = {}
     missing_reason_entb = {}
     missing_reason_ni = {}
+    all_covered_risks = set()
+    all_covered_cia = set()
     for file_name in os.listdir(directory):
         file_path = os.path.join(directory, file_name)
         if is_format(file_path):
@@ -1090,9 +1152,10 @@ def save_whole_results_to_pdf(directory, results, reports_dir):
             if not resp_df.empty:
                 unique_verantwortliche = resp_df["Verantwortlich"].unique()
                 responsible[get_name(file_name, True)] = unique_verantwortliche
-            cost_df = df.dropna(subset=["Kostenschätzung"])
+            cost_df = df.copy()
+            cost_df = cost_df.dropna(subset=["Kostenschätzung"])
             if not cost_df.empty:
-                cost_sum = sum(cost_df["Kostenschätzung"])
+                cost_sum = cost_count(cost_df)
                 if cost_sum != 0:
                     cost[get_name(file_name, True)] = cost_sum
             entb_df = df[(df["Entbehrlich"] == "Ja") & (df["Begründung für Entbehrlichkeit"].isna())]
@@ -1102,6 +1165,9 @@ def save_whole_results_to_pdf(directory, results, reports_dir):
             ums_df = ums_df[(ums_df["Umsetzung"] == "Nein") & (ums_df["Bemerkungen / Begründung für Nicht-Umsetzung"].isna())]
             if not ums_df.empty:
                 missing_reason_ni[get_name(file_name, True)] = len(ums_df)
+            covered_risks, covered_cia = risk_analysis(file_path)
+            all_covered_risks.update(covered_risks)
+            all_covered_cia.update(covered_cia)
         else: print(f"Datei/Ordner ausgelassen: {file_name}")
 
     print("Analysen abgeschlossen")
@@ -1190,6 +1256,38 @@ def save_whole_results_to_pdf(directory, results, reports_dir):
             table_data.append([name, count])
         table = get_custom_table(table_data)
         story.append(table)
+
+    if all_covered_risks:
+        story.append(Spacer(1, 15))
+        story.append(Paragraph(f"(Teilweise) abgedeckte elementare Gefährdungen:", title_style))
+        unique_risks = sorted(list(all_covered_risks))
+        for risk_id in unique_risks:
+            story.append(Paragraph(f"- {risk_id}: {mapping.gefahren[risk_id]}", normal_style))
+
+    all_possible_risks = set(mapping.gefahren.keys())
+    uncovered_risks = sorted(list(all_possible_risks - all_covered_risks))
+
+    if uncovered_risks:
+        story.append(Spacer(1, 15))
+        story.append(Paragraph(f"Nicht abgedeckte elementare Gefährdungen:", title_style))
+        for risk_id in uncovered_risks:
+            story.append(Paragraph(f"- {risk_id}: {mapping.gefahren[risk_id]}", normal_style))
+
+    if all_covered_cia:
+        story.append(Spacer(1, 15))
+        story.append(Paragraph(f"(Teilweise) abgedeckte Schutzziele:", title_style))
+        unique_cia = sorted(list(all_covered_cia))
+        for goal_id in unique_cia:
+            story.append(Paragraph(f"- {mapping.cia[goal_id]} ({goal_id})", normal_style))
+
+    all_possible_cia = set(mapping.cia.keys())
+    uncovered_cia = sorted(list(all_possible_cia - all_covered_cia))
+    if uncovered_cia:
+        story.append(Spacer(1, 15))
+        story.append(Paragraph(f"Nicht abgedeckte Schutzziele:", title_style))
+        for goal_id in uncovered_cia:
+            story.append(Paragraph(f"- {mapping.cia[goal_id]} ({goal_id})", normal_style))
+
 
     print("Tabellen und Grafiken erstellt")
 
@@ -1666,11 +1764,11 @@ def risk_handler(file_or_dir):
         print(f"\n--- Analyse für Datei: {os.path.basename(file_or_dir)} ---")
 
         if covered_risks_codes:
-            print("(Teilweise) abgedeckte Elementare Gefährdungen:")
+            print("(Teilweise) abgedeckte elementare Gefährdungen:")
             for risk_code in sorted(list(covered_risks_codes)):
                 print(f"- {risk_code}: {mapping.gefahren[risk_code]}")
         else:
-            print("\nKeine Elementaren Gefährdungen abgedeckt.")
+            print("\nKeine elementaren Gefährdungen abgedeckt.")
 
         if covered_cia_codes:
             print("\n(Teilweise) abgedeckte CIA-Attribute:")
@@ -1685,7 +1783,6 @@ def risk_handler(file_or_dir):
         all_covered_cia_across_files = set()
         processed_files_count = 0
 
-        print(f"\n--- Analyse für Ordner: {os.path.basename(file_or_dir)} ---")
         for file_name in os.listdir(file_or_dir):
             file_path = os.path.join(file_or_dir, file_name)
             if os.path.isfile(file_path) and is_format(file_name):
@@ -1701,22 +1798,24 @@ def risk_handler(file_or_dir):
             print("Keine gültigen Dateien im Ordner gefunden")
             return
 
+        print(f"\n--- Analyse für Ordner: {os.path.basename(file_or_dir)} ---")
+
         total_possible_risks = set(mapping.gefahren.keys())
         missing_risks = total_possible_risks - all_covered_risks_across_files
 
-        print("\nSummierte (teilweise) abgedeckte Elementare Gefährdungen:")
+        print("\nSummierte (teilweise) abgedeckte elementare Gefährdungen:")
         if all_covered_risks_across_files:
             for risk_code in sorted(list(all_covered_risks_across_files)):
                 print(f"- {risk_code}: {mapping.gefahren[risk_code]}")
         else:
-            print("Keine Elementaren Gefährdungen abgedeckt.")
+            print("Keine elementaren Gefährdungen abgedeckt.")
 
         if missing_risks:
-            print("\nAn keiner Stelle abgedeckte Elementare Gefährdungen:")
+            print("\nAn keiner Stelle abgedeckte elementare Gefährdungen:")
             for risk_code in sorted(list(missing_risks)):
                 print(f"- {risk_code}: {mapping.gefahren[risk_code]}")
         else:
-            print("\nAlle möglichen Elementaren Gefährdungen sind an mind. einer Stelle abgedeckt!")
+            print("\nAlle möglichen elementaren Gefährdungen sind an mind. einer Stelle abgedeckt!")
 
         total_possible_cia = set(mapping.cia.keys())
         missing_cia = total_possible_cia - all_covered_cia_across_files
