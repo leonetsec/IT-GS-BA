@@ -23,20 +23,24 @@ import duckdb
 
 import mapping
 
+FILENAME_PATTERN = re.compile(r"(?<=\bCheckliste[_\s])([A-Z]{3,4}(?:\.[0-9]+){1,3})(?:.*?)?(?=\.xlsx$)")
 
 # Gibt zurück, ob eine Datei dem Format der Checkliste entspricht
-def is_format(filename_or_path):
-    if filename_or_path.endswith('.xlsx') and "Checkliste_" in filename_or_path:
+def is_format(filename):
+    if filename.endswith('.xlsx') and "Checkliste" in filename:
         return True
     else: return False
 
 # Gibt den Namen eines Bausteins anhand des Dateinamens zurück, entweder kurz "APP.1.1" oder lang "Office Produkte"
 def get_name(filename, short):
     if is_format(filename):
-        ref = filename.split(".xlsx")[0].split('Checkliste_')[1]
-        if short:
-            return ref
-        return mapping.bsi_ref_titles[ref]
+        match = FILENAME_PATTERN.search(filename)
+        if match:
+            ref = match.group(1)
+            if short:
+                return ref
+            return mapping.bsi_ref_titles.get(ref, "Unbekanntes Kürzel")
+        return None
 
     elif is_pdf(filename):
         ref = filename.split()[0]
@@ -44,7 +48,7 @@ def get_name(filename, short):
             ref = "CON" + ref[4:]
         if short:
             return ref
-        return mapping.bsi_ref_titles[ref]
+        return mapping.bsi_ref_titles.get(ref, "Unbekanntes Kürzel")
     return None
 
 # Überprüft, ob eine PDF-Datei den Namen eines IT-Grundschutz-Bausteins hat
