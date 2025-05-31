@@ -2170,3 +2170,9243 @@ grosse_dienstleister_profil = {
     'INF.7': 'Büroarbeitsplatz',
     'INF.12': 'Verkabelung'
 }
+
+cia = {
+    "C": "Vertraulichkeit",
+    "I": "Integrität",
+    "A": "Verfügbarkeit"
+}
+
+gefahren = {
+    "G 0.1": "Feuer",
+    "G 0.2": "Ungünstige klimatische Bedingungen",
+    "G 0.3": "Wasser",
+    "G 0.4": "Verschmutzung, Staub, Korrosion",
+    "G 0.5": "Naturkatastrophen",
+    "G 0.6": "Katastrophen im Umfeld",
+    "G 0.7": "Großereignisse im Umfeld",
+    "G 0.8": "Ausfall oder Störung der Stromversorgung",
+    "G 0.9": "Ausfall oder Störung von Kommunikationsnetzen",
+    "G 0.10": "Ausfall oder Störung von Versorgungsnetzen",
+    "G 0.11": "Ausfall oder Störung von Dienstleistern",
+    "G 0.12": "Elektromagnetische Störstrahlung",
+    "G 0.13": "Abfangen kompromittierender Strahlung",
+    "G 0.14": "Ausspähen von Informationen (Spionage)",
+    "G 0.15": "Abhören",
+    "G 0.16": "Diebstahl von Geräten, Datenträgern oder Dokumenten",
+    "G 0.17": "Verlust von Geräten, Datenträgern oder Dokumenten",
+    "G 0.18": "Fehlplanung oder fehlende Anpassung",
+    "G 0.19": "Offenlegung schützenswerter Informationen",
+    "G 0.20": "Informationen oder Produkte aus unzuverlässiger Quelle",
+    "G 0.21": "Manipulation von Hard- oder Software",
+    "G 0.22": "Manipulation von Informationen",
+    "G 0.23": "Unbefugtes Eindringen in IT-Systeme",
+    "G 0.24": "Zerstörung von Geräten oder Datenträgern",
+    "G 0.25": "Ausfall von Geräten oder Systemen",
+    "G 0.26": "Fehlfunktion von Geräten oder Systemen",
+    "G 0.27": "Ressourcenmangel",
+    "G 0.28": "Software-Schwachstellen oder -Fehler",
+    "G 0.29": "Verstoß gegen Gesetze oder Regelungen",
+    "G 0.30": "Unberechtigte Nutzung oder Administration von Geräten und Systemen",
+    "G 0.31": "Fehlerhafte Nutzung oder Administration von Geräten und Systemen",
+    "G 0.32": "Missbrauch von Berechtigungen",
+    "G 0.33": "Personalausfall",
+    "G 0.34": "Anschlag",
+    "G 0.35": "Nötigung, Erpressung oder Korruption",
+    "G 0.36": "Identitätsdiebstahl",
+    "G 0.37": "Abstreiten von Handlungen",
+    "G 0.38": "Missbrauch personenbezogener Daten",
+    "G 0.39": "Schadprogramme",
+    "G 0.40": "Verhinderung von Diensten (Denial of Service)",
+    "G 0.41": "Sabotage",
+    "G 0.42": "Social Engineering",
+    "G 0.43": "Einspielen von Nachrichten",
+    "G 0.44": "Unbefugtes Eindringen in Räumlichkeiten",
+    "G 0.45": "Datenverlust",
+    "G 0.46": "Integritätsverlust schützenswerter Informationen",
+    "G 0.47": "Schädliche Seiteneffekte IT-gestützter Angriffe"
+}
+
+
+krt = [
+    {
+        'id': 'APP.1.1.A2',
+        'cia': None,
+        'gefahren': ['G 0.20', 'G 0.39']
+    },
+    {
+        'id': 'APP.1.1.A3',
+        'cia': None,
+        'gefahren': ['G 0.39']
+    },
+    {
+        'id': 'APP.1.1.A6',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.25', 'G 0.26', 'G 0.46']
+    },
+    {
+        'id': 'APP.1.1.A10',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.31']
+    },
+    {
+        'id': 'APP.1.1.A11',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.28']
+    },
+    {
+        'id': 'APP.1.1.A12',
+        'cia': None,
+        'gefahren': ['G 0.19']
+    },
+    {
+        'id': 'APP.1.1.A13',
+        'cia': None,
+        'gefahren': ['G 0.20', 'G 0.39']
+    },
+    {
+        'id': 'APP.1.1.A14',
+        'cia': None,
+        'gefahren': ['G 0.22', 'G 0.46']
+    },
+    {
+        'id': 'APP.1.1.A15',
+        'cia': 'CI',
+        'gefahren': ['G 0.14', 'G 0.19', 'G 0.22', 'G 0.46']
+    },
+    {
+        'id': 'APP.1.1.A16',
+        'cia': 'I',
+        'gefahren': ['G 0.22', 'G 0.46']
+    },
+    {
+        'id': 'APP.1.1.A17',
+        'cia': None,
+        'gefahren': ['G 0.31']
+    },
+    {
+        'id': 'APP.1.2.A1',
+        'cia': None,
+        'gefahren': ['G 0.23', 'G 0.28']
+    },
+    {
+        'id': 'APP.1.2.A2',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.15', 'G 0.22', 'G 0.46']
+    },
+    {
+        'id': 'APP.1.2.A3',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.30', 'G 0.46']
+    },
+    {
+        'id': 'APP.1.2.A6',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.19']
+    },
+    {
+        'id': 'APP.1.2.A7',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.19']
+    },
+    {
+        'id': 'APP.1.2.A9',
+        'cia': 'CI',
+        'gefahren': ['G 0.23']
+    },
+    {
+        'id': 'APP.1.2.A10',
+        'cia': 'CI',
+        'gefahren': ['G 0.14', 'G 0.19']
+    },
+    {
+        'id': 'APP.1.2.A11',
+        'cia': 'C',
+        'gefahren': ['G 0.28', 'G 0.39']
+    },
+    {
+        'id': 'APP.1.2.A12',
+        'cia': 'A',
+        'gefahren': ['G 0.28']
+    },
+    {
+        'id': 'APP.1.2.A13',
+        'cia': None,
+        'gefahren': ['G 0.15', 'G 0.18', 'G 0.19', 'G 0.22']
+    },
+    {
+        'id': 'APP.1.4.A1',
+        'cia': None,
+        'gefahren': ['G 0.9', 'G 0.14', 'G 0.15', 'G 0.16', 'G 0.17', 'G 0.18', 'G 0.19', 'G 0.25', 'G 0.26', 'G 0.38']
+    },
+    {
+        'id': 'APP.1.4.A3',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.18', 'G 0.19', 'G 0.20', 'G 0.21', 'G 0.23', 'G 0.32', 'G 0.39']
+    },
+    {
+        'id': 'APP.1.4.A5',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.15', 'G 0.19', 'G 0.21', 'G 0.32', 'G 0.38', 'G 0.39', 'G 0.42']
+    },
+    {
+        'id': 'APP.1.4.A7',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.16', 'G 0.17', 'G 0.19']
+    },
+    {
+        'id': 'APP.1.4.A8',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.15', 'G 0.19', 'G 0.38']
+    },
+    {
+        'id': 'APP.1.4.A12',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.18', 'G 0.19', 'G 0.38']
+    },
+    {
+        'id': 'APP.1.4.A14',
+        'cia': 'CI',
+        'gefahren': ['G 0.14', 'G 0.16', 'G 0.17', 'G 0.18', 'G 0.19', 'G 0.23', 'G 0.32', 'G 0.36']
+    },
+    {
+        'id': 'APP.1.4.A15',
+        'cia': 'CIA',
+        'gefahren': ['G 0.21', 'G 0.23', 'G 0.25', 'G 0.26', 'G 0.28']
+    },
+    {
+        'id': 'APP.1.4.A16',
+        'cia': 'CIA',
+        'gefahren': ['G 0.18', 'G 0.31']
+    },
+    {
+        'id': 'APP.2.1.A1',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'APP.2.1.A2',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.18', 'G 0.29']
+    },
+    {
+        'id': 'APP.2.1.A3',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.30']
+    },
+    {
+        'id': 'APP.2.1.A5',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.27', 'G 0.45']
+    },
+    {
+        'id': 'APP.2.1.A6',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.30']
+    },
+    {
+        'id': 'APP.2.1.A8',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.27', 'G 0.45']
+    },
+    {
+        'id': 'APP.2.1.A9',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'APP.2.1.A11',
+        'cia': None,
+        'gefahren': ['G 0.19', 'G 0.23', 'G 0.30']
+    },
+    {
+        'id': 'APP.2.1.A12',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.27']
+    },
+    {
+        'id': 'APP.2.1.A13',
+        'cia': None,
+        'gefahren': ['G 0.15', 'G 0.23', 'G 0.30']
+    },
+    {
+        'id': 'APP.2.1.A14',
+        'cia': None,
+        'gefahren': ['G 0.25', 'G 0.27', 'G 0.45']
+    },
+    {
+        'id': 'APP.2.1.A15',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.30']
+    },
+    {
+        'id': 'APP.2.1.A16',
+        'cia': 'CIA',
+        'gefahren': ['G 0.18', 'G 0.27']
+    },
+    {
+        'id': 'APP.2.1.A17',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.19', 'G 0.45']
+    },
+    {
+        'id': 'APP.2.1.A18',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.27']
+    },
+    {
+        'id': 'APP.2.1.A19',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.19', 'G 0.30']
+    },
+    {
+        'id': 'APP.2.1.A20',
+        'cia': 'CI',
+        'gefahren': ['G 0.14', 'G 0.15', 'G 0.23']
+    },
+    {
+        'id': 'APP.2.1.A21',
+        'cia': 'A',
+        'gefahren': ['G 0.18', 'G 0.25', 'G 0.27', 'G 0.45']
+    },
+    {
+        'id': 'APP.2.2.A1',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.30']
+    },
+    {
+        'id': 'APP.2.2.A3',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.30']
+    },
+    {
+        'id': 'APP.2.2.A5',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.27', 'G 0.45']
+    },
+    {
+        'id': 'APP.2.2.A6',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.30', 'G 0.38', 'G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'APP.2.2.A7',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.23', 'G 0.30', 'G 0.37']
+    },
+    {
+        'id': 'APP.2.2.A8',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.43']
+    },
+    {
+        'id': 'APP.2.2.A9',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.23', 'G 0.30', 'G 0.46']
+    },
+    {
+        'id': 'APP.2.2.A12',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.23', 'G 0.28', 'G 0.30', 'G 0.45']
+    },
+    {
+        'id': 'APP.2.2.A15',
+        'cia': 'CIA',
+        'gefahren': ['G 0.23', 'G 0.30', 'G 0.32']
+    },
+    {
+        'id': 'APP.2.2.A16',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.23', 'G 0.30', 'G 0.32', 'G 0.38', 'G 0.45']
+    },
+    {
+        'id': 'APP.2.2.A17',
+        'cia': None,
+        'gefahren': ['G 0.23', 'G 0.30', 'G 0.32']
+    },
+    {
+        'id': 'APP.2.2.A18',
+        'cia': None,
+        'gefahren': ['G 0.30', 'G 0.32']
+    },
+    {
+        'id': 'APP.2.2.A19',
+        'cia': 'A',
+        'gefahren': ['G 0.18', 'G 0.23']
+    },
+    {
+        'id': 'APP.2.2.A20',
+        'cia': 'CI',
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'APP.2.2.A21',
+        'cia': 'CI',
+        'gefahren': ['G 0.19', 'G 0.32']
+    },
+    {
+        'id': 'APP.2.2.A22',
+        'cia': 'CI',
+        'gefahren': ['G 0.18', 'G 0.32']
+    },
+    {
+        'id': 'APP.2.2.A23',
+        'cia': 'CI',
+        'gefahren': ['G 0.18', 'G 0.32']
+    },
+    {
+        'id': 'APP.2.3.A1',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'APP.2.3.A3',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.25', 'G 0.26', 'G 0.30']
+    },
+    {
+        'id': 'APP.2.3.A4',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.18']
+    },
+    {
+        'id': 'APP.2.3.A5',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.30']
+    },
+    {
+        'id': 'APP.2.3.A6',
+        'cia': None,
+        'gefahren': ['G 0.15', 'G 0.30']
+    },
+    {
+        'id': 'APP.2.3.A8',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'APP.2.3.A9',
+        'cia': None,
+        'gefahren': ['G 0.27', 'G 0.45']
+    },
+    {
+        'id': 'APP.2.3.A10',
+        'cia': None,
+        'gefahren': ['G 0.25', 'G 0.26', 'G 0.45']
+    },
+    {
+        'id': 'APP.2.3.A11',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.18']
+    },
+    {
+        'id': 'APP.3.1.A1',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.30', 'G 0.31']
+    },
+    {
+        'id': 'APP.3.1.A4',
+        'cia': None,
+        'gefahren': ['G 0.19', 'G 0.23', 'G 0.30', 'G 0.43']
+    },
+    {
+        'id': 'APP.3.1.A7',
+        'cia': None,
+        'gefahren': ['G 0.23', 'G 0.30', 'G 0.31']
+    },
+    {
+        'id': 'APP.3.1.A8',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'APP.3.1.A9',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.28']
+    },
+    {
+        'id': 'APP.3.1.A11',
+        'cia': None,
+        'gefahren': ['G 0.15', 'G 0.19', 'G 0.23', 'G 0.43', 'G 0.46']
+    },
+    {
+        'id': 'APP.3.1.A12',
+        'cia': None,
+        'gefahren': ['G 0.23', 'G 0.30', 'G 0.31']
+    },
+    {
+        'id': 'APP.3.1.A14',
+        'cia': None,
+        'gefahren': ['G 0.19']
+    },
+    {
+        'id': 'APP.3.1.A20',
+        'cia': 'CIA',
+        'gefahren': ['G 0.23']
+    },
+    {
+        'id': 'APP.3.1.A21',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.23']
+    },
+    {
+        'id': 'APP.3.1.A22',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.28']
+    },
+    {
+        'id': 'APP.3.2.A1',
+        'cia': None,
+        'gefahren': ['G 0.19', 'G 0.21', 'G 0.22', 'G 0.23', 'G 0.46']
+    },
+    {
+        'id': 'APP.3.2.A2',
+        'cia': None,
+        'gefahren': ['G 0.19', 'G 0.21', 'G 0.22', 'G 0.23', 'G 0.46']
+    },
+    {
+        'id': 'APP.3.2.A3',
+        'cia': None,
+        'gefahren': ['G 0.19', 'G 0.39', 'G 0.40']
+    },
+    {
+        'id': 'APP.3.2.A4',
+        'cia': None,
+        'gefahren': ['G 0.26', 'G 0.30']
+    },
+    {
+        'id': 'APP.3.2.A5',
+        'cia': None,
+        'gefahren': ['G 0.15', 'G 0.22', 'G 0.23', 'G 0.30']
+    },
+    {
+        'id': 'APP.3.2.A7',
+        'cia': None,
+        'gefahren': ['G 0.29']
+    },
+    {
+        'id': 'APP.3.2.A8',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.27', 'G 0.31']
+    },
+    {
+        'id': 'APP.3.2.A9',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.27', 'G 0.31']
+    },
+    {
+        'id': 'APP.3.2.A10',
+        'cia': None,
+        'gefahren': ['G 0.11', 'G 0.18', 'G 0.29']
+    },
+    {
+        'id': 'APP.3.2.A11',
+        'cia': None,
+        'gefahren': ['G 0.15']
+    },
+    {
+        'id': 'APP.3.2.A12',
+        'cia': None,
+        'gefahren': ['G 0.19', 'G 0.25', 'G 0.26']
+    },
+    {
+        'id': 'APP.3.2.A13',
+        'cia': None,
+        'gefahren': ['G 0.30']
+    },
+    {
+        'id': 'APP.3.2.A14',
+        'cia': None,
+        'gefahren': ['G 0.39', 'G 0.46']
+    },
+    {
+        'id': 'APP.3.2.A15',
+        'cia': 'A',
+        'gefahren': ['G 0.25', 'G 0.39']
+    },
+    {
+        'id': 'APP.3.2.A16',
+        'cia': None,
+        'gefahren': ['G 0.22', 'G 0.23']
+    },
+    {
+        'id': 'APP.3.2.A18',
+        'cia': 'A',
+        'gefahren': ['G 0.25', 'G 0.26', 'G 0.40']
+    },
+    {
+        'id': 'APP.3.2.A20',
+        'cia': None,
+        'gefahren': ['G 0.23', 'G 0.27']
+    },
+    {
+        'id': 'APP.3.3.A2',
+        'cia': None,
+        'gefahren': ['G 0.25', 'G 0.46']
+    },
+    {
+        'id': 'APP.3.3.A3',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.39']
+    },
+    {
+        'id': 'APP.3.3.A6',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.25', 'G 0.27']
+    },
+    {
+        'id': 'APP.3.3.A7',
+        'cia': None,
+        'gefahren': ['G 0.25', 'G 0.27', 'G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'APP.3.3.A8',
+        'cia': None,
+        'gefahren': ['G 0.45']
+    },
+    {
+        'id': 'APP.3.3.A9',
+        'cia': None,
+        'gefahren': ['G 0.25', 'G 0.26', 'G 0.27', 'G 0.45']
+    },
+    {
+        'id': 'APP.3.3.A11',
+        'cia': None,
+        'gefahren': ['G 0.27']
+    },
+    {
+        'id': 'APP.3.3.A12',
+        'cia': 'CIA',
+        'gefahren': ['G 0.14', 'G 0.19', 'G 0.39']
+    },
+    {
+        'id': 'APP.3.3.A13',
+        'cia': 'A',
+        'gefahren': ['G 0.25', 'G 0.45']
+    },
+    {
+        'id': 'APP.3.3.A14',
+        'cia': None,
+        'gefahren': ['G 0.26', 'G 0.46']
+    },
+    {
+        'id': 'APP.3.3.A15',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.19', 'G 0.27']
+    },
+    {
+        'id': 'APP.3.4.A1',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'APP.3.4.A2',
+        'cia': None,
+        'gefahren': ['G 0.15', 'G 0.23', 'G 0.27', 'G 0.28', 'G 0.32']
+    },
+    {
+        'id': 'APP.3.4.A3',
+        'cia': None,
+        'gefahren': ['G 0.23', 'G 0.27', 'G 0.30']
+    },
+    {
+        'id': 'APP.3.4.A4',
+        'cia': None,
+        'gefahren': ['G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'APP.3.4.A5',
+        'cia': None,
+        'gefahren': ['G 0.32', 'G 0.46']
+    },
+    {
+        'id': 'APP.3.4.A6',
+        'cia': None,
+        'gefahren': ['G 0.32']
+    },
+    {
+        'id': 'APP.3.4.A7',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'APP.3.4.A8',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.32']
+    },
+    {
+        'id': 'APP.3.4.A9',
+        'cia': None,
+        'gefahren': ['G 0.19']
+    },
+    {
+        'id': 'APP.3.4.A10',
+        'cia': None,
+        'gefahren': ['G 0.19', 'G 0.20', 'G 0.28']
+    },
+    {
+        'id': 'APP.3.4.A12',
+        'cia': None,
+        'gefahren': ['G 0.31']
+    },
+    {
+        'id': 'APP.3.4.A13',
+        'cia': None,
+        'gefahren': ['G 0.45']
+    },
+    {
+        'id': 'APP.3.4.A15',
+        'cia': 'CI',
+        'gefahren': ['G 0.15', 'G 0.19', 'G 0.46']
+    },
+    {
+        'id': 'APP.3.6.A1',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'APP.3.6.A2',
+        'cia': None,
+        'gefahren': ['G 0.25', 'G 0.40']
+    },
+    {
+        'id': 'APP.3.6.A3',
+        'cia': None,
+        'gefahren': ['G 0.22']
+    },
+    {
+        'id': 'APP.3.6.A4',
+        'cia': None,
+        'gefahren': ['G 0.19', 'G 0.22', 'G 0.30', 'G 0.31', 'G 0.43', 'G 0.46']
+    },
+    {
+        'id': 'APP.3.6.A6',
+        'cia': None,
+        'gefahren': ['G 0.22', 'G 0.30']
+    },
+    {
+        'id': 'APP.3.6.A7',
+        'cia': None,
+        'gefahren': ['G 0.25', 'G 0.26', 'G 0.27']
+    },
+    {
+        'id': 'APP.3.6.A8',
+        'cia': None,
+        'gefahren': ['G 0.29']
+    },
+    {
+        'id': 'APP.3.6.A9',
+        'cia': None,
+        'gefahren': ['G 0.25', 'G 0.40', 'G 0.45']
+    },
+    {
+        'id': 'APP.3.6.A10',
+        'cia': None,
+        'gefahren': ['G 0.20', 'G 0.29']
+    },
+    {
+        'id': 'APP.3.6.A11',
+        'cia': None,
+        'gefahren': ['G 0.25', 'G 0.27', 'G 0.40']
+    },
+    {
+        'id': 'APP.3.6.A13',
+        'cia': None,
+        'gefahren': ['G 0.19']
+    },
+    {
+        'id': 'APP.3.6.A14',
+        'cia': None,
+        'gefahren': ['G 0.19', 'G 0.22', 'G 0.30']
+    },
+    {
+        'id': 'APP.3.6.A15',
+        'cia': None,
+        'gefahren': ['G 0.22', 'G 0.25', 'G 0.27', 'G 0.30']
+    },
+    {
+        'id': 'APP.3.6.A16',
+        'cia': None,
+        'gefahren': ['G 0.19', 'G 0.22', 'G 0.30', 'G 0.43']
+    },
+    {
+        'id': 'APP.3.6.A17',
+        'cia': None,
+        'gefahren': ['G 0.22', 'G 0.30', 'G 0.43', 'G 0.46']
+    },
+    {
+        'id': 'APP.3.6.A18',
+        'cia': None,
+        'gefahren': ['G 0.22', 'G 0.30', 'G 0.46']
+    },
+    {
+        'id': 'APP.3.6.A19',
+        'cia': None,
+        'gefahren': ['G 0.19']
+    },
+    {
+        'id': 'APP.3.6.A20',
+        'cia': 'A',
+        'gefahren': ['G 0.25', 'G 0.26', 'G 0.27', 'G 0.40', 'G 0.45']
+    },
+    {
+        'id': 'APP.3.6.A21',
+        'cia': 'CIA',
+        'gefahren': ['G 0.19', 'G 0.22', 'G 0.30']
+    },
+    {
+        'id': 'APP.3.6.A22',
+        'cia': 'IA',
+        'gefahren': ['G 0.9']
+    },
+    {
+        'id': 'APP.4.2.A1',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.23', 'G 0.25', 'G 0.28', 'G 0.30', 'G 0.31', 'G 0.32', 'G 0.39', 'G 0.43', 'G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'APP.4.2.A2',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.23', 'G 0.25', 'G 0.28', 'G 0.30', 'G 0.31', 'G 0.32', 'G 0.39', 'G 0.43', 'G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'APP.4.2.A3',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.43']
+    },
+    {
+        'id': 'APP.4.2.A4',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.22', 'G 0.23', 'G 0.25', 'G 0.28', 'G 0.30', 'G 0.31', 'G 0.32', 'G 0.39', 'G 0.43', 'G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'APP.4.2.A5',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.22', 'G 0.23', 'G 0.25', 'G 0.28', 'G 0.30', 'G 0.31', 'G 0.32', 'G 0.39', 'G 0.43', 'G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'APP.4.2.A6',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.22', 'G 0.23', 'G 0.25', 'G 0.28', 'G 0.30', 'G 0.31', 'G 0.32', 'G 0.39', 'G 0.43', 'G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'APP.4.2.A7',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.22', 'G 0.23', 'G 0.25', 'G 0.28', 'G 0.30', 'G 0.31', 'G 0.32', 'G 0.39', 'G 0.43', 'G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'APP.4.2.A8',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.22', 'G 0.23', 'G 0.25', 'G 0.28', 'G 0.30', 'G 0.31', 'G 0.32', 'G 0.39', 'G 0.43', 'G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'APP.4.2.A9',
+        'cia': None,
+        'gefahren': ['G 0.25']
+    },
+    {
+        'id': 'APP.4.2.A11',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.23', 'G 0.25', 'G 0.28', 'G 0.30', 'G 0.31', 'G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'APP.4.2.A12',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.22', 'G 0.32', 'G 0.46']
+    },
+    {
+        'id': 'APP.4.2.A13',
+        'cia': None,
+        'gefahren': ['G 0.23']
+    },
+    {
+        'id': 'APP.4.2.A14',
+        'cia': None,
+        'gefahren': ['G 0.22', 'G 0.30', 'G 0.32']
+    },
+    {
+        'id': 'APP.4.2.A15',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.23', 'G 0.30']
+    },
+    {
+        'id': 'APP.4.2.A16',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.23', 'G 0.30']
+    },
+    {
+        'id': 'APP.4.2.A17',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.23', 'G 0.30']
+    },
+    {
+        'id': 'APP.4.2.A18',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.23']
+    },
+    {
+        'id': 'APP.4.2.A19',
+        'cia': None,
+        'gefahren': ['G 0.23']
+    },
+    {
+        'id': 'APP.4.2.A20',
+        'cia': None,
+        'gefahren': ['G 0.23']
+    },
+    {
+        'id': 'APP.4.2.A22',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.22', 'G 0.46']
+    },
+    {
+        'id': 'APP.4.2.A23',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.22', 'G 0.46']
+    },
+    {
+        'id': 'APP.4.2.A24',
+        'cia': None,
+        'gefahren': ['G 0.23']
+    },
+    {
+        'id': 'APP.4.2.A25',
+        'cia': None,
+        'gefahren': ['G 0.23']
+    },
+    {
+        'id': 'APP.4.2.A26',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.21', 'G 0.22', 'G 0.23', 'G 0.25', 'G 0.28', 'G 0.30', 'G 0.39', 'G 0.43', 'G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'APP.4.2.A27',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.22', 'G 0.23', 'G 0.30', 'G 0.31']
+    },
+    {
+        'id': 'APP.4.2.A28',
+        'cia': None,
+        'gefahren': ['G 0.25']
+    },
+    {
+        'id': 'APP.4.2.A29',
+        'cia': None,
+        'gefahren': ['G 0.25', 'G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'APP.4.2.A30',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.21', 'G 0.22', 'G 0.23', 'G 0.25', 'G 0.28', 'G 0.30', 'G 0.31', 'G 0.32', 'G 0.43', 'G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'APP.4.2.A31',
+        'cia': None,
+        'gefahren': ['G 0.23']
+    },
+    {
+        'id': 'APP.4.2.A32',
+        'cia': 'CIA',
+        'gefahren': ['G 0.14', 'G 0.21', 'G 0.22', 'G 0.23', 'G 0.25', 'G 0.28', 'G 0.30', 'G 0.31', 'G 0.32', 'G 0.39', 'G 0.43', 'G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'APP.4.3.A1',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.27']
+    },
+    {
+        'id': 'APP.4.3.A3',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.15', 'G 0.22', 'G 0.23', 'G 0.30']
+    },
+    {
+        'id': 'APP.4.3.A4',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'APP.4.3.A9',
+        'cia': None,
+        'gefahren': ['G 0.27', 'G 0.45']
+    },
+    {
+        'id': 'APP.4.3.A11',
+        'cia': None,
+        'gefahren': ['G 0.27']
+    },
+    {
+        'id': 'APP.4.3.A12',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.31']
+    },
+    {
+        'id': 'APP.4.3.A13',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.22', 'G 0.30', 'G 0.31']
+    },
+    {
+        'id': 'APP.4.3.A16',
+        'cia': None,
+        'gefahren': ['G 0.15']
+    },
+    {
+        'id': 'APP.4.3.A17',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'APP.4.3.A18',
+        'cia': None,
+        'gefahren': ['G 0.25', 'G 0.26', 'G 0.27']
+    },
+    {
+        'id': 'APP.4.3.A19',
+        'cia': None,
+        'gefahren': ['G 0.28']
+    },
+    {
+        'id': 'APP.4.3.A20',
+        'cia': None,
+        'gefahren': ['G 0.28', 'G 0.31']
+    },
+    {
+        'id': 'APP.4.3.A21',
+        'cia': 'CI',
+        'gefahren': ['G 0.23', 'G 0.30']
+    },
+    {
+        'id': 'APP.4.3.A22',
+        'cia': 'CIA',
+        'gefahren': ['G 0.27']
+    },
+    {
+        'id': 'APP.4.3.A23',
+        'cia': 'IA',
+        'gefahren': ['G 0.18', 'G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'APP.4.3.A24',
+        'cia': 'C',
+        'gefahren': ['G 0.14', 'G 0.45']
+    },
+    {
+        'id': 'APP.4.3.A25',
+        'cia': 'CIA',
+        'gefahren': ['G 0.23', 'G 0.31']
+    },
+    {
+        'id': 'APP.4.4.A1',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.19', 'G 0.23', 'G 0.28', 'G 0.46']
+    },
+    {
+        'id': 'APP.4.4.A2',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.19', 'G 0.20', 'G 0.21', 'G 0.23', 'G 0.25', 'G 0.27', 'G 0.28', 'G 0.30', 'G 0.37', 'G 0.39', 'G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'APP.4.4.A3',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.19', 'G 0.23', 'G 0.30', 'G 0.37', 'G 0.46']
+    },
+    {
+        'id': 'APP.4.4.A4',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.19', 'G 0.21', 'G 0.23', 'G 0.28', 'G 0.39', 'G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'APP.4.4.A5',
+        'cia': None,
+        'gefahren': ['G 0.45']
+    },
+    {
+        'id': 'APP.4.4.A6',
+        'cia': None,
+        'gefahren': ['G 0.25']
+    },
+    {
+        'id': 'APP.4.4.A7',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.19', 'G 0.21', 'G 0.23', 'G 0.28', 'G 0.39', 'G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'APP.4.4.A8',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.19', 'G 0.21', 'G 0.23', 'G 0.28', 'G 0.39', 'G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'APP.4.4.A9',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.21', 'G 0.30']
+    },
+    {
+        'id': 'APP.4.4.A10',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.19', 'G 0.21', 'G 0.23', 'G 0.25', 'G 0.30']
+    },
+    {
+        'id': 'APP.4.4.A11',
+        'cia': None,
+        'gefahren': ['G 0.25', 'G 0.27']
+    },
+    {
+        'id': 'APP.4.4.A12',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.19', 'G 0.21', 'G 0.23', 'G 0.28', 'G 0.39', 'G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'APP.4.4.A13',
+        'cia': 'CIA',
+        'gefahren': ['G 0.14', 'G 0.19', 'G 0.21', 'G 0.23', 'G 0.30', 'G 0.39', 'G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'APP.4.4.A14',
+        'cia': 'CIA',
+        'gefahren': ['G 0.14', 'G 0.19', 'G 0.23', 'G 0.28', 'G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'APP.4.4.A15',
+        'cia': 'CIA',
+        'gefahren': ['G 0.14', 'G 0.19', 'G 0.23', 'G 0.28', 'G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'APP.4.4.A16',
+        'cia': 'CIA',
+        'gefahren': ['G 0.25']
+    },
+    {
+        'id': 'APP.4.4.A17',
+        'cia': 'CIA',
+        'gefahren': ['G 0.14', 'G 0.19', 'G 0.23', 'G 0.28', 'G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'APP.4.4.A18',
+        'cia': 'CI',
+        'gefahren': ['G 0.14', 'G 0.19', 'G 0.23', 'G 0.28', 'G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'APP.4.4.A19',
+        'cia': 'A',
+        'gefahren': ['G 0.25']
+    },
+    {
+        'id': 'APP.4.4.A20',
+        'cia': 'C',
+        'gefahren': ['G 0.14', 'G 0.19', 'G 0.23', 'G 0.28', 'G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'APP.4.4.A21',
+        'cia': 'CIA',
+        'gefahren': ['G 0.14', 'G 0.19', 'G 0.23', 'G 0.28', 'G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'APP.4.6.A1',
+        'cia': None,
+        'gefahren': ['G 0.30']
+    },
+    {
+        'id': 'APP.4.6.A2',
+        'cia': None,
+        'gefahren': ['G 0.28']
+    },
+    {
+        'id': 'APP.4.6.A3',
+        'cia': None,
+        'gefahren': ['G 0.28']
+    },
+    {
+        'id': 'APP.4.6.A4',
+        'cia': None,
+        'gefahren': ['G 0.28']
+    },
+    {
+        'id': 'APP.4.6.A5',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.28']
+    },
+    {
+        'id': 'APP.4.6.A6',
+        'cia': None,
+        'gefahren': ['G 0.28']
+    },
+    {
+        'id': 'APP.4.6.A7',
+        'cia': None,
+        'gefahren': ['G 0.28']
+    },
+    {
+        'id': 'APP.4.6.A8',
+        'cia': None,
+        'gefahren': ['G 0.28']
+    },
+    {
+        'id': 'APP.4.6.A9',
+        'cia': None,
+        'gefahren': ['G 0.28']
+    },
+    {
+        'id': 'APP.4.6.A10',
+        'cia': None,
+        'gefahren': ['G 0.28']
+    },
+    {
+        'id': 'APP.4.6.A11',
+        'cia': None,
+        'gefahren': ['G 0.28']
+    },
+    {
+        'id': 'APP.4.6.A12',
+        'cia': None,
+        'gefahren': ['G 0.28']
+    },
+    {
+        'id': 'APP.4.6.A13',
+        'cia': None,
+        'gefahren': ['G 0.28']
+    },
+    {
+        'id': 'APP.4.6.A14',
+        'cia': None,
+        'gefahren': ['G 0.28']
+    },
+    {
+        'id': 'APP.4.6.A15',
+        'cia': None,
+        'gefahren': ['G 0.28']
+    },
+    {
+        'id': 'APP.4.6.A16',
+        'cia': None,
+        'gefahren': ['G 0.28']
+    },
+    {
+        'id': 'APP.4.6.A17',
+        'cia': None,
+        'gefahren': ['G 0.28']
+    },
+    {
+        'id': 'APP.4.6.A18',
+        'cia': None,
+        'gefahren': ['G 0.28']
+    },
+    {
+        'id': 'APP.4.6.A19',
+        'cia': None,
+        'gefahren': ['G 0.28']
+    },
+    {
+        'id': 'APP.4.6.A20',
+        'cia': None,
+        'gefahren': ['G 0.28']
+    },
+    {
+        'id': 'APP.4.6.A21',
+        'cia': None,
+        'gefahren': ['G 0.28']
+    },
+    {
+        'id': 'APP.4.6.A22',
+        'cia': 'CIA',
+        'gefahren': ['G 0.28']
+    },
+    {
+        'id': 'APP.5.2.A1',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'APP.5.2.A2',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'APP.5.2.A3',
+        'cia': None,
+        'gefahren': ['G 0.30']
+    },
+    {
+        'id': 'APP.5.2.A5',
+        'cia': None,
+        'gefahren': ['G 0.45']
+    },
+    {
+        'id': 'APP.5.2.A7',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.25', 'G 0.26']
+    },
+    {
+        'id': 'APP.5.2.A9',
+        'cia': None,
+        'gefahren': ['G 0.19', 'G 0.25', 'G 0.27', 'G 0.46']
+    },
+    {
+        'id': 'APP.5.2.A10',
+        'cia': None,
+        'gefahren': ['G 0.30', 'G 0.31']
+    },
+    {
+        'id': 'APP.5.2.A11',
+        'cia': None,
+        'gefahren': ['G 0.15', 'G 0.19', 'G 0.22', 'G 0.30']
+    },
+    {
+        'id': 'APP.5.2.A12',
+        'cia': None,
+        'gefahren': ['G 0.19', 'G 0.22', 'G 0.36']
+    },
+    {
+        'id': 'APP.5.2.A17',
+        'cia': 'C',
+        'gefahren': ['G 0.19']
+    },
+    {
+        'id': 'APP.5.3.A1',
+        'cia': None,
+        'gefahren': ['G 0.15', 'G 0.19', 'G 0.30', 'G 0.39']
+    },
+    {
+        'id': 'APP.5.3.A2',
+        'cia': None,
+        'gefahren': ['G 0.15', 'G 0.18', 'G 0.40']
+    },
+    {
+        'id': 'APP.5.3.A3',
+        'cia': None,
+        'gefahren': ['G 0.45']
+    },
+    {
+        'id': 'APP.5.3.A4',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.29', 'G 0.39']
+    },
+    {
+        'id': 'APP.5.3.A5',
+        'cia': None,
+        'gefahren': ['G 0.19', 'G 0.29', 'G 0.33']
+    },
+    {
+        'id': 'APP.5.3.A6',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'APP.5.3.A7',
+        'cia': None,
+        'gefahren': ['G 0.36', 'G 0.39', 'G 0.42']
+    },
+    {
+        'id': 'APP.5.3.A8',
+        'cia': None,
+        'gefahren': ['G 0.19', 'G 0.39']
+    },
+    {
+        'id': 'APP.5.3.A9',
+        'cia': None,
+        'gefahren': ['G 0.36', 'G 0.42']
+    },
+    {
+        'id': 'APP.5.3.A10',
+        'cia': 'C',
+        'gefahren': ['G 0.19']
+    },
+    {
+        'id': 'APP.5.3.A11',
+        'cia': 'A',
+        'gefahren': ['G 0.25']
+    },
+    {
+        'id': 'APP.5.3.A12',
+        'cia': 'A',
+        'gefahren': ['G 0.25']
+    },
+    {
+        'id': 'APP.5.3.A13',
+        'cia': 'CIA',
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'APP.5.4.A1',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'APP.5.4.A2',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'APP.5.4.A3',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.25', 'G 0.26']
+    },
+    {
+        'id': 'APP.5.4.A4',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.23']
+    },
+    {
+        'id': 'APP.5.4.A5',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.30', 'G 0.32']
+    },
+    {
+        'id': 'APP.5.4.A6',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.15', 'G 0.19', 'G 0.30']
+    },
+    {
+        'id': 'APP.5.4.A7',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.30', 'G 0.31']
+    },
+    {
+        'id': 'APP.5.4.A8',
+        'cia': None,
+        'gefahren': ['G 0.23']
+    },
+    {
+        'id': 'APP.5.4.A9',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.15', 'G 0.18', 'G 0.19', 'G 0.30', 'G 0.39']
+    },
+    {
+        'id': 'APP.5.4.A10',
+        'cia': None,
+        'gefahren': ['G 0.19']
+    },
+    {
+        'id': 'APP.5.4.A11',
+        'cia': 'A',
+        'gefahren': ['G 0.9', 'G 0.25', 'G 0.27']
+    },
+    {
+        'id': 'APP.5.4.A12',
+        'cia': 'A',
+        'gefahren': ['G 0.18', 'G 0.25']
+    },
+    {
+        'id': 'APP.5.4.A13',
+        'cia': 'CIA',
+        'gefahren': ['G 0.31', 'G 0.32']
+    },
+    {
+        'id': 'APP.5.4.A14',
+        'cia': 'CI',
+        'gefahren': ['G 0.15']
+    },
+    {
+        'id': 'APP.5.4.A15',
+        'cia': 'C',
+        'gefahren': ['G 0.19']
+    },
+    {
+        'id': 'APP.5.4.A16',
+        'cia': 'CIA',
+        'gefahren': ['G 0.23']
+    },
+    {
+        'id': 'APP.5.4.A17',
+        'cia': 'CIA',
+        'gefahren': ['G 0.19', 'G 0.30', 'G 0.32']
+    },
+    {
+        'id': 'APP.5.4.A18',
+        'cia': 'CIA',
+        'gefahren': ['G 0.18', 'G 0.25']
+    },
+    {
+        'id': 'APP.6.A1',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'APP.6.A2',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.27', 'G 0.29']
+    },
+    {
+        'id': 'APP.6.A3',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.20', 'G 0.28']
+    },
+    {
+        'id': 'APP.6.A4',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.20', 'G 0.28', 'G 0.31']
+    },
+    {
+        'id': 'APP.6.A5',
+        'cia': None,
+        'gefahren': ['G 0.31']
+    },
+    {
+        'id': 'APP.6.A6',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'APP.6.A7',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'APP.6.A8',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.45']
+    },
+    {
+        'id': 'APP.6.A9',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.31']
+    },
+    {
+        'id': 'APP.6.A10',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'APP.6.A11',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.28']
+    },
+    {
+        'id': 'APP.6.A12',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.25']
+    },
+    {
+        'id': 'APP.6.A13',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'APP.6.A14',
+        'cia': 'CIA',
+        'gefahren': ['G 0.18', 'G 0.28']
+    },
+    {
+        'id': 'APP.7.A1',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.27']
+    },
+    {
+        'id': 'APP.7.A2',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.22', 'G 0.29']
+    },
+    {
+        'id': 'APP.7.A3',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.27']
+    },
+    {
+        'id': 'APP.7.A4',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'APP.7.A5',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.27']
+    },
+    {
+        'id': 'APP.7.A6',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'APP.7.A7',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.19', 'G 0.27']
+    },
+    {
+        'id': 'APP.7.A8',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.28']
+    },
+    {
+        'id': 'APP.7.A9',
+        'cia': 'A',
+        'gefahren': ['G 0.45']
+    },
+    {
+        'id': 'APP.7.A10',
+        'cia': 'CIA',
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'CON.1.A1',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.29']
+    },
+    {
+        'id': 'CON.1.A2',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.19', 'G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'CON.1.A4',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.19', 'G 0.20', 'G 0.45']
+    },
+    {
+        'id': 'CON.1.A5',
+        'cia': None,
+        'gefahren': ['G 0.19']
+    },
+    {
+        'id': 'CON.1.A9',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.20', 'G 0.26', 'G 0.28', 'G 0.29', 'G 0.31']
+    },
+    {
+        'id': 'CON.1.A10',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'CON.1.A11',
+        'cia': 'CIA',
+        'gefahren': ['G 0.19', 'G 0.20', 'G 0.31']
+    },
+    {
+        'id': 'CON.1.A15',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'CON.1.A16',
+        'cia': 'CIA',
+        'gefahren': ['G 0.21', 'G 0.22']
+    },
+    {
+        'id': 'CON.1.A17',
+        'cia': 'C',
+        'gefahren': ['G 0.13']
+    },
+    {
+        'id': 'CON.1.A18',
+        'cia': 'A',
+        'gefahren': ['G 0.19', 'G 0.25', 'G 0.27']
+    },
+    {
+        'id': 'CON.1.A19',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'CON.1.A20',
+        'cia': 'CIA',
+        'gefahren': ['G 0.21']
+    },
+    {
+        'id': 'CON.10.A1',
+        'cia': None,
+        'gefahren': ['G 0.28']
+    },
+    {
+        'id': 'CON.10.A2',
+        'cia': None,
+        'gefahren': ['G 0.28']
+    },
+    {
+        'id': 'CON.10.A3',
+        'cia': None,
+        'gefahren': ['G 0.28']
+    },
+    {
+        'id': 'CON.10.A4',
+        'cia': None,
+        'gefahren': ['G 0.28']
+    },
+    {
+        'id': 'CON.10.A5',
+        'cia': None,
+        'gefahren': ['G 0.28']
+    },
+    {
+        'id': 'CON.10.A6',
+        'cia': None,
+        'gefahren': ['G 0.28']
+    },
+    {
+        'id': 'CON.10.A7',
+        'cia': None,
+        'gefahren': ['G 0.28']
+    },
+    {
+        'id': 'CON.10.A8',
+        'cia': None,
+        'gefahren': ['G 0.28']
+    },
+    {
+        'id': 'CON.10.A9',
+        'cia': None,
+        'gefahren': ['G 0.28']
+    },
+    {
+        'id': 'CON.10.A10',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.28']
+    },
+    {
+        'id': 'CON.10.A11',
+        'cia': None,
+        'gefahren': ['G 0.28']
+    },
+    {
+        'id': 'CON.10.A12',
+        'cia': None,
+        'gefahren': ['G 0.28']
+    },
+    {
+        'id': 'CON.10.A13',
+        'cia': None,
+        'gefahren': ['G 0.28']
+    },
+    {
+        'id': 'CON.10.A14',
+        'cia': None,
+        'gefahren': ['G 0.28']
+    },
+    {
+        'id': 'CON.10.A15',
+        'cia': None,
+        'gefahren': ['G 0.28']
+    },
+    {
+        'id': 'CON.10.A16',
+        'cia': None,
+        'gefahren': ['G 0.28']
+    },
+    {
+        'id': 'CON.10.A17',
+        'cia': 'CIA',
+        'gefahren': ['G 0.28']
+    },
+    {
+        'id': 'CON.10.A18',
+        'cia': 'CIA',
+        'gefahren': ['G 0.28']
+    },
+    {
+        'id': 'CON.11.1.A1',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.18', 'G 0.19', 'G 0.29']
+    },
+    {
+        'id': 'CON.11.1.A2',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.29']
+    },
+    {
+        'id': 'CON.11.1.A3',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.29']
+    },
+    {
+        'id': 'CON.11.1.A4',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.29']
+    },
+    {
+        'id': 'CON.11.1.A5',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.18', 'G 0.19', 'G 0.29']
+    },
+    {
+        'id': 'CON.11.1.A6',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.16', 'G 0.19', 'G 0.21', 'G 0.22', 'G 0.24', 'G 0.29', 'G 0.30', 'G 0.32']
+    },
+    {
+        'id': 'CON.11.1.A7',
+        'cia': None,
+        'gefahren': ['G 0.19', 'G 0.29']
+    },
+    {
+        'id': 'CON.11.1.A8',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.18', 'G 0.19', 'G 0.29']
+    },
+    {
+        'id': 'CON.11.1.A9',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.19', 'G 0.22', 'G 0.29']
+    },
+    {
+        'id': 'CON.11.1.A10',
+        'cia': None,
+        'gefahren': ['G 0.15', 'G 0.19', 'G 0.22', 'G 0.29']
+    },
+    {
+        'id': 'CON.11.1.A11',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.19', 'G 0.22', 'G 0.29']
+    },
+    {
+        'id': 'CON.11.1.A12',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.19', 'G 0.29']
+    },
+    {
+        'id': 'CON.11.1.A13',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.18', 'G 0.19', 'G 0.29']
+    },
+    {
+        'id': 'CON.11.1.A14',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.16', 'G 0.19', 'G 0.21', 'G 0.24', 'G 0.29', 'G 0.30', 'G 0.32', 'G 0.36', 'G 0.41', 'G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'CON.11.1.A15',
+        'cia': None,
+        'gefahren': ['G 0.16', 'G 0.29']
+    },
+    {
+        'id': 'CON.11.1.A16',
+        'cia': None,
+        'gefahren': ['G 0.19', 'G 0.23', 'G 0.29']
+    },
+    {
+        'id': 'CON.11.1.A17',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.16', 'G 0.19', 'G 0.23', 'G 0.29']
+    },
+    {
+        'id': 'CON.11.1.A18',
+        'cia': None,
+        'gefahren': ['G 0.15', 'G 0.18', 'G 0.21', 'G 0.23', 'G 0.29']
+    },
+    {
+        'id': 'CON.2.A1',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'CON.3.A1',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.29']
+    },
+    {
+        'id': 'CON.3.A2',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.39']
+    },
+    {
+        'id': 'CON.3.A4',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'CON.3.A5',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.19', 'G 0.45']
+    },
+    {
+        'id': 'CON.3.A6',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'CON.3.A7',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'CON.3.A9',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'CON.3.A12',
+        'cia': None,
+        'gefahren': ['G 0.1', 'G 0.2', 'G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'CON.3.A13',
+        'cia': 'CIA',
+        'gefahren': ['G 0.18', 'G 0.19', 'G 0.22', 'G 0.46']
+    },
+    {
+        'id': 'CON.3.A14',
+        'cia': None,
+        'gefahren': ['G 0.16', 'G 0.19', 'G 0.22', 'G 0.45']
+    },
+    {
+        'id': 'CON.3.A15',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'CON.6.A1',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.2']
+    },
+    {
+        'id': 'CON.6.A2',
+        'cia': None,
+        'gefahren': ['G 0.16', 'G 0.18', 'G 0.19']
+    },
+    {
+        'id': 'CON.6.A4',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.19']
+    },
+    {
+        'id': 'CON.6.A8',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.19']
+    },
+    {
+        'id': 'CON.6.A11',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.19']
+    },
+    {
+        'id': 'CON.6.A12',
+        'cia': None,
+        'gefahren': ['G 0.19']
+    },
+    {
+        'id': 'CON.6.A13',
+        'cia': None,
+        'gefahren': ['G 0.19']
+    },
+    {
+        'id': 'CON.6.A14',
+        'cia': 'C',
+        'gefahren': ['G 0.19']
+    },
+    {
+        'id': 'CON.7.A1',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'CON.7.A2',
+        'cia': None,
+        'gefahren': ['G 0.17', 'G 0.18', 'G 0.29', 'G 0.31']
+    },
+    {
+        'id': 'CON.7.A3',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.29']
+    },
+    {
+        'id': 'CON.7.A4',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.19']
+    },
+    {
+        'id': 'CON.7.A5',
+        'cia': None,
+        'gefahren': ['G 0.30']
+    },
+    {
+        'id': 'CON.7.A6',
+        'cia': None,
+        'gefahren': ['G 0.19', 'G 0.30']
+    },
+    {
+        'id': 'CON.7.A7',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.15', 'G 0.23', 'G 0.30']
+    },
+    {
+        'id': 'CON.7.A8',
+        'cia': None,
+        'gefahren': ['G 0.15', 'G 0.18', 'G 0.23']
+    },
+    {
+        'id': 'CON.7.A9',
+        'cia': None,
+        'gefahren': ['G 0.19', 'G 0.39']
+    },
+    {
+        'id': 'CON.7.A10',
+        'cia': None,
+        'gefahren': ['G 0.19', 'G 0.29']
+    },
+    {
+        'id': 'CON.7.A11',
+        'cia': None,
+        'gefahren': ['G 0.16']
+    },
+    {
+        'id': 'CON.7.A12',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.19', 'G 0.29', 'G 0.31']
+    },
+    {
+        'id': 'CON.7.A13',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.19']
+    },
+    {
+        'id': 'CON.7.A14',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.15', 'G 0.19', 'G 0.46']
+    },
+    {
+        'id': 'CON.7.A15',
+        'cia': 'C',
+        'gefahren': ['G 0.13']
+    },
+    {
+        'id': 'CON.7.A16',
+        'cia': 'I',
+        'gefahren': ['G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'CON.7.A17',
+        'cia': 'CIA',
+        'gefahren': ['G 0.18', 'G 0.19', 'G 0.23', 'G 0.30']
+    },
+    {
+        'id': 'CON.7.A18',
+        'cia': 'CI',
+        'gefahren': ['G 0.30']
+    },
+    {
+        'id': 'CON.8.A1',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'CON.8.A2',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.29']
+    },
+    {
+        'id': 'CON.8.A3',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.20']
+    },
+    {
+        'id': 'CON.8.A5',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.28']
+    },
+    {
+        'id': 'CON.8.A6',
+        'cia': None,
+        'gefahren': ['G 0.20', 'G 0.46']
+    },
+    {
+        'id': 'CON.8.A7',
+        'cia': None,
+        'gefahren': ['G 0.28']
+    },
+    {
+        'id': 'CON.8.A8',
+        'cia': None,
+        'gefahren': ['G 0.19', 'G 0.28', 'G 0.29']
+    },
+    {
+        'id': 'CON.8.A10',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'CON.8.A11',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.29', 'G 0.31']
+    },
+    {
+        'id': 'CON.8.A12',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.45']
+    },
+    {
+        'id': 'CON.8.A14',
+        'cia': None,
+        'gefahren': ['G 0.28']
+    },
+    {
+        'id': 'CON.8.A16',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.28']
+    },
+    {
+        'id': 'CON.8.A17',
+        'cia': 'CI',
+        'gefahren': ['G 0.28']
+    },
+    {
+        'id': 'CON.8.A18',
+        'cia': 'CIA',
+        'gefahren': ['G 0.18', 'G 0.28']
+    },
+    {
+        'id': 'CON.8.A19',
+        'cia': 'I',
+        'gefahren': ['G 0.22', 'G 0.31', 'G 0.46']
+    },
+    {
+        'id': 'CON.8.A20',
+        'cia': None,
+        'gefahren': ['G 0.19', 'G 0.28']
+    },
+    {
+        'id': 'CON.8.A21',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'CON.8.A22',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.28']
+    },
+    {
+        'id': 'CON.9.A1',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.19', 'G 0.29']
+    },
+    {
+        'id': 'CON.9.A2',
+        'cia': None,
+        'gefahren': ['G 0.19']
+    },
+    {
+        'id': 'CON.9.A3',
+        'cia': None,
+        'gefahren': ['G 0.19', 'G 0.29']
+    },
+    {
+        'id': 'CON.9.A4',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.19']
+    },
+    {
+        'id': 'CON.9.A5',
+        'cia': None,
+        'gefahren': ['G 0.19']
+    },
+    {
+        'id': 'CON.9.A6',
+        'cia': None,
+        'gefahren': ['G 0.25']
+    },
+    {
+        'id': 'CON.9.A7',
+        'cia': None,
+        'gefahren': ['G 0.45']
+    },
+    {
+        'id': 'CON.9.A8',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.22']
+    },
+    {
+        'id': 'CON.9.A9',
+        'cia': 'C',
+        'gefahren': ['G 0.19']
+    },
+    {
+        'id': 'DER.1.A1',
+        'cia': None,
+        'gefahren': ['G 0.29']
+    },
+    {
+        'id': 'DER.1.A2',
+        'cia': None,
+        'gefahren': ['G 0.29', 'G 0.38']
+    },
+    {
+        'id': 'DER.1.A3',
+        'cia': None,
+        'gefahren': ['G 0.29', 'G 0.33']
+    },
+    {
+        'id': 'DER.1.A4',
+        'cia': None,
+        'gefahren': ['G 0.29', 'G 0.31']
+    },
+    {
+        'id': 'DER.1.A5',
+        'cia': None,
+        'gefahren': ['G 0.29', 'G 0.39']
+    },
+    {
+        'id': 'DER.1.A6',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.22', 'G 0.25', 'G 0.26', 'G 0.27', 'G 0.29']
+    },
+    {
+        'id': 'DER.1.A7',
+        'cia': None,
+        'gefahren': ['G 0.27', 'G 0.30', 'G 0.31']
+    },
+    {
+        'id': 'DER.1.A9',
+        'cia': None,
+        'gefahren': ['G 0.29', 'G 0.39']
+    },
+    {
+        'id': 'DER.1.A10',
+        'cia': None,
+        'gefahren': ['G 0.23', 'G 0.29', 'G 0.30', 'G 0.39']
+    },
+    {
+        'id': 'DER.1.A11',
+        'cia': None,
+        'gefahren': ['G 0.29', 'G 0.39']
+    },
+    {
+        'id': 'DER.1.A12',
+        'cia': None,
+        'gefahren': ['G 0.29']
+    },
+    {
+        'id': 'DER.1.A13',
+        'cia': None,
+        'gefahren': ['G 0.27', 'G 0.29', 'G 0.39']
+    },
+    {
+        'id': 'DER.1.A14',
+        'cia': 'CI',
+        'gefahren': ['G 0.27', 'G 0.31', 'G 0.33']
+    },
+    {
+        'id': 'DER.1.A15',
+        'cia': 'CIA',
+        'gefahren': ['G 0.29', 'G 0.37', 'G 0.39', 'G 0.46']
+    },
+    {
+        'id': 'DER.1.A16',
+        'cia': 'CIA',
+        'gefahren': ['G 0.18', 'G 0.21', 'G 0.23', 'G 0.29', 'G 0.40', 'G 0.46']
+    },
+    {
+        'id': 'DER.1.A17',
+        'cia': 'CI',
+        'gefahren': ['G 0.29']
+    },
+    {
+        'id': 'DER.1.A18',
+        'cia': 'CI',
+        'gefahren': ['G 0.29', 'G 0.32', 'G 0.46']
+    },
+    {
+        'id': 'DER.2.1.A1',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.19', 'G 0.20', 'G 0.29']
+    },
+    {
+        'id': 'DER.2.1.A2',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.27', 'G 0.29']
+    },
+    {
+        'id': 'DER.2.1.A3',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.27', 'G 0.29', 'G 0.33']
+    },
+    {
+        'id': 'DER.2.1.A4',
+        'cia': None,
+        'gefahren': ['G 0.19', 'G 0.20', 'G 0.29']
+    },
+    {
+        'id': 'DER.2.1.A5',
+        'cia': None,
+        'gefahren': ['G 0.11', 'G 0.18', 'G 0.19', 'G 0.25', 'G 0.27', 'G 0.29']
+    },
+    {
+        'id': 'DER.2.1.A6',
+        'cia': None,
+        'gefahren': ['G 0.11', 'G 0.18', 'G 0.19', 'G 0.25', 'G 0.29', 'G 0.30', 'G 0.32', 'G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'DER.2.1.A7',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.27', 'G 0.29']
+    },
+    {
+        'id': 'DER.2.1.A8',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.27', 'G 0.29', 'G 0.33']
+    },
+    {
+        'id': 'DER.2.1.A9',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.19', 'G 0.20', 'G 0.22', 'G 0.27', 'G 0.29', 'G 0.33']
+    },
+    {
+        'id': 'DER.2.1.A10',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.25', 'G 0.29', 'G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'DER.2.1.A11',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.19', 'G 0.29']
+    },
+    {
+        'id': 'DER.2.1.A12',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.19', 'G 0.27', 'G 0.46']
+    },
+    {
+        'id': 'DER.2.1.A13',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.46']
+    },
+    {
+        'id': 'DER.2.1.A14',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.19', 'G 0.20', 'G 0.22', 'G 0.29', 'G 0.46']
+    },
+    {
+        'id': 'DER.2.1.A15',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.19', 'G 0.20', 'G 0.29']
+    },
+    {
+        'id': 'DER.2.1.A16',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.29']
+    },
+    {
+        'id': 'DER.2.1.A17',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.19', 'G 0.20', 'G 0.22', 'G 0.29', 'G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'DER.2.1.A18',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.19', 'G 0.20', 'G 0.29', 'G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'DER.2.1.A19',
+        'cia': 'CIA',
+        'gefahren': ['G 0.18', 'G 0.25', 'G 0.27', 'G 0.33', 'G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'DER.2.1.A20',
+        'cia': 'CIA',
+        'gefahren': ['G 0.18', 'G 0.19', 'G 0.20', 'G 0.22', 'G 0.27', 'G 0.29', 'G 0.32', 'G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'DER.2.1.A21',
+        'cia': 'CIA',
+        'gefahren': ['G 0.18', 'G 0.19', 'G 0.20', 'G 0.27', 'G 0.29', 'G 0.32', 'G 0.33', 'G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'DER.2.1.A22',
+        'cia': 'CIA',
+        'gefahren': ['G 0.11', 'G 0.18', 'G 0.19', 'G 0.20', 'G 0.22', 'G 0.25', 'G 0.27', 'G 0.29', 'G 0.33', 'G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'DER.2.2.A1',
+        'cia': None,
+        'gefahren': ['G 0.29']
+    },
+    {
+        'id': 'DER.2.2.A2',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.31']
+    },
+    {
+        'id': 'DER.2.2.A3',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.27']
+    },
+    {
+        'id': 'DER.2.2.A4',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.27']
+    },
+    {
+        'id': 'DER.2.2.A5',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.29', 'G 0.31']
+    },
+    {
+        'id': 'DER.2.2.A6',
+        'cia': None,
+        'gefahren': ['G 0.31']
+    },
+    {
+        'id': 'DER.2.2.A7',
+        'cia': None,
+        'gefahren': ['G 0.20', 'G 0.21', 'G 0.26']
+    },
+    {
+        'id': 'DER.2.2.A8',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.31', 'G 0.45']
+    },
+    {
+        'id': 'DER.2.2.A9',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.29']
+    },
+    {
+        'id': 'DER.2.2.A10',
+        'cia': None,
+        'gefahren': ['G 0.17', 'G 0.22', 'G 0.31', 'G 0.37', 'G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'DER.2.2.A11',
+        'cia': None,
+        'gefahren': ['G 0.37']
+    },
+    {
+        'id': 'DER.2.2.A12',
+        'cia': None,
+        'gefahren': ['G 0.17', 'G 0.18', 'G 0.30']
+    },
+    {
+        'id': 'DER.2.2.A13',
+        'cia': 'CIA',
+        'gefahren': ['G 0.18', 'G 0.27']
+    },
+    {
+        'id': 'DER.2.2.A14',
+        'cia': 'CIA',
+        'gefahren': ['G 0.18', 'G 0.27']
+    },
+    {
+        'id': 'DER.2.2.A15',
+        'cia': 'CIA',
+        'gefahren': ['G 0.31']
+    },
+    {
+        'id': 'DER.2.3.A1',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.18', 'G 0.40', 'G 0.41', 'G 0.42', 'G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'DER.2.3.A2',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.15', 'G 0.16', 'G 0.18', 'G 0.21', 'G 0.22', 'G 0.23', 'G 0.24', 'G 0.32', 'G 0.39', 'G 0.41', 'G 0.43', 'G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'DER.2.3.A3',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.18', 'G 0.22', 'G 0.23', 'G 0.32', 'G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'DER.2.3.A4',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.15', 'G 0.16', 'G 0.18', 'G 0.21', 'G 0.22', 'G 0.23', 'G 0.24', 'G 0.32', 'G 0.39', 'G 0.40', 'G 0.41', 'G 0.43', 'G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'DER.2.3.A5',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.15', 'G 0.18', 'G 0.23', 'G 0.28', 'G 0.32', 'G 0.41', 'G 0.42']
+    },
+    {
+        'id': 'DER.2.3.A6',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.19', 'G 0.28', 'G 0.29', 'G 0.31']
+    },
+    {
+        'id': 'DER.2.3.A7',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.15', 'G 0.16', 'G 0.18', 'G 0.20', 'G 0.21', 'G 0.22', 'G 0.23', 'G 0.24', 'G 0.28', 'G 0.32', 'G 0.39', 'G 0.40', 'G 0.41', 'G 0.43', 'G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'DER.2.3.A8',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.15', 'G 0.16', 'G 0.18', 'G 0.22', 'G 0.43', 'G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'DER.2.3.A9',
+        'cia': 'CIA',
+        'gefahren': ['G 0.14', 'G 0.15', 'G 0.16', 'G 0.18', 'G 0.21', 'G 0.22', 'G 0.23', 'G 0.39', 'G 0.41', 'G 0.43', 'G 0.46']
+    },
+    {
+        'id': 'DER.2.3.A10',
+        'cia': 'CI',
+        'gefahren': ['G 0.14', 'G 0.15', 'G 0.16', 'G 0.18', 'G 0.21', 'G 0.22', 'G 0.23', 'G 0.24', 'G 0.28', 'G 0.32', 'G 0.39', 'G 0.41', 'G 0.43', 'G 0.46']
+    },
+    {
+        'id': 'DER.3.1.A1',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.27', 'G 0.46']
+    },
+    {
+        'id': 'DER.3.1.A2',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.29']
+    },
+    {
+        'id': 'DER.3.1.A3',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'DER.3.1.A4',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'DER.3.1.A5',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.19', 'G 0.46']
+    },
+    {
+        'id': 'DER.3.1.A6',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'DER.3.1.A7',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.29', 'G 0.46']
+    },
+    {
+        'id': 'DER.3.1.A8',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.29', 'G 0.46']
+    },
+    {
+        'id': 'DER.3.1.A9',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.27', 'G 0.46']
+    },
+    {
+        'id': 'DER.3.1.A10',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'DER.3.1.A11',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.19']
+    },
+    {
+        'id': 'DER.3.1.A12',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.19']
+    },
+    {
+        'id': 'DER.3.1.A13',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'DER.3.1.A14',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.29']
+    },
+    {
+        'id': 'DER.3.1.A15',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'DER.3.1.A16',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'DER.3.1.A17',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.19']
+    },
+    {
+        'id': 'DER.3.1.A18',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.19']
+    },
+    {
+        'id': 'DER.3.1.A19',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.29']
+    },
+    {
+        'id': 'DER.3.1.A20',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'DER.3.1.A21',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'DER.3.1.A22',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.29', 'G 0.46']
+    },
+    {
+        'id': 'DER.3.1.A23',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.29', 'G 0.46']
+    },
+    {
+        'id': 'DER.3.1.A24',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.19', 'G 0.29', 'G 0.46']
+    },
+    {
+        'id': 'DER.3.1.A25',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.29']
+    },
+    {
+        'id': 'DER.3.1.A26',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.27', 'G 0.29', 'G 0.46']
+    },
+    {
+        'id': 'DER.3.1.A27',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.46']
+    },
+    {
+        'id': 'DER.3.2.A1',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.27']
+    },
+    {
+        'id': 'DER.3.2.A2',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'DER.3.2.A3',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'DER.3.2.A4',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.29']
+    },
+    {
+        'id': 'DER.3.2.A5',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.27']
+    },
+    {
+        'id': 'DER.3.2.A6',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'DER.3.2.A7',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'DER.3.2.A8',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.29', 'G 0.46']
+    },
+    {
+        'id': 'DER.3.2.A9',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'DER.3.2.A10',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.19', 'G 0.46']
+    },
+    {
+        'id': 'DER.3.2.A11',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'DER.3.2.A12',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'DER.3.2.A13',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'DER.3.2.A14',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.29']
+    },
+    {
+        'id': 'DER.3.2.A15',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'DER.3.2.A16',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'DER.3.2.A17',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.46']
+    },
+    {
+        'id': 'DER.3.2.A18',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'DER.3.2.A19',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.29']
+    },
+    {
+        'id': 'DER.3.2.A20',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'DER.3.2.A21',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.29', 'G 0.46']
+    },
+    {
+        'id': 'DER.3.2.A22',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'DER.4.A1',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.27', 'G 0.29']
+    },
+    {
+        'id': 'DER.4.A2',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'DER.4.A3',
+        'cia': 'CIA',
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'DER.4.A4',
+        'cia': 'CIA',
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'DER.4.A5',
+        'cia': 'CIA',
+        'gefahren': ['G 0.18', 'G 0.27']
+    },
+    {
+        'id': 'DER.4.A6',
+        'cia': 'CIA',
+        'gefahren': ['G 0.18', 'G 0.27']
+    },
+    {
+        'id': 'DER.4.A7',
+        'cia': 'CIA',
+        'gefahren': ['G 0.18', 'G 0.27']
+    },
+    {
+        'id': 'DER.4.A8',
+        'cia': 'CIA',
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'DER.4.A9',
+        'cia': 'CIA',
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'DER.4.A10',
+        'cia': 'CIA',
+        'gefahren': ['G 0.18', 'G 0.27']
+    },
+    {
+        'id': 'DER.4.A12',
+        'cia': 'CIA',
+        'gefahren': ['G 0.18', 'G 0.19']
+    },
+    {
+        'id': 'DER.4.A13',
+        'cia': 'CIA',
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'DER.4.A14',
+        'cia': 'CIA',
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'DER.4.A15',
+        'cia': 'CIA',
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'DER.4.A16',
+        'cia': 'CIA',
+        'gefahren': ['G 0.11', 'G 0.18']
+    },
+    {
+        'id': 'IND.1.A1',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.19', 'G 0.20', 'G 0.29', 'G 0.30']
+    },
+    {
+        'id': 'IND.1.A3',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.39', 'G 0.41']
+    },
+    {
+        'id': 'IND.1.A4',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.21', 'G 0.23', 'G 0.29', 'G 0.32']
+    },
+    {
+        'id': 'IND.1.A5',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.23']
+    },
+    {
+        'id': 'IND.1.A6',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'IND.1.A7',
+        'cia': None,
+        'gefahren': ['G 0.30', 'G 0.32', 'G 0.37']
+    },
+    {
+        'id': 'IND.1.A8',
+        'cia': None,
+        'gefahren': ['G 0.15', 'G 0.23', 'G 0.30']
+    },
+    {
+        'id': 'IND.1.A9',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.23', 'G 0.29']
+    },
+    {
+        'id': 'IND.1.A10',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.25', 'G 0.32', 'G 0.37', 'G 0.39', 'G 0.41']
+    },
+    {
+        'id': 'IND.1.A11',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.20', 'G 0.28']
+    },
+    {
+        'id': 'IND.1.A12',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.23', 'G 0.28']
+    },
+    {
+        'id': 'IND.1.A13',
+        'cia': 'A',
+        'gefahren': ['G 0.5', 'G 0.11', 'G 0.25', 'G 0.41']
+    },
+    {
+        'id': 'IND.1.A14',
+        'cia': 'CIA',
+        'gefahren': ['G 0.30', 'G 0.32', 'G 0.36', 'G 0.37']
+    },
+    {
+        'id': 'IND.1.A15',
+        'cia': 'CIA',
+        'gefahren': ['G 0.18', 'G 0.30', 'G 0.32', 'G 0.37']
+    },
+    {
+        'id': 'IND.1.A16',
+        'cia': 'IA',
+        'gefahren': ['G 0.23', 'G 0.41']
+    },
+    {
+        'id': 'IND.1.A17',
+        'cia': 'I',
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'IND.1.A18',
+        'cia': None,
+        'gefahren': ['G 0.21', 'G 0.22', 'G 0.30', 'G 0.37']
+    },
+    {
+        'id': 'IND.1.A19',
+        'cia': None,
+        'gefahren': ['G 0.17', 'G 0.45']
+    },
+    {
+        'id': 'IND.1.A20',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'IND.1.A21',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'IND.1.A22',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.21', 'G 0.22', 'G 0.30', 'G 0.37']
+    },
+    {
+        'id': 'IND.1.A23',
+        'cia': None,
+        'gefahren': ['G 0.19']
+    },
+    {
+        'id': 'IND.1.A24',
+        'cia': 'A',
+        'gefahren': ['G 0.9', 'G 0.25', 'G 0.27']
+    },
+    {
+        'id': 'IND.2.1.A1',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.19', 'G 0.21', 'G 0.23', 'G 0.30', 'G 0.32', 'G 0.41', 'G 0.43', 'G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'IND.2.1.A2',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.19', 'G 0.21', 'G 0.23', 'G 0.39', 'G 0.41', 'G 0.46']
+    },
+    {
+        'id': 'IND.2.1.A4',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.15', 'G 0.19', 'G 0.21', 'G 0.22', 'G 0.23', 'G 0.30', 'G 0.41']
+    },
+    {
+        'id': 'IND.2.1.A6',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.15', 'G 0.21', 'G 0.22', 'G 0.23', 'G 0.30', 'G 0.31', 'G 0.32', 'G 0.39', 'G 0.40', 'G 0.41']
+    },
+    {
+        'id': 'IND.2.1.A7',
+        'cia': None,
+        'gefahren': ['G 0.2', 'G 0.4', 'G 0.8', 'G 0.9', 'G 0.10', 'G 0.12', 'G 0.25', 'G 0.39', 'G 0.40', 'G 0.41', 'G 0.45']
+    },
+    {
+        'id': 'IND.2.1.A8',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.19', 'G 0.21', 'G 0.22', 'G 0.23', 'G 0.25', 'G 0.28', 'G 0.30', 'G 0.39']
+    },
+    {
+        'id': 'IND.2.1.A11',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.19', 'G 0.21', 'G 0.23', 'G 0.28', 'G 0.30', 'G 0.31', 'G 0.32', 'G 0.39', 'G 0.41']
+    },
+    {
+        'id': 'IND.2.1.A13',
+        'cia': None,
+        'gefahren': ['G 0.12', 'G 0.14', 'G 0.15', 'G 0.21', 'G 0.23', 'G 0.25', 'G 0.28', 'G 0.39', 'G 0.41']
+    },
+    {
+        'id': 'IND.2.1.A16',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.19', 'G 0.21', 'G 0.22', 'G 0.23', 'G 0.30', 'G 0.39', 'G 0.41', 'G 0.45']
+    },
+    {
+        'id': 'IND.2.1.A17',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.19', 'G 0.21', 'G 0.22', 'G 0.30', 'G 0.37', 'G 0.39', 'G 0.41', 'G 0.46']
+    },
+    {
+        'id': 'IND.2.1.A18',
+        'cia': 'A',
+        'gefahren': ['G 0.9', 'G 0.45']
+    },
+    {
+        'id': 'IND.2.1.A19',
+        'cia': 'CIA',
+        'gefahren': ['G 0.8', 'G 0.9', 'G 0.14', 'G 0.21', 'G 0.23', 'G 0.28', 'G 0.30', 'G 0.39', 'G 0.40', 'G 0.41', 'G 0.46']
+    },
+    {
+        'id': 'IND.2.1.A20',
+        'cia': 'IA',
+        'gefahren': ['G 0.14', 'G 0.21', 'G 0.23', 'G 0.28', 'G 0.39']
+    },
+    {
+        'id': 'IND.2.2.A1',
+        'cia': None,
+        'gefahren': ['G 0.21', 'G 0.22', 'G 0.23', 'G 0.41']
+    },
+    {
+        'id': 'IND.2.2.A3',
+        'cia': None,
+        'gefahren': ['G 0.21', 'G 0.22']
+    },
+    {
+        'id': 'IND.2.3.A1',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.18', 'G 0.30']
+    },
+    {
+        'id': 'IND.2.3.A2',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.21', 'G 0.28', 'G 0.30']
+    },
+    {
+        'id': 'IND.2.3.A3',
+        'cia': 'I',
+        'gefahren': ['G 0.14', 'G 0.18', 'G 0.21', 'G 0.23', 'G 0.28', 'G 0.30']
+    },
+    {
+        'id': 'IND.2.4.A1',
+        'cia': None,
+        'gefahren': ['G 0.11', 'G 0.14', 'G 0.18', 'G 0.21', 'G 0.22', 'G 0.30']
+    },
+    {
+        'id': 'IND.2.4.A2',
+        'cia': None,
+        'gefahren': ['G 0.21', 'G 0.39']
+    },
+    {
+        'id': 'IND.2.7.A1',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.15', 'G 0.19', 'G 0.21', 'G 0.23', 'G 0.30', 'G 0.41', 'G 0.42', 'G 0.46']
+    },
+    {
+        'id': 'IND.2.7.A2',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.15', 'G 0.19', 'G 0.21', 'G 0.23', 'G 0.30', 'G 0.41', 'G 0.42', 'G 0.46']
+    },
+    {
+        'id': 'IND.2.7.A3',
+        'cia': None,
+        'gefahren': ['G 0.21', 'G 0.41', 'G 0.42', 'G 0.46']
+    },
+    {
+        'id': 'IND.2.7.A4',
+        'cia': None,
+        'gefahren': ['G 0.5', 'G 0.6', 'G 0.9', 'G 0.11', 'G 0.14', 'G 0.15', 'G 0.19', 'G 0.20', 'G 0.21', 'G 0.23', 'G 0.28', 'G 0.29', 'G 0.30', 'G 0.32', 'G 0.36', 'G 0.37', 'G 0.39', 'G 0.41', 'G 0.42']
+    },
+    {
+        'id': 'IND.2.7.A5',
+        'cia': None,
+        'gefahren': ['G 0.5', 'G 0.6', 'G 0.9', 'G 0.11', 'G 0.14', 'G 0.41']
+    },
+    {
+        'id': 'IND.2.7.A6',
+        'cia': None,
+        'gefahren': ['G 0.5', 'G 0.6', 'G 0.9', 'G 0.11', 'G 0.14', 'G 0.15', 'G 0.18', 'G 0.19', 'G 0.20', 'G 0.21', 'G 0.23', 'G 0.41']
+    },
+    {
+        'id': 'IND.2.7.A7',
+        'cia': None,
+        'gefahren': ['G 0.6', 'G 0.9', 'G 0.14', 'G 0.15', 'G 0.19', 'G 0.21', 'G 0.23', 'G 0.41', 'G 0.42', 'G 0.46']
+    },
+    {
+        'id': 'IND.2.7.A8',
+        'cia': None,
+        'gefahren': ['G 0.20', 'G 0.21', 'G 0.23', 'G 0.41', 'G 0.46']
+    },
+    {
+        'id': 'IND.2.7.A9',
+        'cia': None,
+        'gefahren': ['G 0.9', 'G 0.14', 'G 0.15', 'G 0.19', 'G 0.21', 'G 0.23', 'G 0.41', 'G 0.46']
+    },
+    {
+        'id': 'IND.2.7.A10',
+        'cia': None,
+        'gefahren': ['G 0.23', 'G 0.41', 'G 0.42']
+    },
+    {
+        'id': 'IND.2.7.A11',
+        'cia': None,
+        'gefahren': ['G 0.6', 'G 0.14', 'G 0.15', 'G 0.19', 'G 0.20', 'G 0.21', 'G 0.23', 'G 0.41', 'G 0.42', 'G 0.46']
+    },
+    {
+        'id': 'IND.2.7.A12',
+        'cia': 'I',
+        'gefahren': ['G 0.20', 'G 0.21', 'G 0.23', 'G 0.28', 'G 0.41']
+    },
+    {
+        'id': 'IND.3.2.A1',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.28']
+    },
+    {
+        'id': 'IND.3.2.A2',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'IND.3.2.A3',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.23', 'G 0.30', 'G 0.40']
+    },
+    {
+        'id': 'IND.3.2.A4',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.30', 'G 0.31', 'G 0.32']
+    },
+    {
+        'id': 'IND.3.2.A5',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.30', 'G 0.40']
+    },
+    {
+        'id': 'IND.3.2.A6',
+        'cia': None,
+        'gefahren': ['G 0.20', 'G 0.23', 'G 0.30']
+    },
+    {
+        'id': 'IND.3.2.A7',
+        'cia': None,
+        'gefahren': ['G 0.23', 'G 0.30', 'G 0.37']
+    },
+    {
+        'id': 'IND.3.2.A8',
+        'cia': None,
+        'gefahren': ['G 0.23', 'G 0.30', 'G 0.32']
+    },
+    {
+        'id': 'IND.3.2.A9',
+        'cia': None,
+        'gefahren': ['G 0.37', 'G 0.39', 'G 0.43']
+    },
+    {
+        'id': 'IND.3.2.A10',
+        'cia': None,
+        'gefahren': ['G 0.24', 'G 0.25', 'G 0.31', 'G 0.32', 'G 0.33', 'G 0.37', 'G 0.41']
+    },
+    {
+        'id': 'IND.3.2.A11',
+        'cia': None,
+        'gefahren': ['G 0.30']
+    },
+    {
+        'id': 'IND.3.2.A12',
+        'cia': 'CIA',
+        'gefahren': ['G 0.18', 'G 0.23', 'G 0.27', 'G 0.30']
+    },
+    {
+        'id': 'IND.3.2.A13',
+        'cia': 'CI',
+        'gefahren': ['G 0.37']
+    },
+    {
+        'id': 'IND.3.2.A14',
+        'cia': 'CIA',
+        'gefahren': ['G 0.18', 'G 0.31', 'G 0.32', 'G 0.37']
+    },
+    {
+        'id': 'INF.1.A1',
+        'cia': None,
+        'gefahren': ['G 0.1', 'G 0.18', 'G 0.44']
+    },
+    {
+        'id': 'INF.1.A2',
+        'cia': None,
+        'gefahren': ['G 0.8']
+    },
+    {
+        'id': 'INF.1.A3',
+        'cia': None,
+        'gefahren': ['G 0.1', 'G 0.18', 'G 0.29']
+    },
+    {
+        'id': 'INF.1.A4',
+        'cia': None,
+        'gefahren': ['G 0.1', 'G 0.18']
+    },
+    {
+        'id': 'INF.1.A5',
+        'cia': None,
+        'gefahren': ['G 0.1', 'G 0.18', 'G 0.29']
+    },
+    {
+        'id': 'INF.1.A6',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.29', 'G 0.44']
+    },
+    {
+        'id': 'INF.1.A7',
+        'cia': None,
+        'gefahren': ['G 0.44']
+    },
+    {
+        'id': 'INF.1.A8',
+        'cia': None,
+        'gefahren': ['G 0.1', 'G 0.4', 'G 0.18', 'G 0.44']
+    },
+    {
+        'id': 'INF.1.A9',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'INF.1.A10',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.29']
+    },
+    {
+        'id': 'INF.1.A12',
+        'cia': None,
+        'gefahren': ['G 0.16', 'G 0.18', 'G 0.44']
+    },
+    {
+        'id': 'INF.1.A13',
+        'cia': None,
+        'gefahren': ['G 0.27', 'G 0.44']
+    },
+    {
+        'id': 'INF.1.A14',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.29']
+    },
+    {
+        'id': 'INF.1.A15',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.18', 'G 0.27']
+    },
+    {
+        'id': 'INF.1.A16',
+        'cia': None,
+        'gefahren': ['G 0.19', 'G 0.34']
+    },
+    {
+        'id': 'INF.1.A17',
+        'cia': None,
+        'gefahren': ['G 0.1', 'G 0.18']
+    },
+    {
+        'id': 'INF.1.A18',
+        'cia': None,
+        'gefahren': ['G 0.1', 'G 0.18']
+    },
+    {
+        'id': 'INF.1.A19',
+        'cia': None,
+        'gefahren': ['G 0.1', 'G 0.18']
+    },
+    {
+        'id': 'INF.1.A20',
+        'cia': None,
+        'gefahren': ['G 0.1', 'G 0.18']
+    },
+    {
+        'id': 'INF.1.A22',
+        'cia': 'CIA',
+        'gefahren': ['G 0.1', 'G 0.18', 'G 0.34', 'G 0.44']
+    },
+    {
+        'id': 'INF.1.A23',
+        'cia': 'C',
+        'gefahren': ['G 0.18', 'G 0.34', 'G 0.44']
+    },
+    {
+        'id': 'INF.1.A24',
+        'cia': 'A',
+        'gefahren': ['G 0.3', 'G 0.5', 'G 0.18']
+    },
+    {
+        'id': 'INF.1.A25',
+        'cia': 'A',
+        'gefahren': ['G 0.5', 'G 0.6', 'G 0.7', 'G 0.18']
+    },
+    {
+        'id': 'INF.1.A26',
+        'cia': 'CIA',
+        'gefahren': ['G 0.16', 'G 0.18', 'G 0.34', 'G 0.44']
+    },
+    {
+        'id': 'INF.1.A27',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.44']
+    },
+    {
+        'id': 'INF.1.A30',
+        'cia': 'CIA',
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'INF.1.A31',
+        'cia': 'C',
+        'gefahren': ['G 0.16', 'G 0.18']
+    },
+    {
+        'id': 'INF.1.A32',
+        'cia': 'A',
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'INF.1.A34',
+        'cia': 'A',
+        'gefahren': ['G 0.1', 'G 0.3', 'G 0.18', 'G 0.44']
+    },
+    {
+        'id': 'INF.1.A35',
+        'cia': 'CA',
+        'gefahren': ['G 0.7', 'G 0.34', 'G 0.44']
+    },
+    {
+        'id': 'INF.1.A36',
+        'cia': None,
+        'gefahren': ['G 0.1', 'G 0.18']
+    },
+    {
+        'id': 'INF.10.A1',
+        'cia': None,
+        'gefahren': ['G 0.16', 'G 0.18']
+    },
+    {
+        'id': 'INF.10.A3',
+        'cia': None,
+        'gefahren': ['G 0.1', 'G 0.44']
+    },
+    {
+        'id': 'INF.10.A4',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.15', 'G 0.18', 'G 0.19', 'G 0.44']
+    },
+    {
+        'id': 'INF.10.A5',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'INF.10.A6',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.15', 'G 0.23', 'G 0.41']
+    },
+    {
+        'id': 'INF.10.A7',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.18', 'G 0.23', 'G 0.41']
+    },
+    {
+        'id': 'INF.10.A8',
+        'cia': None,
+        'gefahren': ['G 0.37']
+    },
+    {
+        'id': 'INF.10.A9',
+        'cia': 'IA',
+        'gefahren': ['G 0.14', 'G 0.15', 'G 0.22', 'G 0.46']
+    },
+    {
+        'id': 'INF.11.A1',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.19']
+    },
+    {
+        'id': 'INF.11.A2',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.19', 'G 0.25']
+    },
+    {
+        'id': 'INF.11.A3',
+        'cia': None,
+        'gefahren': ['G 0.2', 'G 0.18', 'G 0.19', 'G 0.25']
+    },
+    {
+        'id': 'INF.11.A4',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'INF.11.A5',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'INF.11.A6',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'INF.11.A7',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.19']
+    },
+    {
+        'id': 'INF.11.A8',
+        'cia': None,
+        'gefahren': ['G 0.2']
+    },
+    {
+        'id': 'INF.11.A9',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'INF.11.A10',
+        'cia': None,
+        'gefahren': ['G 0.19', 'G 0.29']
+    },
+    {
+        'id': 'INF.11.A11',
+        'cia': 'A',
+        'gefahren': ['G 0.27']
+    },
+    {
+        'id': 'INF.11.A12',
+        'cia': 'CA',
+        'gefahren': ['G 0.16']
+    },
+    {
+        'id': 'INF.11.A13',
+        'cia': 'A',
+        'gefahren': ['G 0.24']
+    },
+    {
+        'id': 'INF.11.A14',
+        'cia': 'CIA',
+        'gefahren': ['G 0.19', 'G 0.22']
+    },
+    {
+        'id': 'INF.11.A15',
+        'cia': 'CIA',
+        'gefahren': ['G 0.2', 'G 0.15', 'G 0.30']
+    },
+    {
+        'id': 'INF.11.A16',
+        'cia': 'A',
+        'gefahren': ['G 0.1']
+    },
+    {
+        'id': 'INF.11.A17',
+        'cia': 'C',
+        'gefahren': ['G 0.19']
+    },
+    {
+        'id': 'INF.12.A1',
+        'cia': None,
+        'gefahren': ['G 0.2', 'G 0.18', 'G 0.25', 'G 0.26', 'G 0.29']
+    },
+    {
+        'id': 'INF.12.A2',
+        'cia': None,
+        'gefahren': ['G 0.12', 'G 0.18', 'G 0.27', 'G 0.29']
+    },
+    {
+        'id': 'INF.12.A3',
+        'cia': None,
+        'gefahren': ['G 0.8', 'G 0.9', 'G 0.18', 'G 0.29']
+    },
+    {
+        'id': 'INF.12.A4',
+        'cia': None,
+        'gefahren': ['G 0.8', 'G 0.12']
+    },
+    {
+        'id': 'INF.12.A5',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.27']
+    },
+    {
+        'id': 'INF.12.A6',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.29', 'G 0.37', 'G 0.41']
+    },
+    {
+        'id': 'INF.12.A7',
+        'cia': None,
+        'gefahren': ['G 0.8', 'G 0.12', 'G 0.18']
+    },
+    {
+        'id': 'INF.12.A8',
+        'cia': None,
+        'gefahren': ['G 0.8', 'G 0.18']
+    },
+    {
+        'id': 'INF.12.A9',
+        'cia': None,
+        'gefahren': ['G 0.1', 'G 0.27']
+    },
+    {
+        'id': 'INF.12.A10',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'INF.12.A11',
+        'cia': None,
+        'gefahren': ['G 0.15', 'G 0.18', 'G 0.19']
+    },
+    {
+        'id': 'INF.12.A12',
+        'cia': None,
+        'gefahren': ['G 0.8', 'G 0.9', 'G 0.18', 'G 0.29']
+    },
+    {
+        'id': 'INF.12.A13',
+        'cia': None,
+        'gefahren': ['G 0.1', 'G 0.8', 'G 0.12']
+    },
+    {
+        'id': 'INF.12.A14',
+        'cia': 'A',
+        'gefahren': ['G 0.8', 'G 0.12']
+    },
+    {
+        'id': 'INF.12.A15',
+        'cia': 'IA',
+        'gefahren': ['G 0.15', 'G 0.41']
+    },
+    {
+        'id': 'INF.12.A16',
+        'cia': 'IA',
+        'gefahren': ['G 0.18', 'G 0.27']
+    },
+    {
+        'id': 'INF.12.A17',
+        'cia': 'A',
+        'gefahren': ['G 0.9', 'G 0.18', 'G 0.27', 'G 0.41']
+    },
+    {
+        'id': 'INF.13.A1',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'INF.13.A2',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.29']
+    },
+    {
+        'id': 'INF.13.A3',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.29']
+    },
+    {
+        'id': 'INF.13.A4',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.29']
+    },
+    {
+        'id': 'INF.13.A5',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'INF.13.A6',
+        'cia': None,
+        'gefahren': ['G 0.9', 'G 0.10', 'G 0.18', 'G 0.19', 'G 0.25', 'G 0.33']
+    },
+    {
+        'id': 'INF.13.A7',
+        'cia': None,
+        'gefahren': ['G 0.9', 'G 0.25', 'G 0.26', 'G 0.27']
+    },
+    {
+        'id': 'INF.13.A8',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'INF.13.A9',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.30', 'G 0.32']
+    },
+    {
+        'id': 'INF.13.A10',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'INF.13.A11',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.15', 'G 0.19', 'G 0.21', 'G 0.22', 'G 0.23', 'G 0.24', 'G 0.25', 'G 0.28', 'G 0.39', 'G 0.41', 'G 0.43', 'G 0.47']
+    },
+    {
+        'id': 'INF.13.A12',
+        'cia': None,
+        'gefahren': ['G 0.19', 'G 0.21', 'G 0.22', 'G 0.23', 'G 0.24', 'G 0.25', 'G 0.26', 'G 0.28', 'G 0.39', 'G 0.41', 'G 0.43', 'G 0.47']
+    },
+    {
+        'id': 'INF.13.A13',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.15', 'G 0.19', 'G 0.21', 'G 0.22', 'G 0.23', 'G 0.24', 'G 0.25', 'G 0.28', 'G 0.39', 'G 0.41', 'G 0.43', 'G 0.47']
+    },
+    {
+        'id': 'INF.13.A14',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.30', 'G 0.32']
+    },
+    {
+        'id': 'INF.13.A15',
+        'cia': None,
+        'gefahren': ['G 0.39']
+    },
+    {
+        'id': 'INF.13.A16',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'INF.13.A17',
+        'cia': None,
+        'gefahren': ['G 0.9', 'G 0.10', 'G 0.18', 'G 0.24', 'G 0.25', 'G 0.30', 'G 0.32', 'G 0.44']
+    },
+    {
+        'id': 'INF.13.A18',
+        'cia': None,
+        'gefahren': ['G 0.9', 'G 0.10', 'G 0.18', 'G 0.25', 'G 0.27']
+    },
+    {
+        'id': 'INF.13.A19',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.19']
+    },
+    {
+        'id': 'INF.13.A20',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'INF.13.A21',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.19', 'G 0.37']
+    },
+    {
+        'id': 'INF.13.A22',
+        'cia': None,
+        'gefahren': ['G 0.9', 'G 0.10', 'G 0.18', 'G 0.25', 'G 0.26', 'G 0.27', 'G 0.28']
+    },
+    {
+        'id': 'INF.13.A23',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.28']
+    },
+    {
+        'id': 'INF.13.A24',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.29']
+    },
+    {
+        'id': 'INF.13.A25',
+        'cia': 'CIA',
+        'gefahren': ['G 0.9', 'G 0.10', 'G 0.18', 'G 0.25', 'G 0.26', 'G 0.27', 'G 0.28']
+    },
+    {
+        'id': 'INF.13.A26',
+        'cia': 'CIA',
+        'gefahren': ['G 0.14', 'G 0.15', 'G 0.19', 'G 0.21', 'G 0.22', 'G 0.23', 'G 0.25', 'G 0.26', 'G 0.32', 'G 0.41', 'G 0.43']
+    },
+    {
+        'id': 'INF.13.A27',
+        'cia': 'CIA',
+        'gefahren': ['G 0.18', 'G 0.19', 'G 0.29']
+    },
+    {
+        'id': 'INF.13.A28',
+        'cia': 'CIA',
+        'gefahren': ['G 0.18', 'G 0.19', 'G 0.29']
+    },
+    {
+        'id': 'INF.13.A29',
+        'cia': 'CIA',
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'INF.13.A30',
+        'cia': 'CIA',
+        'gefahren': ['G 0.28']
+    },
+    {
+        'id': 'INF.14.A1',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'INF.14.A2',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'INF.14.A3',
+        'cia': None,
+        'gefahren': ['G 0.9', 'G 0.10', 'G 0.14', 'G 0.15', 'G 0.18', 'G 0.19', 'G 0.22', 'G 0.25', 'G 0.26', 'G 0.46']
+    },
+    {
+        'id': 'INF.14.A4',
+        'cia': None,
+        'gefahren': ['G 0.9', 'G 0.18', 'G 0.19', 'G 0.25', 'G 0.26', 'G 0.29', 'G 0.40', 'G 0.43']
+    },
+    {
+        'id': 'INF.14.A5',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.29']
+    },
+    {
+        'id': 'INF.14.A6',
+        'cia': None,
+        'gefahren': ['G 0.9', 'G 0.19', 'G 0.23', 'G 0.40', 'G 0.43']
+    },
+    {
+        'id': 'INF.14.A7',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'INF.14.A8',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.23']
+    },
+    {
+        'id': 'INF.14.A9',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'INF.14.A10',
+        'cia': None,
+        'gefahren': ['G 0.9', 'G 0.10', 'G 0.18', 'G 0.25', 'G 0.26', 'G 0.40']
+    },
+    {
+        'id': 'INF.14.A11',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.15', 'G 0.19', 'G 0.22', 'G 0.23', 'G 0.30', 'G 0.40', 'G 0.43']
+    },
+    {
+        'id': 'INF.14.A12',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.15', 'G 0.19', 'G 0.22', 'G 0.23', 'G 0.43', 'G 0.46']
+    },
+    {
+        'id': 'INF.14.A13',
+        'cia': None,
+        'gefahren': ['G 0.9', 'G 0.19', 'G 0.23', 'G 0.40', 'G 0.43']
+    },
+    {
+        'id': 'INF.14.A14',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.30', 'G 0.32']
+    },
+    {
+        'id': 'INF.14.A15',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.15', 'G 0.19', 'G 0.22', 'G 0.23', 'G 0.43', 'G 0.46']
+    },
+    {
+        'id': 'INF.14.A16',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.15', 'G 0.19', 'G 0.22', 'G 0.23', 'G 0.43', 'G 0.46']
+    },
+    {
+        'id': 'INF.14.A17',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.15', 'G 0.19', 'G 0.22', 'G 0.23', 'G 0.43', 'G 0.46']
+    },
+    {
+        'id': 'INF.14.A18',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.15', 'G 0.19', 'G 0.22', 'G 0.23', 'G 0.30', 'G 0.43', 'G 0.46']
+    },
+    {
+        'id': 'INF.14.A19',
+        'cia': None,
+        'gefahren': ['G 0.9', 'G 0.25', 'G 0.26']
+    },
+    {
+        'id': 'INF.14.A20',
+        'cia': None,
+        'gefahren': ['G 0.9', 'G 0.15', 'G 0.19', 'G 0.40']
+    },
+    {
+        'id': 'INF.14.A21',
+        'cia': None,
+        'gefahren': ['G 0.20']
+    },
+    {
+        'id': 'INF.14.A22',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.25', 'G 0.26']
+    },
+    {
+        'id': 'INF.14.A23',
+        'cia': None,
+        'gefahren': ['G 0.25', 'G 0.26']
+    },
+    {
+        'id': 'INF.14.A24',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.25', 'G 0.26', 'G 0.46']
+    },
+    {
+        'id': 'INF.14.A25',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.19']
+    },
+    {
+        'id': 'INF.14.A26',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.19', 'G 0.37']
+    },
+    {
+        'id': 'INF.14.A27',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.25', 'G 0.26', 'G 0.29']
+    },
+    {
+        'id': 'INF.14.A28',
+        'cia': 'CI',
+        'gefahren': ['G 0.14', 'G 0.15', 'G 0.19', 'G 0.22', 'G 0.23', 'G 0.43', 'G 0.46']
+    },
+    {
+        'id': 'INF.14.A29',
+        'cia': 'CI',
+        'gefahren': ['G 0.14', 'G 0.15', 'G 0.19', 'G 0.22', 'G 0.23', 'G 0.43', 'G 0.46']
+    },
+    {
+        'id': 'INF.14.A30',
+        'cia': 'IA',
+        'gefahren': ['G 0.18', 'G 0.25', 'G 0.26', 'G 0.46']
+    },
+    {
+        'id': 'INF.2.A1',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.29']
+    },
+    {
+        'id': 'INF.2.A2',
+        'cia': None,
+        'gefahren': ['G 0.1', 'G 0.24', 'G 0.25', 'G 0.26']
+    },
+    {
+        'id': 'INF.2.A3',
+        'cia': None,
+        'gefahren': ['G 0.8']
+    },
+    {
+        'id': 'INF.2.A4',
+        'cia': None,
+        'gefahren': ['G 0.1', 'G 0.8', 'G 0.24', 'G 0.26']
+    },
+    {
+        'id': 'INF.2.A5',
+        'cia': None,
+        'gefahren': ['G 0.2']
+    },
+    {
+        'id': 'INF.2.A6',
+        'cia': None,
+        'gefahren': ['G 0.44']
+    },
+    {
+        'id': 'INF.2.A7',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.19', 'G 0.44']
+    },
+    {
+        'id': 'INF.2.A8',
+        'cia': None,
+        'gefahren': ['G 0.1', 'G 0.18']
+    },
+    {
+        'id': 'INF.2.A9',
+        'cia': None,
+        'gefahren': ['G 0.1', 'G 0.24', 'G 0.25']
+    },
+    {
+        'id': 'INF.2.A10',
+        'cia': None,
+        'gefahren': ['G 0.1', 'G 0.18', 'G 0.25', 'G 0.29']
+    },
+    {
+        'id': 'INF.2.A11',
+        'cia': None,
+        'gefahren': ['G 0.10', 'G 0.25', 'G 0.26']
+    },
+    {
+        'id': 'INF.2.A12',
+        'cia': None,
+        'gefahren': ['G 0.7', 'G 0.34', 'G 0.44']
+    },
+    {
+        'id': 'INF.2.A13',
+        'cia': None,
+        'gefahren': ['G 0.1', 'G 0.3', 'G 0.18', 'G 0.44']
+    },
+    {
+        'id': 'INF.2.A14',
+        'cia': None,
+        'gefahren': ['G 0.8', 'G 0.18']
+    },
+    {
+        'id': 'INF.2.A15',
+        'cia': None,
+        'gefahren': ['G 0.1', 'G 0.18', 'G 0.25']
+    },
+    {
+        'id': 'INF.2.A16',
+        'cia': None,
+        'gefahren': ['G 0.2', 'G 0.25']
+    },
+    {
+        'id': 'INF.2.A17',
+        'cia': None,
+        'gefahren': ['G 0.1', 'G 0.8', 'G 0.24']
+    },
+    {
+        'id': 'INF.2.A19',
+        'cia': None,
+        'gefahren': ['G 0.8', 'G 0.18', 'G 0.26', 'G 0.29']
+    },
+    {
+        'id': 'INF.2.A21',
+        'cia': 'A',
+        'gefahren': ['G 0.8', 'G 0.9', 'G 0.10', 'G 0.27']
+    },
+    {
+        'id': 'INF.2.A22',
+        'cia': 'IA',
+        'gefahren': ['G 0.2']
+    },
+    {
+        'id': 'INF.2.A23',
+        'cia': 'A',
+        'gefahren': ['G 0.8', 'G 0.10', 'G 0.26']
+    },
+    {
+        'id': 'INF.2.A24',
+        'cia': 'IA',
+        'gefahren': ['G 0.29', 'G 0.30', 'G 0.37']
+    },
+    {
+        'id': 'INF.2.A25',
+        'cia': 'A',
+        'gefahren': ['G 0.8', 'G 0.27']
+    },
+    {
+        'id': 'INF.2.A26',
+        'cia': 'A',
+        'gefahren': ['G 0.8', 'G 0.27']
+    },
+    {
+        'id': 'INF.2.A28',
+        'cia': 'IA',
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'INF.2.A29',
+        'cia': None,
+        'gefahren': ['G 0.3', 'G 0.18', 'G 0.24', 'G 0.25']
+    },
+    {
+        'id': 'INF.2.A30',
+        'cia': None,
+        'gefahren': ['G 0.1']
+    },
+    {
+        'id': 'INF.5.A1',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'INF.5.A2',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'INF.5.A3',
+        'cia': None,
+        'gefahren': ['G 0.44']
+    },
+    {
+        'id': 'INF.5.A4',
+        'cia': None,
+        'gefahren': ['G 0.44']
+    },
+    {
+        'id': 'INF.5.A5',
+        'cia': None,
+        'gefahren': ['G 0.25', 'G 0.26']
+    },
+    {
+        'id': 'INF.5.A6',
+        'cia': None,
+        'gefahren': ['G 0.1']
+    },
+    {
+        'id': 'INF.5.A7',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'INF.5.A8',
+        'cia': None,
+        'gefahren': ['G 0.25', 'G 0.26']
+    },
+    {
+        'id': 'INF.5.A9',
+        'cia': None,
+        'gefahren': ['G 0.8']
+    },
+    {
+        'id': 'INF.5.A10',
+        'cia': None,
+        'gefahren': ['G 0.2', 'G 0.18']
+    },
+    {
+        'id': 'INF.5.A11',
+        'cia': None,
+        'gefahren': ['G 0.1', 'G 0.3', 'G 0.4']
+    },
+    {
+        'id': 'INF.5.A12',
+        'cia': None,
+        'gefahren': ['G 0.3', 'G 0.4', 'G 0.8', 'G 0.10', 'G 0.18']
+    },
+    {
+        'id': 'INF.5.A13',
+        'cia': None,
+        'gefahren': ['G 0.1', 'G 0.4', 'G 0.29']
+    },
+    {
+        'id': 'INF.5.A14',
+        'cia': None,
+        'gefahren': ['G 0.1']
+    },
+    {
+        'id': 'INF.5.A15',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.24', 'G 0.25', 'G 0.26']
+    },
+    {
+        'id': 'INF.5.A16',
+        'cia': None,
+        'gefahren': ['G 0.8', 'G 0.10', 'G 0.18']
+    },
+    {
+        'id': 'INF.5.A17',
+        'cia': None,
+        'gefahren': ['G 0.5', 'G 0.8', 'G 0.10', 'G 0.18', 'G 0.24', 'G 0.25', 'G 0.26']
+    },
+    {
+        'id': 'INF.5.A18',
+        'cia': 'CA',
+        'gefahren': ['G 0.1', 'G 0.2', 'G 0.3', 'G 0.4', 'G 0.5', 'G 0.18']
+    },
+    {
+        'id': 'INF.5.A19',
+        'cia': 'A',
+        'gefahren': ['G 0.8', 'G 0.10', 'G 0.27']
+    },
+    {
+        'id': 'INF.5.A20',
+        'cia': 'CIA',
+        'gefahren': ['G 0.41', 'G 0.44']
+    },
+    {
+        'id': 'INF.5.A22',
+        'cia': 'A',
+        'gefahren': ['G 0.8', 'G 0.10']
+    },
+    {
+        'id': 'INF.5.A23',
+        'cia': 'A',
+        'gefahren': ['G 0.8', 'G 0.24', 'G 0.25', 'G 0.26', 'G 0.27']
+    },
+    {
+        'id': 'INF.5.A24',
+        'cia': 'A',
+        'gefahren': ['G 0.2', 'G 0.25', 'G 0.26', 'G 0.27']
+    },
+    {
+        'id': 'INF.5.A25',
+        'cia': 'A',
+        'gefahren': ['G 0.1', 'G 0.4', 'G 0.8', 'G 0.10']
+    },
+    {
+        'id': 'INF.5.A26',
+        'cia': 'A',
+        'gefahren': ['G 0.8', 'G 0.10', 'G 0.18', 'G 0.24', 'G 0.25', 'G 0.26']
+    },
+    {
+        'id': 'INF.6.A1',
+        'cia': None,
+        'gefahren': ['G 0.1']
+    },
+    {
+        'id': 'INF.6.A2',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.44']
+    },
+    {
+        'id': 'INF.6.A3',
+        'cia': None,
+        'gefahren': ['G 0.4', 'G 0.18']
+    },
+    {
+        'id': 'INF.6.A4',
+        'cia': None,
+        'gefahren': ['G 0.1', 'G 0.4', 'G 0.44']
+    },
+    {
+        'id': 'INF.6.A5',
+        'cia': None,
+        'gefahren': ['G 0.3', 'G 0.16']
+    },
+    {
+        'id': 'INF.6.A6',
+        'cia': None,
+        'gefahren': ['G 0.3', 'G 0.18']
+    },
+    {
+        'id': 'INF.6.A7',
+        'cia': None,
+        'gefahren': ['G 0.2', 'G 0.18']
+    },
+    {
+        'id': 'INF.6.A8',
+        'cia': None,
+        'gefahren': ['G 0.1', 'G 0.3', 'G 0.44']
+    },
+    {
+        'id': 'INF.6.A9',
+        'cia': 'CIA',
+        'gefahren': ['G 0.1', 'G 0.3', 'G 0.18', 'G 0.44']
+    },
+    {
+        'id': 'INF.7.A1',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.29', 'G 0.44']
+    },
+    {
+        'id': 'INF.7.A2',
+        'cia': None,
+        'gefahren': ['G 0.1', 'G 0.14', 'G 0.16', 'G 0.18', 'G 0.30', 'G 0.44']
+    },
+    {
+        'id': 'INF.7.A3',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'INF.7.A5',
+        'cia': None,
+        'gefahren': ['G 0.19', 'G 0.22', 'G 0.29', 'G 0.33']
+    },
+    {
+        'id': 'INF.7.A6',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.16', 'G 0.18', 'G 0.19']
+    },
+    {
+        'id': 'INF.7.A7',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.16', 'G 0.30']
+    },
+    {
+        'id': 'INF.7.A8',
+        'cia': 'CIA',
+        'gefahren': ['G 0.16']
+    },
+    {
+        'id': 'INF.8.A1',
+        'cia': None,
+        'gefahren': ['G 0.16', 'G 0.19', 'G 0.30']
+    },
+    {
+        'id': 'INF.8.A2',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.16', 'G 0.17', 'G 0.18', 'G 0.19', 'G 0.22']
+    },
+    {
+        'id': 'INF.8.A3',
+        'cia': None,
+        'gefahren': ['G 0.16', 'G 0.18', 'G 0.19', 'G 0.30', 'G 0.44']
+    },
+    {
+        'id': 'INF.8.A4',
+        'cia': None,
+        'gefahren': ['G 0.16', 'G 0.19', 'G 0.33', 'G 0.44']
+    },
+    {
+        'id': 'INF.8.A5',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.19']
+    },
+    {
+        'id': 'INF.8.A6',
+        'cia': 'CIA',
+        'gefahren': ['G 0.14', 'G 0.16', 'G 0.18', 'G 0.19', 'G 0.22', 'G 0.44']
+    },
+    {
+        'id': 'INF.9.A1',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'INF.9.A2',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.29', 'G 0.37']
+    },
+    {
+        'id': 'INF.9.A3',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.16', 'G 0.19', 'G 0.21', 'G 0.22', 'G 0.30', 'G 0.44', 'G 0.46']
+    },
+    {
+        'id': 'INF.9.A4',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.18', 'G 0.19', 'G 0.31']
+    },
+    {
+        'id': 'INF.9.A5',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.18', 'G 0.19']
+    },
+    {
+        'id': 'INF.9.A6',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.18', 'G 0.19']
+    },
+    {
+        'id': 'INF.9.A7',
+        'cia': None,
+        'gefahren': ['G 0.29']
+    },
+    {
+        'id': 'INF.9.A8',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.29']
+    },
+    {
+        'id': 'INF.9.A9',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.16', 'G 0.19', 'G 0.22']
+    },
+    {
+        'id': 'INF.9.A10',
+        'cia': 'CIA',
+        'gefahren': ['G 0.16', 'G 0.18']
+    },
+    {
+        'id': 'INF.9.A11',
+        'cia': 'CIA',
+        'gefahren': ['G 0.14', 'G 0.18', 'G 0.29']
+    },
+    {
+        'id': 'INF.9.A12',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.19']
+    },
+    {
+        'id': 'ISMS.1.A1',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.27']
+    },
+    {
+        'id': 'ISMS.1.A2',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'ISMS.1.A3',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'ISMS.1.A4',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.27']
+    },
+    {
+        'id': 'ISMS.1.A5',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'ISMS.1.A6',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'ISMS.1.A7',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'ISMS.1.A8',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.29']
+    },
+    {
+        'id': 'ISMS.1.A9',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'ISMS.1.A10',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'ISMS.1.A11',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.29']
+    },
+    {
+        'id': 'ISMS.1.A12',
+        'cia': None,
+        'gefahren': ['G 0.29']
+    },
+    {
+        'id': 'ISMS.1.A13',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'ISMS.1.A15',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.29']
+    },
+    {
+        'id': 'ISMS.1.A16',
+        'cia': 'CIA',
+        'gefahren': ['G 0.18', 'G 0.27']
+    },
+    {
+        'id': 'ISMS.1.A17',
+        'cia': 'A',
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'NET.1.1.A1',
+        'cia': None,
+        'gefahren': ['G 0.29']
+    },
+    {
+        'id': 'NET.1.1.A2',
+        'cia': None,
+        'gefahren': ['G 0.29']
+    },
+    {
+        'id': 'NET.1.1.A3',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.29']
+    },
+    {
+        'id': 'NET.1.1.A4',
+        'cia': None,
+        'gefahren': ['G 0.19', 'G 0.22', 'G 0.30']
+    },
+    {
+        'id': 'NET.1.1.A5',
+        'cia': None,
+        'gefahren': ['G 0.19', 'G 0.22', 'G 0.30']
+    },
+    {
+        'id': 'NET.1.1.A6',
+        'cia': None,
+        'gefahren': ['G 0.19', 'G 0.22', 'G 0.30']
+    },
+    {
+        'id': 'NET.1.1.A7',
+        'cia': None,
+        'gefahren': ['G 0.15', 'G 0.43', 'G 0.46']
+    },
+    {
+        'id': 'NET.1.1.A8',
+        'cia': None,
+        'gefahren': ['G 0.23', 'G 0.30']
+    },
+    {
+        'id': 'NET.1.1.A9',
+        'cia': None,
+        'gefahren': ['G 0.23', 'G 0.30', 'G 0.46']
+    },
+    {
+        'id': 'NET.1.1.A10',
+        'cia': None,
+        'gefahren': ['G 0.19', 'G 0.22', 'G 0.30']
+    },
+    {
+        'id': 'NET.1.1.A11',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.19', 'G 0.22', 'G 0.23', 'G 0.29', 'G 0.30', 'G 0.40', 'G 0.43']
+    },
+    {
+        'id': 'NET.1.1.A12',
+        'cia': None,
+        'gefahren': ['G 0.19', 'G 0.23', 'G 0.30']
+    },
+    {
+        'id': 'NET.1.1.A13',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'NET.1.1.A14',
+        'cia': None,
+        'gefahren': ['G 0.9', 'G 0.11', 'G 0.18', 'G 0.19', 'G 0.22', 'G 0.23', 'G 0.27', 'G 0.29', 'G 0.30', 'G 0.40']
+    },
+    {
+        'id': 'NET.1.1.A15',
+        'cia': None,
+        'gefahren': ['G 0.29']
+    },
+    {
+        'id': 'NET.1.1.A16',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.29']
+    },
+    {
+        'id': 'NET.1.1.A17',
+        'cia': None,
+        'gefahren': ['G 0.29']
+    },
+    {
+        'id': 'NET.1.1.A18',
+        'cia': None,
+        'gefahren': ['G 0.19', 'G 0.22', 'G 0.30']
+    },
+    {
+        'id': 'NET.1.1.A19',
+        'cia': None,
+        'gefahren': ['G 0.19', 'G 0.22', 'G 0.30']
+    },
+    {
+        'id': 'NET.1.1.A20',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.27']
+    },
+    {
+        'id': 'NET.1.1.A21',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.22', 'G 0.23', 'G 0.30']
+    },
+    {
+        'id': 'NET.1.1.A22',
+        'cia': None,
+        'gefahren': ['G 0.9', 'G 0.19', 'G 0.22', 'G 0.30']
+    },
+    {
+        'id': 'NET.1.1.A23',
+        'cia': None,
+        'gefahren': ['G 0.19', 'G 0.22', 'G 0.30', 'G 0.40']
+    },
+    {
+        'id': 'NET.1.1.A24',
+        'cia': None,
+        'gefahren': ['G 0.19', 'G 0.22', 'G 0.30']
+    },
+    {
+        'id': 'NET.1.1.A25',
+        'cia': None,
+        'gefahren': ['G 0.9', 'G 0.11', 'G 0.18', 'G 0.19', 'G 0.22', 'G 0.23', 'G 0.27', 'G 0.29', 'G 0.30', 'G 0.40']
+    },
+    {
+        'id': 'NET.1.1.A26',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.29']
+    },
+    {
+        'id': 'NET.1.1.A27',
+        'cia': None,
+        'gefahren': ['G 0.29']
+    },
+    {
+        'id': 'NET.1.1.A28',
+        'cia': 'A',
+        'gefahren': ['G 0.25']
+    },
+    {
+        'id': 'NET.1.1.A29',
+        'cia': 'A',
+        'gefahren': ['G 0.9', 'G 0.11', 'G 0.25', 'G 0.40']
+    },
+    {
+        'id': 'NET.1.1.A30',
+        'cia': 'A',
+        'gefahren': ['G 0.9', 'G 0.11', 'G 0.40']
+    },
+    {
+        'id': 'NET.1.1.A31',
+        'cia': 'CIA',
+        'gefahren': ['G 0.19', 'G 0.22', 'G 0.30']
+    },
+    {
+        'id': 'NET.1.1.A32',
+        'cia': 'CIA',
+        'gefahren': ['G 0.19', 'G 0.22', 'G 0.30']
+    },
+    {
+        'id': 'NET.1.1.A33',
+        'cia': 'CIA',
+        'gefahren': ['G 0.19', 'G 0.22', 'G 0.30']
+    },
+    {
+        'id': 'NET.1.1.A34',
+        'cia': 'CI',
+        'gefahren': ['G 0.15', 'G 0.43']
+    },
+    {
+        'id': 'NET.1.1.A35',
+        'cia': 'CI',
+        'gefahren': ['G 0.19']
+    },
+    {
+        'id': 'NET.1.1.A36',
+        'cia': 'CIA',
+        'gefahren': ['G 0.29']
+    },
+    {
+        'id': 'NET.1.2.A1',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'NET.1.2.A2',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.29']
+    },
+    {
+        'id': 'NET.1.2.A6',
+        'cia': None,
+        'gefahren': ['G 0.45']
+    },
+    {
+        'id': 'NET.1.2.A7',
+        'cia': None,
+        'gefahren': ['G 0.29', 'G 0.37']
+    },
+    {
+        'id': 'NET.1.2.A8',
+        'cia': None,
+        'gefahren': ['G 0.29', 'G 0.37']
+    },
+    {
+        'id': 'NET.1.2.A9',
+        'cia': None,
+        'gefahren': ['G 0.15', 'G 0.30', 'G 0.43', 'G 0.46']
+    },
+    {
+        'id': 'NET.1.2.A10',
+        'cia': None,
+        'gefahren': ['G 0.15', 'G 0.30', 'G 0.32']
+    },
+    {
+        'id': 'NET.1.2.A11',
+        'cia': None,
+        'gefahren': ['G 0.30']
+    },
+    {
+        'id': 'NET.1.2.A12',
+        'cia': None,
+        'gefahren': ['G 0.29']
+    },
+    {
+        'id': 'NET.1.2.A13',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.29']
+    },
+    {
+        'id': 'NET.1.2.A14',
+        'cia': None,
+        'gefahren': ['G 0.15', 'G 0.18', 'G 0.19', 'G 0.23', 'G 0.25', 'G 0.27', 'G 0.29', 'G 0.30']
+    },
+    {
+        'id': 'NET.1.2.A15',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.29']
+    },
+    {
+        'id': 'NET.1.2.A16',
+        'cia': None,
+        'gefahren': ['G 0.23', 'G 0.25', 'G 0.29', 'G 0.30']
+    },
+    {
+        'id': 'NET.1.2.A17',
+        'cia': None,
+        'gefahren': ['G 0.29']
+    },
+    {
+        'id': 'NET.1.2.A18',
+        'cia': None,
+        'gefahren': ['G 0.26', 'G 0.29', 'G 0.31']
+    },
+    {
+        'id': 'NET.1.2.A21',
+        'cia': None,
+        'gefahren': ['G 0.15', 'G 0.19', 'G 0.23', 'G 0.30']
+    },
+    {
+        'id': 'NET.1.2.A22',
+        'cia': None,
+        'gefahren': ['G 0.23', 'G 0.30']
+    },
+    {
+        'id': 'NET.1.2.A24',
+        'cia': None,
+        'gefahren': ['G 0.25', 'G 0.31']
+    },
+    {
+        'id': 'NET.1.2.A25',
+        'cia': None,
+        'gefahren': ['G 0.25', 'G 0.26', 'G 0.27']
+    },
+    {
+        'id': 'NET.1.2.A26',
+        'cia': None,
+        'gefahren': ['G 0.29', 'G 0.37']
+    },
+    {
+        'id': 'NET.1.2.A27',
+        'cia': None,
+        'gefahren': ['G 0.25']
+    },
+    {
+        'id': 'NET.1.2.A28',
+        'cia': None,
+        'gefahren': ['G 0.19', 'G 0.22', 'G 0.30']
+    },
+    {
+        'id': 'NET.1.2.A29',
+        'cia': None,
+        'gefahren': ['G 0.19', 'G 0.22', 'G 0.30']
+    },
+    {
+        'id': 'NET.1.2.A30',
+        'cia': 'A',
+        'gefahren': ['G 0.25', 'G 0.40']
+    },
+    {
+        'id': 'NET.1.2.A31',
+        'cia': 'IA',
+        'gefahren': ['G 0.15', 'G 0.22', 'G 0.30', 'G 0.46']
+    },
+    {
+        'id': 'NET.1.2.A32',
+        'cia': 'CIA',
+        'gefahren': ['G 0.19', 'G 0.22', 'G 0.30']
+    },
+    {
+        'id': 'NET.1.2.A33',
+        'cia': 'CIA',
+        'gefahren': ['G 0.19', 'G 0.22', 'G 0.30']
+    },
+    {
+        'id': 'NET.1.2.A35',
+        'cia': 'CIA',
+        'gefahren': ['G 0.18', 'G 0.19', 'G 0.22', 'G 0.23', 'G 0.29', 'G 0.30', 'G 0.40', 'G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'NET.1.2.A36',
+        'cia': 'CIA',
+        'gefahren': ['G 0.18', 'G 0.19', 'G 0.22', 'G 0.23', 'G 0.25', 'G 0.29', 'G 0.30', 'G 0.40', 'G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'NET.1.2.A37',
+        'cia': 'CI',
+        'gefahren': ['G 0.29', 'G 0.35']
+    },
+    {
+        'id': 'NET.1.2.A38',
+        'cia': 'A',
+        'gefahren': ['G 0.18', 'G 0.25', 'G 0.40', 'G 0.45']
+    },
+    {
+        'id': 'NET.2.1.A1',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'NET.2.1.A2',
+        'cia': None,
+        'gefahren': ['G 0.9', 'G 0.15', 'G 0.18', 'G 0.23', 'G 0.30', 'G 0.43']
+    },
+    {
+        'id': 'NET.2.1.A3',
+        'cia': None,
+        'gefahren': ['G 0.15', 'G 0.18', 'G 0.23', 'G 0.30', 'G 0.43']
+    },
+    {
+        'id': 'NET.2.1.A4',
+        'cia': None,
+        'gefahren': ['G 0.9', 'G 0.16', 'G 0.24', 'G 0.25']
+    },
+    {
+        'id': 'NET.2.1.A5',
+        'cia': None,
+        'gefahren': ['G 0.15', 'G 0.23', 'G 0.30', 'G 0.43']
+    },
+    {
+        'id': 'NET.2.1.A6',
+        'cia': None,
+        'gefahren': ['G 0.23']
+    },
+    {
+        'id': 'NET.2.1.A7',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.23']
+    },
+    {
+        'id': 'NET.2.1.A8',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.30']
+    },
+    {
+        'id': 'NET.2.1.A9',
+        'cia': None,
+        'gefahren': ['G 0.23']
+    },
+    {
+        'id': 'NET.2.1.A10',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'NET.2.1.A11',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'NET.2.1.A12',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'NET.2.1.A13',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.23', 'G 0.27', 'G 0.30', 'G 0.40', 'G 0.43']
+    },
+    {
+        'id': 'NET.2.1.A14',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.23']
+    },
+    {
+        'id': 'NET.2.1.A15',
+        'cia': 'CI',
+        'gefahren': ['G 0.15', 'G 0.43']
+    },
+    {
+        'id': 'NET.2.1.A16',
+        'cia': 'CIA',
+        'gefahren': ['G 0.23', 'G 0.30']
+    },
+    {
+        'id': 'NET.2.1.A17',
+        'cia': 'C',
+        'gefahren': ['G 0.15', 'G 0.23']
+    },
+    {
+        'id': 'NET.2.1.A18',
+        'cia': 'CIA',
+        'gefahren': ['G 0.23', 'G 0.30', 'G 0.43']
+    },
+    {
+        'id': 'NET.2.2.A1',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.23', 'G 0.31', 'G 0.43']
+    },
+    {
+        'id': 'NET.2.2.A2',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'NET.2.2.A3',
+        'cia': None,
+        'gefahren': ['G 0.15', 'G 0.23', 'G 0.43']
+    },
+    {
+        'id': 'NET.2.2.A4',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.23']
+    },
+    {
+        'id': 'NET.3.1.A1',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.22', 'G 0.23', 'G 0.26', 'G 0.30']
+    },
+    {
+        'id': 'NET.3.1.A4',
+        'cia': None,
+        'gefahren': ['G 0.15', 'G 0.23', 'G 0.30']
+    },
+    {
+        'id': 'NET.3.1.A5',
+        'cia': None,
+        'gefahren': ['G 0.9', 'G 0.25', 'G 0.27', 'G 0.40']
+    },
+    {
+        'id': 'NET.3.1.A6',
+        'cia': None,
+        'gefahren': ['G 0.27']
+    },
+    {
+        'id': 'NET.3.1.A7',
+        'cia': None,
+        'gefahren': ['G 0.37']
+    },
+    {
+        'id': 'NET.3.1.A8',
+        'cia': None,
+        'gefahren': ['G 0.27', 'G 0.45']
+    },
+    {
+        'id': 'NET.3.1.A9',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.18', 'G 0.19']
+    },
+    {
+        'id': 'NET.3.1.A10',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'NET.3.1.A11',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'NET.3.1.A12',
+        'cia': None,
+        'gefahren': ['G 0.31']
+    },
+    {
+        'id': 'NET.3.1.A13',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.23', 'G 0.30', 'G 0.46']
+    },
+    {
+        'id': 'NET.3.1.A14',
+        'cia': None,
+        'gefahren': ['G 0.23', 'G 0.40']
+    },
+    {
+        'id': 'NET.3.1.A15',
+        'cia': None,
+        'gefahren': ['G 0.23']
+    },
+    {
+        'id': 'NET.3.1.A16',
+        'cia': None,
+        'gefahren': ['G 0.9', 'G 0.23', 'G 0.25', 'G 0.40']
+    },
+    {
+        'id': 'NET.3.1.A17',
+        'cia': None,
+        'gefahren': ['G 0.9', 'G 0.25', 'G 0.40']
+    },
+    {
+        'id': 'NET.3.1.A18',
+        'cia': None,
+        'gefahren': ['G 0.23', 'G 0.30']
+    },
+    {
+        'id': 'NET.3.1.A19',
+        'cia': None,
+        'gefahren': ['G 0.25', 'G 0.30']
+    },
+    {
+        'id': 'NET.3.1.A20',
+        'cia': None,
+        'gefahren': ['G 0.23', 'G 0.30', 'G 0.43', 'G 0.46']
+    },
+    {
+        'id': 'NET.3.1.A21',
+        'cia': None,
+        'gefahren': ['G 0.23', 'G 0.30']
+    },
+    {
+        'id': 'NET.3.1.A22',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.27']
+    },
+    {
+        'id': 'NET.3.1.A23',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'NET.3.1.A24',
+        'cia': 'IA',
+        'gefahren': ['G 0.23', 'G 0.30']
+    },
+    {
+        'id': 'NET.3.1.A25',
+        'cia': 'I',
+        'gefahren': ['G 0.22', 'G 0.23', 'G 0.30', 'G 0.46']
+    },
+    {
+        'id': 'NET.3.1.A26',
+        'cia': 'A',
+        'gefahren': ['G 0.23', 'G 0.27']
+    },
+    {
+        'id': 'NET.3.1.A27',
+        'cia': 'A',
+        'gefahren': ['G 0.27']
+    },
+    {
+        'id': 'NET.3.1.A28',
+        'cia': 'CI',
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'NET.3.2.A1',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'NET.3.2.A2',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.19', 'G 0.23']
+    },
+    {
+        'id': 'NET.3.2.A3',
+        'cia': None,
+        'gefahren': ['G 0.23', 'G 0.40', 'G 0.43']
+    },
+    {
+        'id': 'NET.3.2.A4',
+        'cia': None,
+        'gefahren': ['G 0.19', 'G 0.22', 'G 0.23', 'G 0.30', 'G 0.46']
+    },
+    {
+        'id': 'NET.3.2.A6',
+        'cia': None,
+        'gefahren': ['G 0.23', 'G 0.30']
+    },
+    {
+        'id': 'NET.3.2.A7',
+        'cia': None,
+        'gefahren': ['G 0.27']
+    },
+    {
+        'id': 'NET.3.2.A8',
+        'cia': None,
+        'gefahren': ['G 0.22', 'G 0.23', 'G 0.43']
+    },
+    {
+        'id': 'NET.3.2.A9',
+        'cia': None,
+        'gefahren': ['G 0.37']
+    },
+    {
+        'id': 'NET.3.2.A10',
+        'cia': None,
+        'gefahren': ['G 0.41', 'G 0.43']
+    },
+    {
+        'id': 'NET.3.2.A14',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'NET.3.2.A15',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.20']
+    },
+    {
+        'id': 'NET.3.2.A16',
+        'cia': None,
+        'gefahren': ['G 0.23', 'G 0.40']
+    },
+    {
+        'id': 'NET.3.2.A17',
+        'cia': None,
+        'gefahren': ['G 0.23']
+    },
+    {
+        'id': 'NET.3.2.A18',
+        'cia': None,
+        'gefahren': ['G 0.9', 'G 0.23', 'G 0.30']
+    },
+    {
+        'id': 'NET.3.2.A19',
+        'cia': None,
+        'gefahren': ['G 0.40', 'G 0.41']
+    },
+    {
+        'id': 'NET.3.2.A20',
+        'cia': None,
+        'gefahren': ['G 0.23']
+    },
+    {
+        'id': 'NET.3.2.A21',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.23', 'G 0.29', 'G 0.39']
+    },
+    {
+        'id': 'NET.3.2.A22',
+        'cia': None,
+        'gefahren': ['G 0.22', 'G 0.43', 'G 0.46']
+    },
+    {
+        'id': 'NET.3.2.A23',
+        'cia': None,
+        'gefahren': ['G 0.9', 'G 0.18', 'G 0.25', 'G 0.27']
+    },
+    {
+        'id': 'NET.3.2.A24',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'NET.3.2.A25',
+        'cia': 'I',
+        'gefahren': ['G 0.22', 'G 0.23', 'G 0.43', 'G 0.46']
+    },
+    {
+        'id': 'NET.3.2.A26',
+        'cia': 'CIA',
+        'gefahren': ['G 0.18', 'G 0.25', 'G 0.27']
+    },
+    {
+        'id': 'NET.3.2.A27',
+        'cia': 'CI',
+        'gefahren': ['G 0.14', 'G 0.19', 'G 0.21', 'G 0.23', 'G 0.26']
+    },
+    {
+        'id': 'NET.3.2.A28',
+        'cia': 'CI',
+        'gefahren': ['G 0.39']
+    },
+    {
+        'id': 'NET.3.2.A29',
+        'cia': 'A',
+        'gefahren': ['G 0.9', 'G 0.18', 'G 0.25', 'G 0.27']
+    },
+    {
+        'id': 'NET.3.2.A30',
+        'cia': 'A',
+        'gefahren': ['G 0.27']
+    },
+    {
+        'id': 'NET.3.2.A31',
+        'cia': 'CI',
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'NET.3.2.A32',
+        'cia': None,
+        'gefahren': ['G 0.9', 'G 0.18', 'G 0.27']
+    },
+    {
+        'id': 'NET.3.3.A1',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.32']
+    },
+    {
+        'id': 'NET.3.3.A2',
+        'cia': None,
+        'gefahren': ['G 0.11', 'G 0.18']
+    },
+    {
+        'id': 'NET.3.3.A3',
+        'cia': None,
+        'gefahren': ['G 0.9', 'G 0.18']
+    },
+    {
+        'id': 'NET.3.3.A4',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'NET.3.3.A5',
+        'cia': None,
+        'gefahren': ['G 0.30', 'G 0.32']
+    },
+    {
+        'id': 'NET.3.3.A6',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'NET.3.3.A7',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'NET.3.3.A8',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'NET.3.3.A9',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'NET.3.3.A10',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'NET.3.3.A11',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.23', 'G 0.30']
+    },
+    {
+        'id': 'NET.3.3.A12',
+        'cia': None,
+        'gefahren': ['G 0.30', 'G 0.32']
+    },
+    {
+        'id': 'NET.3.3.A13',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'NET.3.4.A1',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.32', 'G 0.36']
+    },
+    {
+        'id': 'NET.3.4.A2',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.25', 'G 0.27', 'G 0.31', 'G 0.32', 'G 0.36', 'G 0.38', 'G 0.39']
+    },
+    {
+        'id': 'NET.3.4.A3',
+        'cia': None,
+        'gefahren': ['G 0.26', 'G 0.27', 'G 0.31', 'G 0.36', 'G 0.38', 'G 0.39']
+    },
+    {
+        'id': 'NET.3.4.A4',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.32', 'G 0.38']
+    },
+    {
+        'id': 'NET.3.4.A5',
+        'cia': None,
+        'gefahren': ['G 0.25', 'G 0.26', 'G 0.30', 'G 0.31', 'G 0.32', 'G 0.36']
+    },
+    {
+        'id': 'NET.3.4.A6',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.25', 'G 0.26', 'G 0.27', 'G 0.31']
+    },
+    {
+        'id': 'NET.3.4.A7',
+        'cia': None,
+        'gefahren': ['G 0.36']
+    },
+    {
+        'id': 'NET.3.4.A8',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.28', 'G 0.30', 'G 0.31', 'G 0.32', 'G 0.38']
+    },
+    {
+        'id': 'NET.3.4.A9',
+        'cia': None,
+        'gefahren': ['G 0.32', 'G 0.36', 'G 0.39']
+    },
+    {
+        'id': 'NET.3.4.A10',
+        'cia': None,
+        'gefahren': ['G 0.36']
+    },
+    {
+        'id': 'NET.3.4.A11',
+        'cia': None,
+        'gefahren': ['G 0.26', 'G 0.32', 'G 0.36', 'G 0.39']
+    },
+    {
+        'id': 'NET.3.4.A12',
+        'cia': None,
+        'gefahren': ['G 0.25', 'G 0.28', 'G 0.31', 'G 0.32', 'G 0.39']
+    },
+    {
+        'id': 'NET.3.4.A13',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.26', 'G 0.31', 'G 0.39']
+    },
+    {
+        'id': 'NET.3.4.A14',
+        'cia': None,
+        'gefahren': ['G 0.36', 'G 0.43']
+    },
+    {
+        'id': 'NET.3.4.A15',
+        'cia': None,
+        'gefahren': ['G 0.39']
+    },
+    {
+        'id': 'NET.3.4.A16',
+        'cia': None,
+        'gefahren': ['G 0.25', 'G 0.26', 'G 0.27', 'G 0.28', 'G 0.30', 'G 0.31', 'G 0.32', 'G 0.36', 'G 0.38', 'G 0.39']
+    },
+    {
+        'id': 'NET.3.4.A17',
+        'cia': None,
+        'gefahren': ['G 0.30', 'G 0.38']
+    },
+    {
+        'id': 'NET.3.4.A18',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.31']
+    },
+    {
+        'id': 'NET.3.4.A19',
+        'cia': None,
+        'gefahren': ['G 0.36']
+    },
+    {
+        'id': 'NET.3.4.A20',
+        'cia': 'CI',
+        'gefahren': ['G 0.36', 'G 0.43']
+    },
+    {
+        'id': 'NET.3.4.A21',
+        'cia': 'C',
+        'gefahren': ['G 0.36', 'G 0.39']
+    },
+    {
+        'id': 'NET.3.4.A22',
+        'cia': 'C',
+        'gefahren': ['G 0.30', 'G 0.36', 'G 0.43']
+    },
+    {
+        'id': 'NET.3.4.A23',
+        'cia': 'A',
+        'gefahren': ['G 0.25', 'G 0.26']
+    },
+    {
+        'id': 'NET.3.4.A24',
+        'cia': 'C',
+        'gefahren': ['G 0.30', 'G 0.43']
+    },
+    {
+        'id': 'NET.3.4.A25',
+        'cia': 'A',
+        'gefahren': ['G 0.28', 'G 0.31', 'G 0.32', 'G 0.36', 'G 0.38', 'G 0.39']
+    },
+    {
+        'id': 'NET.3.4.A26',
+        'cia': 'A',
+        'gefahren': ['G 0.25', 'G 0.26']
+    },
+    {
+        'id': 'NET.3.4.A27',
+        'cia': 'I',
+        'gefahren': ['G 0.36', 'G 0.43']
+    },
+    {
+        'id': 'NET.4.1.A1',
+        'cia': None,
+        'gefahren': ['G 0.11', 'G 0.18']
+    },
+    {
+        'id': 'NET.4.1.A2',
+        'cia': None,
+        'gefahren': ['G 0.11', 'G 0.18']
+    },
+    {
+        'id': 'NET.4.1.A5',
+        'cia': None,
+        'gefahren': ['G 0.37']
+    },
+    {
+        'id': 'NET.4.1.A6',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.31']
+    },
+    {
+        'id': 'NET.4.1.A7',
+        'cia': None,
+        'gefahren': ['G 0.21', 'G 0.30']
+    },
+    {
+        'id': 'NET.4.1.A8',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.19', 'G 0.23', 'G 0.31', 'G 0.42']
+    },
+    {
+        'id': 'NET.4.1.A9',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.31', 'G 0.42']
+    },
+    {
+        'id': 'NET.4.1.A10',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'NET.4.1.A11',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.19']
+    },
+    {
+        'id': 'NET.4.1.A12',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.45']
+    },
+    {
+        'id': 'NET.4.1.A13',
+        'cia': None,
+        'gefahren': ['G 0.9', 'G 0.18']
+    },
+    {
+        'id': 'NET.4.1.A14',
+        'cia': None,
+        'gefahren': ['G 0.9', 'G 0.27']
+    },
+    {
+        'id': 'NET.4.1.A15',
+        'cia': None,
+        'gefahren': ['G 0.27']
+    },
+    {
+        'id': 'NET.4.1.A16',
+        'cia': None,
+        'gefahren': ['G 0.21', 'G 0.30']
+    },
+    {
+        'id': 'NET.4.1.A17',
+        'cia': None,
+        'gefahren': ['G 0.30']
+    },
+    {
+        'id': 'NET.4.1.A18',
+        'cia': 'CI',
+        'gefahren': ['G 0.21', 'G 0.30']
+    },
+    {
+        'id': 'NET.4.1.A19',
+        'cia': 'A',
+        'gefahren': ['G 0.9', 'G 0.11', 'G 0.27']
+    },
+    {
+        'id': 'NET.4.2.A1',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'NET.4.2.A3',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.23', 'G 0.28', 'G 0.30']
+    },
+    {
+        'id': 'NET.4.2.A4',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.23']
+    },
+    {
+        'id': 'NET.4.2.A5',
+        'cia': None,
+        'gefahren': ['G 0.23', 'G 0.30', 'G 0.31']
+    },
+    {
+        'id': 'NET.4.2.A7',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.19', 'G 0.31']
+    },
+    {
+        'id': 'NET.4.2.A8',
+        'cia': None,
+        'gefahren': ['G 0.15', 'G 0.19']
+    },
+    {
+        'id': 'NET.4.2.A9',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'NET.4.2.A11',
+        'cia': None,
+        'gefahren': ['G 0.30', 'G 0.31']
+    },
+    {
+        'id': 'NET.4.2.A12',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.19']
+    },
+    {
+        'id': 'NET.4.2.A13',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.46']
+    },
+    {
+        'id': 'NET.4.2.A14',
+        'cia': 'CI',
+        'gefahren': ['G 0.15', 'G 0.46']
+    },
+    {
+        'id': 'NET.4.2.A15',
+        'cia': 'CI',
+        'gefahren': ['G 0.15', 'G 0.18', 'G 0.19', 'G 0.46']
+    },
+    {
+        'id': 'NET.4.2.A16',
+        'cia': 'CIA',
+        'gefahren': ['G 0.18', 'G 0.23', 'G 0.30']
+    },
+    {
+        'id': 'NET.4.3.A1',
+        'cia': None,
+        'gefahren': ['G 0.19', 'G 0.27']
+    },
+    {
+        'id': 'NET.4.3.A2',
+        'cia': None,
+        'gefahren': ['G 0.29', 'G 0.31']
+    },
+    {
+        'id': 'NET.4.3.A3',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.23', 'G 0.26', 'G 0.27', 'G 0.31']
+    },
+    {
+        'id': 'NET.4.3.A4',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.31']
+    },
+    {
+        'id': 'NET.4.3.A6',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'NET.4.3.A7',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.37']
+    },
+    {
+        'id': 'NET.4.3.A8',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.18', 'G 0.19']
+    },
+    {
+        'id': 'NET.4.3.A9',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.37']
+    },
+    {
+        'id': 'NET.4.3.A10',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.18', 'G 0.19']
+    },
+    {
+        'id': 'NET.4.3.A11',
+        'cia': 'A',
+        'gefahren': ['G 0.27']
+    },
+    {
+        'id': 'NET.4.3.A12',
+        'cia': 'CIA',
+        'gefahren': ['G 0.14', 'G 0.19', 'G 0.30']
+    },
+    {
+        'id': 'NET.4.3.A13',
+        'cia': 'CIA',
+        'gefahren': ['G 0.30', 'G 0.31']
+    },
+    {
+        'id': 'NET.4.3.A14',
+        'cia': 'A',
+        'gefahren': ['G 0.27', 'G 0.45']
+    },
+    {
+        'id': 'NET.4.3.A15',
+        'cia': 'CIA',
+        'gefahren': ['G 0.16', 'G 0.19', 'G 0.37', 'G 0.45']
+    },
+    {
+        'id': 'OPS.1.1.1.A1',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'OPS.1.1.1.A2',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.30', 'G 0.32']
+    },
+    {
+        'id': 'OPS.1.1.1.A3',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'OPS.1.1.1.A4',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.27', 'G 0.33']
+    },
+    {
+        'id': 'OPS.1.1.1.A5',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.23', 'G 0.25', 'G 0.31']
+    },
+    {
+        'id': 'OPS.1.1.1.A6',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'OPS.1.1.1.A7',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.19', 'G 0.27', 'G 0.28']
+    },
+    {
+        'id': 'OPS.1.1.1.A8',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'OPS.1.1.1.A9',
+        'cia': None,
+        'gefahren': ['G 0.15', 'G 0.18', 'G 0.22', 'G 0.25', 'G 0.26']
+    },
+    {
+        'id': 'OPS.1.1.1.A10',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.23', 'G 0.28']
+    },
+    {
+        'id': 'OPS.1.1.1.A11',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.25', 'G 0.26']
+    },
+    {
+        'id': 'OPS.1.1.1.A12',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.31']
+    },
+    {
+        'id': 'OPS.1.1.1.A13',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.19', 'G 0.22']
+    },
+    {
+        'id': 'OPS.1.1.1.A14',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'OPS.1.1.1.A15',
+        'cia': None,
+        'gefahren': ['G 0.15', 'G 0.18', 'G 0.22', 'G 0.23']
+    },
+    {
+        'id': 'OPS.1.1.1.A16',
+        'cia': None,
+        'gefahren': ['G 0.31']
+    },
+    {
+        'id': 'OPS.1.1.1.A17',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.25']
+    },
+    {
+        'id': 'OPS.1.1.1.A18',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.31']
+    },
+    {
+        'id': 'OPS.1.1.1.A19',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.25']
+    },
+    {
+        'id': 'OPS.1.1.1.A20',
+        'cia': None,
+        'gefahren': ['G 0.23', 'G 0.28']
+    },
+    {
+        'id': 'OPS.1.1.1.A21',
+        'cia': 'CIA',
+        'gefahren': ['G 0.23', 'G 0.25', 'G 0.26']
+    },
+    {
+        'id': 'OPS.1.1.1.A22',
+        'cia': 'CIA',
+        'gefahren': ['G 0.23', 'G 0.28']
+    },
+    {
+        'id': 'OPS.1.1.1.A23',
+        'cia': 'CIA',
+        'gefahren': ['G 0.18', 'G 0.23']
+    },
+    {
+        'id': 'OPS.1.1.1.A24',
+        'cia': 'CIA',
+        'gefahren': ['G 0.18', 'G 0.37']
+    },
+    {
+        'id': 'OPS.1.1.1.A25',
+        'cia': 'CIA',
+        'gefahren': ['G 0.25']
+    },
+    {
+        'id': 'OPS.1.1.1.A26',
+        'cia': 'IA',
+        'gefahren': ['G 0.25']
+    },
+    {
+        'id': 'OPS.1.1.2.A2',
+        'cia': None,
+        'gefahren': ['G 0.27', 'G 0.33']
+    },
+    {
+        'id': 'OPS.1.1.2.A4',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.30', 'G 0.32', 'G 0.42']
+    },
+    {
+        'id': 'OPS.1.1.2.A5',
+        'cia': None,
+        'gefahren': ['G 0.37']
+    },
+    {
+        'id': 'OPS.1.1.2.A6',
+        'cia': None,
+        'gefahren': ['G 0.23', 'G 0.30']
+    },
+    {
+        'id': 'OPS.1.1.2.A7',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.30', 'G 0.31', 'G 0.32']
+    },
+    {
+        'id': 'OPS.1.1.2.A8',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.31']
+    },
+    {
+        'id': 'OPS.1.1.2.A11',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.37']
+    },
+    {
+        'id': 'OPS.1.1.2.A16',
+        'cia': None,
+        'gefahren': ['G 0.23', 'G 0.30']
+    },
+    {
+        'id': 'OPS.1.1.2.A17',
+        'cia': 'CI',
+        'gefahren': ['G 0.31', 'G 0.32', 'G 0.37']
+    },
+    {
+        'id': 'OPS.1.1.2.A18',
+        'cia': 'CI',
+        'gefahren': ['G 0.22', 'G 0.37']
+    },
+    {
+        'id': 'OPS.1.1.2.A19',
+        'cia': 'A',
+        'gefahren': ['G 0.25', 'G 0.27']
+    },
+    {
+        'id': 'OPS.1.1.2.A21',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.30', 'G 0.31', 'G 0.32']
+    },
+    {
+        'id': 'OPS.1.1.2.A22',
+        'cia': None,
+        'gefahren': ['G 0.31']
+    },
+    {
+        'id': 'OPS.1.1.2.A23',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.31']
+    },
+    {
+        'id': 'OPS.1.1.2.A24',
+        'cia': None,
+        'gefahren': ['G 0.25', 'G 0.31', 'G 0.42']
+    },
+    {
+        'id': 'OPS.1.1.2.A25',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.27', 'G 0.45']
+    },
+    {
+        'id': 'OPS.1.1.2.A26',
+        'cia': None,
+        'gefahren': ['G 0.27', 'G 0.45']
+    },
+    {
+        'id': 'OPS.1.1.2.A27',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.27']
+    },
+    {
+        'id': 'OPS.1.1.2.A28',
+        'cia': None,
+        'gefahren': ['G 0.22', 'G 0.37']
+    },
+    {
+        'id': 'OPS.1.1.2.A29',
+        'cia': 'A',
+        'gefahren': ['G 0.18', 'G 0.25']
+    },
+    {
+        'id': 'OPS.1.1.2.A30',
+        'cia': 'CI',
+        'gefahren': ['G 0.18', 'G 0.23']
+    },
+    {
+        'id': 'OPS.1.1.3.A1',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'OPS.1.1.3.A2',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'OPS.1.1.3.A3',
+        'cia': None,
+        'gefahren': ['G 0.19', 'G 0.20', 'G 0.23', 'G 0.25', 'G 0.26', 'G 0.28', 'G 0.39']
+    },
+    {
+        'id': 'OPS.1.1.3.A5',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'OPS.1.1.3.A6',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'OPS.1.1.3.A7',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'OPS.1.1.3.A8',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'OPS.1.1.3.A9',
+        'cia': None,
+        'gefahren': ['G 0.25', 'G 0.26', 'G 0.28']
+    },
+    {
+        'id': 'OPS.1.1.3.A10',
+        'cia': None,
+        'gefahren': ['G 0.20', 'G 0.23', 'G 0.28', 'G 0.39', 'G 0.46']
+    },
+    {
+        'id': 'OPS.1.1.3.A11',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'OPS.1.1.3.A12',
+        'cia': 'A',
+        'gefahren': ['G 0.18', 'G 0.25', 'G 0.26', 'G 0.27']
+    },
+    {
+        'id': 'OPS.1.1.3.A13',
+        'cia': 'IA',
+        'gefahren': ['G 0.18', 'G 0.26']
+    },
+    {
+        'id': 'OPS.1.1.3.A14',
+        'cia': 'CIA',
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'OPS.1.1.3.A15',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.23', 'G 0.25', 'G 0.26', 'G 0.28']
+    },
+    {
+        'id': 'OPS.1.1.4.A1',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.39']
+    },
+    {
+        'id': 'OPS.1.1.4.A2',
+        'cia': None,
+        'gefahren': ['G 0.39']
+    },
+    {
+        'id': 'OPS.1.1.4.A3',
+        'cia': None,
+        'gefahren': ['G 0.19', 'G 0.20', 'G 0.29', 'G 0.39']
+    },
+    {
+        'id': 'OPS.1.1.4.A5',
+        'cia': None,
+        'gefahren': ['G 0.27', 'G 0.29', 'G 0.30', 'G 0.39']
+    },
+    {
+        'id': 'OPS.1.1.4.A6',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.39']
+    },
+    {
+        'id': 'OPS.1.1.4.A7',
+        'cia': None,
+        'gefahren': ['G 0.31', 'G 0.39']
+    },
+    {
+        'id': 'OPS.1.1.4.A9',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.39']
+    },
+    {
+        'id': 'OPS.1.1.4.A10',
+        'cia': 'CIA',
+        'gefahren': ['G 0.39']
+    },
+    {
+        'id': 'OPS.1.1.4.A11',
+        'cia': 'CIA',
+        'gefahren': ['G 0.39']
+    },
+    {
+        'id': 'OPS.1.1.4.A12',
+        'cia': 'CIA',
+        'gefahren': ['G 0.39']
+    },
+    {
+        'id': 'OPS.1.1.4.A13',
+        'cia': 'CIA',
+        'gefahren': ['G 0.39']
+    },
+    {
+        'id': 'OPS.1.1.4.A14',
+        'cia': 'CIA',
+        'gefahren': ['G 0.18', 'G 0.39']
+    },
+    {
+        'id': 'OPS.1.1.5.A1',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'OPS.1.1.5.A3',
+        'cia': None,
+        'gefahren': ['G 0.29', 'G 0.37']
+    },
+    {
+        'id': 'OPS.1.1.5.A4',
+        'cia': None,
+        'gefahren': ['G 0.37']
+    },
+    {
+        'id': 'OPS.1.1.5.A5',
+        'cia': None,
+        'gefahren': ['G 0.29', 'G 0.32', 'G 0.38', 'G 0.46']
+    },
+    {
+        'id': 'OPS.1.1.5.A6',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.26', 'G 0.27', 'G 0.37']
+    },
+    {
+        'id': 'OPS.1.1.5.A8',
+        'cia': None,
+        'gefahren': ['G 0.29']
+    },
+    {
+        'id': 'OPS.1.1.5.A9',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.27', 'G 0.29', 'G 0.46']
+    },
+    {
+        'id': 'OPS.1.1.5.A10',
+        'cia': None,
+        'gefahren': ['G 0.22', 'G 0.32']
+    },
+    {
+        'id': 'OPS.1.1.5.A11',
+        'cia': 'CIA',
+        'gefahren': ['G 0.29', 'G 0.37']
+    },
+    {
+        'id': 'OPS.1.1.5.A12',
+        'cia': 'CI',
+        'gefahren': ['G 0.14', 'G 0.15', 'G 0.19', 'G 0.22', 'G 0.46']
+    },
+    {
+        'id': 'OPS.1.1.5.A13',
+        'cia': 'A',
+        'gefahren': ['G 0.9', 'G 0.25', 'G 0.27']
+    },
+    {
+        'id': 'OPS.1.1.6.A1',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.25', 'G 0.26']
+    },
+    {
+        'id': 'OPS.1.1.6.A2',
+        'cia': None,
+        'gefahren': ['G 0.25', 'G 0.26']
+    },
+    {
+        'id': 'OPS.1.1.6.A3',
+        'cia': None,
+        'gefahren': ['G 0.26']
+    },
+    {
+        'id': 'OPS.1.1.6.A4',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.25', 'G 0.26']
+    },
+    {
+        'id': 'OPS.1.1.6.A5',
+        'cia': None,
+        'gefahren': ['G 0.27', 'G 0.28']
+    },
+    {
+        'id': 'OPS.1.1.6.A6',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'OPS.1.1.6.A7',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.18', 'G 0.41']
+    },
+    {
+        'id': 'OPS.1.1.6.A10',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'OPS.1.1.6.A11',
+        'cia': None,
+        'gefahren': ['G 0.19', 'G 0.38']
+    },
+    {
+        'id': 'OPS.1.1.6.A12',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.25', 'G 0.26', 'G 0.28']
+    },
+    {
+        'id': 'OPS.1.1.6.A13',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.19', 'G 0.25', 'G 0.26', 'G 0.32', 'G 0.38', 'G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'OPS.1.1.6.A14',
+        'cia': 'CIA',
+        'gefahren': ['G 0.18', 'G 0.28']
+    },
+    {
+        'id': 'OPS.1.1.6.A15',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.25', 'G 0.26']
+    },
+    {
+        'id': 'OPS.1.1.6.A16',
+        'cia': 'CIA',
+        'gefahren': ['G 0.14', 'G 0.18']
+    },
+    {
+        'id': 'OPS.1.1.7.A1',
+        'cia': None,
+        'gefahren': ['G 0.9', 'G 0.18', 'G 0.25', 'G 0.26', 'G 0.27', 'G 0.29', 'G 0.30']
+    },
+    {
+        'id': 'OPS.1.1.7.A2',
+        'cia': None,
+        'gefahren': ['G 0.9', 'G 0.18', 'G 0.25', 'G 0.26', 'G 0.27']
+    },
+    {
+        'id': 'OPS.1.1.7.A3',
+        'cia': None,
+        'gefahren': ['G 0.21', 'G 0.22', 'G 0.25', 'G 0.26']
+    },
+    {
+        'id': 'OPS.1.1.7.A4',
+        'cia': None,
+        'gefahren': ['G 0.15', 'G 0.19', 'G 0.21', 'G 0.22', 'G 0.23', 'G 0.30', 'G 0.43']
+    },
+    {
+        'id': 'OPS.1.1.7.A5',
+        'cia': None,
+        'gefahren': ['G 0.15', 'G 0.19', 'G 0.21', 'G 0.22', 'G 0.23', 'G 0.43']
+    },
+    {
+        'id': 'OPS.1.1.7.A6',
+        'cia': None,
+        'gefahren': ['G 0.15', 'G 0.19', 'G 0.21', 'G 0.22', 'G 0.23', 'G 0.30', 'G 0.31', 'G 0.43']
+    },
+    {
+        'id': 'OPS.1.1.7.A7',
+        'cia': None,
+        'gefahren': ['G 0.15', 'G 0.19', 'G 0.21', 'G 0.22', 'G 0.23', 'G 0.30', 'G 0.31', 'G 0.32']
+    },
+    {
+        'id': 'OPS.1.1.7.A8',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.25', 'G 0.26', 'G 0.27', 'G 0.29', 'G 0.30', 'G 0.31']
+    },
+    {
+        'id': 'OPS.1.1.7.A9',
+        'cia': None,
+        'gefahren': ['G 0.25', 'G 0.26', 'G 0.27', 'G 0.29', 'G 0.30', 'G 0.31']
+    },
+    {
+        'id': 'OPS.1.1.7.A10',
+        'cia': None,
+        'gefahren': ['G 0.15', 'G 0.18', 'G 0.19', 'G 0.21', 'G 0.22', 'G 0.25', 'G 0.26', 'G 0.27', 'G 0.29', 'G 0.30', 'G 0.31']
+    },
+    {
+        'id': 'OPS.1.1.7.A11',
+        'cia': None,
+        'gefahren': ['G 0.15', 'G 0.18', 'G 0.19', 'G 0.21', 'G 0.22', 'G 0.26']
+    },
+    {
+        'id': 'OPS.1.1.7.A12',
+        'cia': None,
+        'gefahren': ['G 0.21', 'G 0.22', 'G 0.30', 'G 0.31']
+    },
+    {
+        'id': 'OPS.1.1.7.A13',
+        'cia': None,
+        'gefahren': ['G 0.21', 'G 0.22', 'G 0.23', 'G 0.30', 'G 0.31', 'G 0.43']
+    },
+    {
+        'id': 'OPS.1.1.7.A14',
+        'cia': None,
+        'gefahren': ['G 0.45']
+    },
+    {
+        'id': 'OPS.1.1.7.A15',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.21', 'G 0.22', 'G 0.23', 'G 0.26', 'G 0.27', 'G 0.30', 'G 0.31', 'G 0.32', 'G 0.37']
+    },
+    {
+        'id': 'OPS.1.1.7.A16',
+        'cia': None,
+        'gefahren': ['G 0.25', 'G 0.26']
+    },
+    {
+        'id': 'OPS.1.1.7.A17',
+        'cia': None,
+        'gefahren': ['G 0.15', 'G 0.19', 'G 0.21', 'G 0.22', 'G 0.23', 'G 0.30', 'G 0.31', 'G 0.43']
+    },
+    {
+        'id': 'OPS.1.1.7.A18',
+        'cia': None,
+        'gefahren': ['G 0.15', 'G 0.19', 'G 0.21', 'G 0.22', 'G 0.23', 'G 0.30']
+    },
+    {
+        'id': 'OPS.1.1.7.A19',
+        'cia': None,
+        'gefahren': ['G 0.15', 'G 0.19', 'G 0.21', 'G 0.22', 'G 0.23', 'G 0.43']
+    },
+    {
+        'id': 'OPS.1.1.7.A20',
+        'cia': 'A',
+        'gefahren': ['G 0.9', 'G 0.25', 'G 0.26']
+    },
+    {
+        'id': 'OPS.1.1.7.A21',
+        'cia': 'CI',
+        'gefahren': ['G 0.15', 'G 0.19', 'G 0.21', 'G 0.22', 'G 0.23', 'G 0.25', 'G 0.26', 'G 0.30', 'G 0.43']
+    },
+    {
+        'id': 'OPS.1.1.7.A22',
+        'cia': 'CIA',
+        'gefahren': ['G 0.15', 'G 0.19', 'G 0.21', 'G 0.22', 'G 0.23', 'G 0.29', 'G 0.30', 'G 0.31']
+    },
+    {
+        'id': 'OPS.1.1.7.A23',
+        'cia': 'CIA',
+        'gefahren': ['G 0.21', 'G 0.22', 'G 0.25', 'G 0.26']
+    },
+    {
+        'id': 'OPS.1.1.7.A24',
+        'cia': 'CIA',
+        'gefahren': ['G 0.18', 'G 0.21', 'G 0.22', 'G 0.23', 'G 0.30', 'G 0.31', 'G 0.32', 'G 0.45']
+    },
+    {
+        'id': 'OPS.1.1.7.A25',
+        'cia': 'CI',
+        'gefahren': ['G 0.21', 'G 0.22', 'G 0.23', 'G 0.29', 'G 0.30', 'G 0.31', 'G 0.32', 'G 0.37']
+    },
+    {
+        'id': 'OPS.1.1.7.A26',
+        'cia': 'CI',
+        'gefahren': ['G 0.15', 'G 0.19', 'G 0.21', 'G 0.22', 'G 0.23', 'G 0.30', 'G 0.43']
+    },
+    {
+        'id': 'OPS.1.2.2.A1',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.29']
+    },
+    {
+        'id': 'OPS.1.2.2.A2',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.29']
+    },
+    {
+        'id': 'OPS.1.2.2.A3',
+        'cia': None,
+        'gefahren': ['G 0.2', 'G 0.4', 'G 0.44']
+    },
+    {
+        'id': 'OPS.1.2.2.A4',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.45']
+    },
+    {
+        'id': 'OPS.1.2.2.A5',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.29', 'G 0.45']
+    },
+    {
+        'id': 'OPS.1.2.2.A6',
+        'cia': None,
+        'gefahren': ['G 0.25', 'G 0.26', 'G 0.28', 'G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'OPS.1.2.2.A7',
+        'cia': None,
+        'gefahren': ['G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'OPS.1.2.2.A8',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.29', 'G 0.37']
+    },
+    {
+        'id': 'OPS.1.2.2.A9',
+        'cia': None,
+        'gefahren': ['G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'OPS.1.2.2.A10',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.29', 'G 0.31']
+    },
+    {
+        'id': 'OPS.1.2.2.A11',
+        'cia': None,
+        'gefahren': ['G 0.25', 'G 0.26', 'G 0.30', 'G 0.31']
+    },
+    {
+        'id': 'OPS.1.2.2.A12',
+        'cia': None,
+        'gefahren': ['G 0.27']
+    },
+    {
+        'id': 'OPS.1.2.2.A13',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'OPS.1.2.2.A14',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.25', 'G 0.26', 'G 0.28']
+    },
+    {
+        'id': 'OPS.1.2.2.A15',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.45']
+    },
+    {
+        'id': 'OPS.1.2.2.A16',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.29', 'G 0.46']
+    },
+    {
+        'id': 'OPS.1.2.2.A17',
+        'cia': None,
+        'gefahren': ['G 0.25', 'G 0.26']
+    },
+    {
+        'id': 'OPS.1.2.2.A18',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.28', 'G 0.29', 'G 0.45']
+    },
+    {
+        'id': 'OPS.1.2.2.A19',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.25', 'G 0.26', 'G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'OPS.1.2.2.A20',
+        'cia': 'CI',
+        'gefahren': ['G 0.18', 'G 0.29']
+    },
+    {
+        'id': 'OPS.1.2.2.A21',
+        'cia': 'CI',
+        'gefahren': ['G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'OPS.1.2.4.A1',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.31']
+    },
+    {
+        'id': 'OPS.1.2.4.A2',
+        'cia': None,
+        'gefahren': ['G 0.21', 'G 0.30']
+    },
+    {
+        'id': 'OPS.1.2.4.A5',
+        'cia': None,
+        'gefahren': ['G 0.31']
+    },
+    {
+        'id': 'OPS.1.2.4.A6',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'OPS.1.2.4.A7',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.30', 'G 0.31']
+    },
+    {
+        'id': 'OPS.1.2.4.A8',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'OPS.1.2.4.A9',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.25', 'G 0.27']
+    },
+    {
+        'id': 'OPS.1.2.4.A10',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'OPS.1.2.5.A1',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'OPS.1.2.5.A2',
+        'cia': None,
+        'gefahren': ['G 0.31']
+    },
+    {
+        'id': 'OPS.1.2.5.A3',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.18', 'G 0.25', 'G 0.31']
+    },
+    {
+        'id': 'OPS.1.2.5.A5',
+        'cia': None,
+        'gefahren': ['G 0.19', 'G 0.25']
+    },
+    {
+        'id': 'OPS.1.2.5.A6',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'OPS.1.2.5.A7',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.19']
+    },
+    {
+        'id': 'OPS.1.2.5.A8',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.19', 'G 0.22']
+    },
+    {
+        'id': 'OPS.1.2.5.A9',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.20']
+    },
+    {
+        'id': 'OPS.1.2.5.A10',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.20', 'G 0.37']
+    },
+    {
+        'id': 'OPS.1.2.5.A14',
+        'cia': 'CIA',
+        'gefahren': ['G 0.21', 'G 0.22', 'G 0.25']
+    },
+    {
+        'id': 'OPS.1.2.5.A17',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.21', 'G 0.25']
+    },
+    {
+        'id': 'OPS.1.2.5.A19',
+        'cia': None,
+        'gefahren': ['G 0.19', 'G 0.21', 'G 0.39']
+    },
+    {
+        'id': 'OPS.1.2.5.A20',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.25', 'G 0.39', 'G 0.40']
+    },
+    {
+        'id': 'OPS.1.2.5.A21',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.30']
+    },
+    {
+        'id': 'OPS.1.2.5.A22',
+        'cia': 'A',
+        'gefahren': ['G 0.18', 'G 0.19', 'G 0.22', 'G 0.30', 'G 0.37']
+    },
+    {
+        'id': 'OPS.1.2.5.A24',
+        'cia': None,
+        'gefahren': ['G 0.20', 'G 0.25', 'G 0.31']
+    },
+    {
+        'id': 'OPS.1.2.5.A25',
+        'cia': None,
+        'gefahren': ['G 0.30']
+    },
+    {
+        'id': 'OPS.1.2.6.A1',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'OPS.1.2.6.A2',
+        'cia': None,
+        'gefahren': ['G 0.20', 'G 0.29']
+    },
+    {
+        'id': 'OPS.1.2.6.A3',
+        'cia': None,
+        'gefahren': ['G 0.19', 'G 0.30', 'G 0.46']
+    },
+    {
+        'id': 'OPS.1.2.6.A4',
+        'cia': None,
+        'gefahren': ['G 0.22']
+    },
+    {
+        'id': 'OPS.1.2.6.A5',
+        'cia': None,
+        'gefahren': ['G 0.22', 'G 0.27', 'G 0.46']
+    },
+    {
+        'id': 'OPS.1.2.6.A6',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.22']
+    },
+    {
+        'id': 'OPS.1.2.6.A7',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.25', 'G 0.40', 'G 0.46']
+    },
+    {
+        'id': 'OPS.1.2.6.A8',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.22', 'G 0.46']
+    },
+    {
+        'id': 'OPS.1.2.6.A9',
+        'cia': 'A',
+        'gefahren': ['G 0.25', 'G 0.27', 'G 0.46']
+    },
+    {
+        'id': 'OPS.1.2.6.A10',
+        'cia': 'I',
+        'gefahren': ['G 0.20', 'G 0.22']
+    },
+    {
+        'id': 'OPS.1.2.6.A11',
+        'cia': 'A',
+        'gefahren': ['G 0.27']
+    },
+    {
+        'id': 'OPS.1.2.6.A12',
+        'cia': 'I',
+        'gefahren': ['G 0.20', 'G 0.22']
+    },
+    {
+        'id': 'OPS.2.2.A1',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.29']
+    },
+    {
+        'id': 'OPS.2.2.A2',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.29']
+    },
+    {
+        'id': 'OPS.2.2.A3',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'OPS.2.2.A4',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'OPS.2.2.A5',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.25', 'G 0.26', 'G 0.31', 'G 0.36']
+    },
+    {
+        'id': 'OPS.2.2.A6',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.25', 'G 0.26', 'G 0.31']
+    },
+    {
+        'id': 'OPS.2.2.A7',
+        'cia': None,
+        'gefahren': ['G 0.15', 'G 0.19', 'G 0.25', 'G 0.26', 'G 0.30', 'G 0.31', 'G 0.32', 'G 0.45']
+    },
+    {
+        'id': 'OPS.2.2.A8',
+        'cia': None,
+        'gefahren': ['G 0.11', 'G 0.18', 'G 0.29']
+    },
+    {
+        'id': 'OPS.2.2.A9',
+        'cia': None,
+        'gefahren': ['G 0.11', 'G 0.18', 'G 0.29']
+    },
+    {
+        'id': 'OPS.2.2.A10',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.19', 'G 0.25', 'G 0.26']
+    },
+    {
+        'id': 'OPS.2.2.A11',
+        'cia': None,
+        'gefahren': ['G 0.9', 'G 0.11', 'G 0.25', 'G 0.26', 'G 0.45']
+    },
+    {
+        'id': 'OPS.2.2.A12',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'OPS.2.2.A13',
+        'cia': None,
+        'gefahren': ['G 0.15', 'G 0.18', 'G 0.19', 'G 0.25', 'G 0.26', 'G 0.29', 'G 0.30', 'G 0.31', 'G 0.32']
+    },
+    {
+        'id': 'OPS.2.2.A14',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'OPS.2.2.A15',
+        'cia': 'A',
+        'gefahren': ['G 0.11', 'G 0.45']
+    },
+    {
+        'id': 'OPS.2.2.A16',
+        'cia': 'A',
+        'gefahren': ['G 0.11', 'G 0.45']
+    },
+    {
+        'id': 'OPS.2.2.A17',
+        'cia': 'A',
+        'gefahren': ['G 0.14', 'G 0.15']
+    },
+    {
+        'id': 'OPS.2.2.A18',
+        'cia': 'CIA',
+        'gefahren': ['G 0.30', 'G 0.32']
+    },
+    {
+        'id': 'OPS.2.2.A19',
+        'cia': 'CIA',
+        'gefahren': ['G 0.14', 'G 0.19', 'G 0.35', 'G 0.41']
+    },
+    {
+        'id': 'OPS.2.3.A1',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.29']
+    },
+    {
+        'id': 'OPS.2.3.A2',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.29']
+    },
+    {
+        'id': 'OPS.2.3.A3',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.29']
+    },
+    {
+        'id': 'OPS.2.3.A4',
+        'cia': None,
+        'gefahren': ['G 0.29']
+    },
+    {
+        'id': 'OPS.2.3.A5',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.18', 'G 0.19', 'G 0.22', 'G 0.29']
+    },
+    {
+        'id': 'OPS.2.3.A6',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.29']
+    },
+    {
+        'id': 'OPS.2.3.A7',
+        'cia': None,
+        'gefahren': ['G 0.11', 'G 0.18', 'G 0.19']
+    },
+    {
+        'id': 'OPS.2.3.A8',
+        'cia': None,
+        'gefahren': ['G 0.11', 'G 0.18', 'G 0.29']
+    },
+    {
+        'id': 'OPS.2.3.A9',
+        'cia': None,
+        'gefahren': ['G 0.11', 'G 0.18', 'G 0.29']
+    },
+    {
+        'id': 'OPS.2.3.A10',
+        'cia': None,
+        'gefahren': ['G 0.11', 'G 0.18', 'G 0.29', 'G 0.42']
+    },
+    {
+        'id': 'OPS.2.3.A11',
+        'cia': None,
+        'gefahren': ['G 0.11', 'G 0.18', 'G 0.29']
+    },
+    {
+        'id': 'OPS.2.3.A12',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.29']
+    },
+    {
+        'id': 'OPS.2.3.A13',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.29']
+    },
+    {
+        'id': 'OPS.2.3.A14',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.18', 'G 0.29']
+    },
+    {
+        'id': 'OPS.2.3.A15',
+        'cia': None,
+        'gefahren': ['G 0.11', 'G 0.18', 'G 0.23']
+    },
+    {
+        'id': 'OPS.2.3.A16',
+        'cia': None,
+        'gefahren': ['G 0.11', 'G 0.18', 'G 0.29']
+    },
+    {
+        'id': 'OPS.2.3.A17',
+        'cia': None,
+        'gefahren': ['G 0.19', 'G 0.29']
+    },
+    {
+        'id': 'OPS.2.3.A18',
+        'cia': None,
+        'gefahren': ['G 0.11', 'G 0.18', 'G 0.29']
+    },
+    {
+        'id': 'OPS.2.3.A19',
+        'cia': None,
+        'gefahren': ['G 0.11', 'G 0.18']
+    },
+    {
+        'id': 'OPS.2.3.A20',
+        'cia': None,
+        'gefahren': ['G 0.11', 'G 0.25', 'G 0.27', 'G 0.42']
+    },
+    {
+        'id': 'OPS.2.3.A21',
+        'cia': 'IA',
+        'gefahren': ['G 0.11', 'G 0.18', 'G 0.29']
+    },
+    {
+        'id': 'OPS.2.3.A22',
+        'cia': 'A',
+        'gefahren': ['G 0.11', 'G 0.25', 'G 0.27']
+    },
+    {
+        'id': 'OPS.2.3.A23',
+        'cia': 'C',
+        'gefahren': ['G 0.14', 'G 0.19', 'G 0.22', 'G 0.29']
+    },
+    {
+        'id': 'OPS.2.3.A24',
+        'cia': 'CIA',
+        'gefahren': ['G 0.29', 'G 0.35']
+    },
+    {
+        'id': 'OPS.2.3.A25',
+        'cia': 'CIA',
+        'gefahren': ['G 0.19', 'G 0.22', 'G 0.23', 'G 0.25']
+    },
+    {
+        'id': 'OPS.3.2.A1',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.29']
+    },
+    {
+        'id': 'OPS.3.2.A2',
+        'cia': None,
+        'gefahren': ['G 0.29']
+    },
+    {
+        'id': 'OPS.3.2.A3',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.29']
+    },
+    {
+        'id': 'OPS.3.2.A4',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.18', 'G 0.19', 'G 0.22', 'G 0.29']
+    },
+    {
+        'id': 'OPS.3.2.A5',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.29']
+    },
+    {
+        'id': 'OPS.3.2.A6',
+        'cia': None,
+        'gefahren': ['G 0.11', 'G 0.18', 'G 0.19']
+    },
+    {
+        'id': 'OPS.3.2.A7',
+        'cia': None,
+        'gefahren': ['G 0.11', 'G 0.18', 'G 0.27', 'G 0.29']
+    },
+    {
+        'id': 'OPS.3.2.A8',
+        'cia': None,
+        'gefahren': ['G 0.11', 'G 0.18', 'G 0.29']
+    },
+    {
+        'id': 'OPS.3.2.A9',
+        'cia': None,
+        'gefahren': ['G 0.11', 'G 0.18', 'G 0.29']
+    },
+    {
+        'id': 'OPS.3.2.A10',
+        'cia': None,
+        'gefahren': ['G 0.11', 'G 0.18', 'G 0.29']
+    },
+    {
+        'id': 'OPS.3.2.A11',
+        'cia': None,
+        'gefahren': ['G 0.11', 'G 0.25', 'G 0.27', 'G 0.42']
+    },
+    {
+        'id': 'OPS.3.2.A12',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.29']
+    },
+    {
+        'id': 'OPS.3.2.A13',
+        'cia': None,
+        'gefahren': ['G 0.11', 'G 0.18', 'G 0.23']
+    },
+    {
+        'id': 'OPS.3.2.A14',
+        'cia': None,
+        'gefahren': ['G 0.11', 'G 0.18', 'G 0.25', 'G 0.27', 'G 0.29']
+    },
+    {
+        'id': 'OPS.3.2.A15',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.29']
+    },
+    {
+        'id': 'OPS.3.2.A16',
+        'cia': None,
+        'gefahren': ['G 0.11', 'G 0.18', 'G 0.27', 'G 0.29']
+    },
+    {
+        'id': 'OPS.3.2.A17',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.19', 'G 0.23', 'G 0.29']
+    },
+    {
+        'id': 'OPS.3.2.A18',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.29']
+    },
+    {
+        'id': 'OPS.3.2.A19',
+        'cia': 'CIA',
+        'gefahren': ['G 0.29', 'G 0.35']
+    },
+    {
+        'id': 'OPS.3.2.A20',
+        'cia': 'C',
+        'gefahren': ['G 0.14', 'G 0.19', 'G 0.22', 'G 0.29']
+    },
+    {
+        'id': 'OPS.3.2.A21',
+        'cia': 'A',
+        'gefahren': ['G 0.11', 'G 0.25', 'G 0.27']
+    },
+    {
+        'id': 'ORP.1.A1',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'ORP.1.A2',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.27']
+    },
+    {
+        'id': 'ORP.1.A3',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.16', 'G 0.19', 'G 0.21', 'G 0.30', 'G 0.44']
+    },
+    {
+        'id': 'ORP.1.A4',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.19', 'G 0.22', 'G 0.29', 'G 0.32']
+    },
+    {
+        'id': 'ORP.1.A8',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.19', 'G 0.27']
+    },
+    {
+        'id': 'ORP.1.A13',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.16', 'G 0.17', 'G 0.18', 'G 0.19', 'G 0.22']
+    },
+    {
+        'id': 'ORP.1.A15',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.27']
+    },
+    {
+        'id': 'ORP.1.A16',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.27', 'G 0.29']
+    },
+    {
+        'id': 'ORP.1.A17',
+        'cia': 'C',
+        'gefahren': ['G 0.14', 'G 0.15']
+    },
+    {
+        'id': 'ORP.2.A1',
+        'cia': None,
+        'gefahren': ['G 0.29', 'G 0.31', 'G 0.38']
+    },
+    {
+        'id': 'ORP.2.A2',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.19', 'G 0.29', 'G 0.30', 'G 0.33']
+    },
+    {
+        'id': 'ORP.2.A3',
+        'cia': None,
+        'gefahren': ['G 0.31', 'G 0.33']
+    },
+    {
+        'id': 'ORP.2.A4',
+        'cia': None,
+        'gefahren': ['G 0.17', 'G 0.29', 'G 0.30', 'G 0.44', 'G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'ORP.2.A5',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.19', 'G 0.22', 'G 0.29', 'G 0.32', 'G 0.37', 'G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'ORP.2.A7',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.29', 'G 0.36', 'G 0.38']
+    },
+    {
+        'id': 'ORP.2.A13',
+        'cia': 'C',
+        'gefahren': ['G 0.14', 'G 0.29', 'G 0.36', 'G 0.38']
+    },
+    {
+        'id': 'ORP.2.A14',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.19', 'G 0.29']
+    },
+    {
+        'id': 'ORP.2.A15',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.19', 'G 0.29', 'G 0.32', 'G 0.38', 'G 0.42', 'G 0.46']
+    },
+    {
+        'id': 'ORP.3.A1',
+        'cia': None,
+        'gefahren': ['G 0.29', 'G 0.31']
+    },
+    {
+        'id': 'ORP.3.A3',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.31']
+    },
+    {
+        'id': 'ORP.3.A4',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.29']
+    },
+    {
+        'id': 'ORP.3.A6',
+        'cia': None,
+        'gefahren': ['G 0.29', 'G 0.31']
+    },
+    {
+        'id': 'ORP.3.A7',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.31']
+    },
+    {
+        'id': 'ORP.3.A8',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'ORP.3.A9',
+        'cia': 'CIA',
+        'gefahren': ['G 0.14', 'G 0.19', 'G 0.29', 'G 0.31', 'G 0.36', 'G 0.38', 'G 0.42']
+    },
+    {
+        'id': 'ORP.4.A1',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.30', 'G 0.37']
+    },
+    {
+        'id': 'ORP.4.A2',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.30']
+    },
+    {
+        'id': 'ORP.4.A3',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'ORP.4.A4',
+        'cia': None,
+        'gefahren': ['G 0.29', 'G 0.32', 'G 0.37']
+    },
+    {
+        'id': 'ORP.4.A5',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.29', 'G 0.44']
+    },
+    {
+        'id': 'ORP.4.A6',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.23', 'G 0.29', 'G 0.30']
+    },
+    {
+        'id': 'ORP.4.A7',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.23', 'G 0.29', 'G 0.30']
+    },
+    {
+        'id': 'ORP.4.A8',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.23', 'G 0.29']
+    },
+    {
+        'id': 'ORP.4.A9',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.23', 'G 0.30', 'G 0.37']
+    },
+    {
+        'id': 'ORP.4.A10',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.30', 'G 0.36']
+    },
+    {
+        'id': 'ORP.4.A11',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.23', 'G 0.36']
+    },
+    {
+        'id': 'ORP.4.A12',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.15', 'G 0.18', 'G 0.32', 'G 0.36']
+    },
+    {
+        'id': 'ORP.4.A13',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.22', 'G 0.32', 'G 0.36']
+    },
+    {
+        'id': 'ORP.4.A14',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.29', 'G 0.37']
+    },
+    {
+        'id': 'ORP.4.A15',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'ORP.4.A16',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'ORP.4.A17',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.30', 'G 0.31']
+    },
+    {
+        'id': 'ORP.4.A18',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.15', 'G 0.18', 'G 0.36']
+    },
+    {
+        'id': 'ORP.4.A19',
+        'cia': None,
+        'gefahren': ['G 0.31']
+    },
+    {
+        'id': 'ORP.4.A20',
+        'cia': 'CIA',
+        'gefahren': ['G 0.25']
+    },
+    {
+        'id': 'ORP.4.A21',
+        'cia': 'CI',
+        'gefahren': ['G 0.23', 'G 0.30', 'G 0.32', 'G 0.36']
+    },
+    {
+        'id': 'ORP.4.A22',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.23', 'G 0.29']
+    },
+    {
+        'id': 'ORP.4.A23',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.23', 'G 0.29', 'G 0.30']
+    },
+    {
+        'id': 'ORP.4.A24',
+        'cia': 'CIA',
+        'gefahren': ['G 0.14', 'G 0.22', 'G 0.30', 'G 0.31', 'G 0.32', 'G 0.37']
+    },
+    {
+        'id': 'ORP.5.A1',
+        'cia': None,
+        'gefahren': ['G 0.29']
+    },
+    {
+        'id': 'ORP.5.A2',
+        'cia': None,
+        'gefahren': ['G 0.29']
+    },
+    {
+        'id': 'ORP.5.A4',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.29']
+    },
+    {
+        'id': 'ORP.5.A5',
+        'cia': None,
+        'gefahren': ['G 0.29']
+    },
+    {
+        'id': 'ORP.5.A8',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.29']
+    },
+    {
+        'id': 'SYS.1.1.A1',
+        'cia': None,
+        'gefahren': ['G 0.16', 'G 0.21']
+    },
+    {
+        'id': 'SYS.1.1.A2',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.19', 'G 0.22', 'G 0.30']
+    },
+    {
+        'id': 'SYS.1.1.A5',
+        'cia': None,
+        'gefahren': ['G 0.21', 'G 0.23']
+    },
+    {
+        'id': 'SYS.1.1.A6',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.18', 'G 0.19', 'G 0.23']
+    },
+    {
+        'id': 'SYS.1.1.A9',
+        'cia': None,
+        'gefahren': ['G 0.39']
+    },
+    {
+        'id': 'SYS.1.1.A10',
+        'cia': None,
+        'gefahren': ['G 0.37']
+    },
+    {
+        'id': 'SYS.1.1.A11',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.31']
+    },
+    {
+        'id': 'SYS.1.1.A12',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'SYS.1.1.A13',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'SYS.1.1.A15',
+        'cia': None,
+        'gefahren': ['G 0.8']
+    },
+    {
+        'id': 'SYS.1.1.A16',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.28']
+    },
+    {
+        'id': 'SYS.1.1.A19',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.19', 'G 0.23', 'G 0.43']
+    },
+    {
+        'id': 'SYS.1.1.A21',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.22', 'G 0.37', 'G 0.45']
+    },
+    {
+        'id': 'SYS.1.1.A22',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.27']
+    },
+    {
+        'id': 'SYS.1.1.A23',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.25', 'G 0.26', 'G 0.27']
+    },
+    {
+        'id': 'SYS.1.1.A24',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'SYS.1.1.A25',
+        'cia': None,
+        'gefahren': ['G 0.19', 'G 0.27', 'G 0.31']
+    },
+    {
+        'id': 'SYS.1.1.A27',
+        'cia': 'IA',
+        'gefahren': ['G 0.21', 'G 0.22', 'G 0.23', 'G 0.30', 'G 0.32', 'G 0.40']
+    },
+    {
+        'id': 'SYS.1.1.A28',
+        'cia': 'A',
+        'gefahren': ['G 0.25', 'G 0.27']
+    },
+    {
+        'id': 'SYS.1.1.A30',
+        'cia': 'CIA',
+        'gefahren': ['G 0.25', 'G 0.28']
+    },
+    {
+        'id': 'SYS.1.1.A31',
+        'cia': 'CI',
+        'gefahren': ['G 0.23', 'G 0.39']
+    },
+    {
+        'id': 'SYS.1.1.A33',
+        'cia': 'CI',
+        'gefahren': ['G 0.14', 'G 0.18', 'G 0.23']
+    },
+    {
+        'id': 'SYS.1.1.A34',
+        'cia': 'CI',
+        'gefahren': ['G 0.14', 'G 0.19', 'G 0.22', 'G 0.46']
+    },
+    {
+        'id': 'SYS.1.1.A35',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.18', 'G 0.19', 'G 0.20', 'G 0.27']
+    },
+    {
+        'id': 'SYS.1.1.A36',
+        'cia': 'CIA',
+        'gefahren': ['G 0.21']
+    },
+    {
+        'id': 'SYS.1.1.A37',
+        'cia': None,
+        'gefahren': ['G 0.21', 'G 0.31', 'G 0.39', 'G 0.45']
+    },
+    {
+        'id': 'SYS.1.1.A38',
+        'cia': 'I',
+        'gefahren': ['G 0.21', 'G 0.28', 'G 0.39', 'G 0.46']
+    },
+    {
+        'id': 'SYS.1.1.A39',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.18', 'G 0.23', 'G 0.30', 'G 0.31', 'G 0.32']
+    },
+    {
+        'id': 'SYS.1.2.2.A1',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.19', 'G 0.27', 'G 0.29']
+    },
+    {
+        'id': 'SYS.1.2.2.A2',
+        'cia': None,
+        'gefahren': ['G 0.19', 'G 0.23', 'G 0.28']
+    },
+    {
+        'id': 'SYS.1.2.2.A3',
+        'cia': None,
+        'gefahren': ['G 0.28', 'G 0.31']
+    },
+    {
+        'id': 'SYS.1.2.2.A4',
+        'cia': None,
+        'gefahren': ['G 0.23', 'G 0.28']
+    },
+    {
+        'id': 'SYS.1.2.2.A5',
+        'cia': None,
+        'gefahren': ['G 0.39']
+    },
+    {
+        'id': 'SYS.1.2.2.A6',
+        'cia': None,
+        'gefahren': ['G 0.23', 'G 0.30']
+    },
+    {
+        'id': 'SYS.1.2.2.A8',
+        'cia': None,
+        'gefahren': ['G 0.21', 'G 0.22', 'G 0.23', 'G 0.46']
+    },
+    {
+        'id': 'SYS.1.2.2.A11',
+        'cia': 'CIA',
+        'gefahren': ['G 0.14', 'G 0.23', 'G 0.37']
+    },
+    {
+        'id': 'SYS.1.2.2.A12',
+        'cia': 'A',
+        'gefahren': ['G 0.27', 'G 0.45']
+    },
+    {
+        'id': 'SYS.1.2.2.A14',
+        'cia': 'CI',
+        'gefahren': ['G 0.14', 'G 0.22']
+    },
+    {
+        'id': 'SYS.1.2.3.A1',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.29']
+    },
+    {
+        'id': 'SYS.1.2.3.A2',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.28']
+    },
+    {
+        'id': 'SYS.1.2.3.A3',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.18', 'G 0.19', 'G 0.23', 'G 0.29']
+    },
+    {
+        'id': 'SYS.1.2.3.A4',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.21', 'G 0.23', 'G 0.28', 'G 0.39']
+    },
+    {
+        'id': 'SYS.1.2.3.A5',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.23', 'G 0.30', 'G 0.32']
+    },
+    {
+        'id': 'SYS.1.2.3.A6',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.19', 'G 0.23', 'G 0.30', 'G 0.31']
+    },
+    {
+        'id': 'SYS.1.2.3.A7',
+        'cia': 'CIA',
+        'gefahren': ['G 0.18', 'G 0.22', 'G 0.30', 'G 0.31', 'G 0.32']
+    },
+    {
+        'id': 'SYS.1.2.3.A8',
+        'cia': 'A',
+        'gefahren': ['G 0.18', 'G 0.22', 'G 0.29']
+    },
+    {
+        'id': 'SYS.1.3.A2',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.22', 'G 0.23', 'G 0.30', 'G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'SYS.1.3.A3',
+        'cia': None,
+        'gefahren': ['G 0.21', 'G 0.23']
+    },
+    {
+        'id': 'SYS.1.3.A4',
+        'cia': None,
+        'gefahren': ['G 0.23', 'G 0.28']
+    },
+    {
+        'id': 'SYS.1.3.A5',
+        'cia': None,
+        'gefahren': ['G 0.20', 'G 0.28']
+    },
+    {
+        'id': 'SYS.1.3.A6',
+        'cia': None,
+        'gefahren': ['G 0.21', 'G 0.31']
+    },
+    {
+        'id': 'SYS.1.3.A8',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.15', 'G 0.23', 'G 0.43']
+    },
+    {
+        'id': 'SYS.1.3.A10',
+        'cia': None,
+        'gefahren': ['G 0.23', 'G 0.28', 'G 0.39']
+    },
+    {
+        'id': 'SYS.1.3.A14',
+        'cia': 'C',
+        'gefahren': ['G 0.14', 'G 0.30', 'G 0.46']
+    },
+    {
+        'id': 'SYS.1.3.A16',
+        'cia': 'CI',
+        'gefahren': ['G 0.14', 'G 0.22', 'G 0.28', 'G 0.32']
+    },
+    {
+        'id': 'SYS.1.3.A17',
+        'cia': 'CI',
+        'gefahren': ['G 0.28']
+    },
+    {
+        'id': 'SYS.1.5.A2',
+        'cia': None,
+        'gefahren': ['G 0.23', 'G 0.26', 'G 0.27', 'G 0.28', 'G 0.30', 'G 0.31', 'G 0.32']
+    },
+    {
+        'id': 'SYS.1.5.A3',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.21', 'G 0.23', 'G 0.31']
+    },
+    {
+        'id': 'SYS.1.5.A4',
+        'cia': None,
+        'gefahren': ['G 0.23', 'G 0.29', 'G 0.30']
+    },
+    {
+        'id': 'SYS.1.5.A5',
+        'cia': None,
+        'gefahren': ['G 0.15', 'G 0.21', 'G 0.23', 'G 0.30', 'G 0.46']
+    },
+    {
+        'id': 'SYS.1.5.A6',
+        'cia': None,
+        'gefahren': ['G 0.27', 'G 0.37']
+    },
+    {
+        'id': 'SYS.1.5.A7',
+        'cia': None,
+        'gefahren': ['G 0.37']
+    },
+    {
+        'id': 'SYS.1.5.A8',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'SYS.1.5.A9',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.26', 'G 0.27']
+    },
+    {
+        'id': 'SYS.1.5.A10',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'SYS.1.5.A11',
+        'cia': None,
+        'gefahren': ['G 0.15', 'G 0.23', 'G 0.30', 'G 0.46']
+    },
+    {
+        'id': 'SYS.1.5.A12',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.30', 'G 0.32']
+    },
+    {
+        'id': 'SYS.1.5.A13',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.26', 'G 0.27']
+    },
+    {
+        'id': 'SYS.1.5.A14',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'SYS.1.5.A15',
+        'cia': None,
+        'gefahren': ['G 0.19', 'G 0.23']
+    },
+    {
+        'id': 'SYS.1.5.A16',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.15', 'G 0.19', 'G 0.22', 'G 0.23']
+    },
+    {
+        'id': 'SYS.1.5.A17',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.25', 'G 0.26', 'G 0.27']
+    },
+    {
+        'id': 'SYS.1.5.A19',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'SYS.1.5.A20',
+        'cia': 'A',
+        'gefahren': ['G 0.25', 'G 0.27']
+    },
+    {
+        'id': 'SYS.1.5.A21',
+        'cia': 'IA',
+        'gefahren': ['G 0.26', 'G 0.27']
+    },
+    {
+        'id': 'SYS.1.5.A22',
+        'cia': 'CI',
+        'gefahren': ['G 0.23', 'G 0.28', 'G 0.30']
+    },
+    {
+        'id': 'SYS.1.5.A23',
+        'cia': 'CI',
+        'gefahren': ['G 0.14', 'G 0.23', 'G 0.30']
+    },
+    {
+        'id': 'SYS.1.5.A24',
+        'cia': 'CIA',
+        'gefahren': ['G 0.19', 'G 0.25', 'G 0.27', 'G 0.31']
+    },
+    {
+        'id': 'SYS.1.5.A25',
+        'cia': 'A',
+        'gefahren': ['G 0.27', 'G 0.30']
+    },
+    {
+        'id': 'SYS.1.5.A26',
+        'cia': 'CIA',
+        'gefahren': ['G 0.15', 'G 0.43', 'G 0.46']
+    },
+    {
+        'id': 'SYS.1.5.A27',
+        'cia': 'CIA',
+        'gefahren': ['G 0.15', 'G 0.20', 'G 0.21', 'G 0.22', 'G 0.23']
+    },
+    {
+        'id': 'SYS.1.5.A28',
+        'cia': 'C',
+        'gefahren': ['G 0.14']
+    },
+    {
+        'id': 'SYS.1.6.A1',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.18', 'G 0.19', 'G 0.20', 'G 0.21', 'G 0.22', 'G 0.23', 'G 0.24', 'G 0.25', 'G 0.27', 'G 0.28', 'G 0.30', 'G 0.31', 'G 0.32', 'G 0.40', 'G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'SYS.1.6.A2',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.18', 'G 0.19', 'G 0.21', 'G 0.22', 'G 0.23', 'G 0.24', 'G 0.25', 'G 0.27', 'G 0.28', 'G 0.30', 'G 0.31', 'G 0.32', 'G 0.46']
+    },
+    {
+        'id': 'SYS.1.6.A3',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.19', 'G 0.20', 'G 0.21', 'G 0.22', 'G 0.23', 'G 0.24', 'G 0.25', 'G 0.27', 'G 0.28', 'G 0.30', 'G 0.31', 'G 0.32', 'G 0.37', 'G 0.39', 'G 0.40', 'G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'SYS.1.6.A4',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.20', 'G 0.21', 'G 0.22', 'G 0.25', 'G 0.27', 'G 0.30', 'G 0.31', 'G 0.39']
+    },
+    {
+        'id': 'SYS.1.6.A5',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.19', 'G 0.22', 'G 0.23', 'G 0.25', 'G 0.27', 'G 0.28', 'G 0.30', 'G 0.31', 'G 0.32', 'G 0.39', 'G 0.46']
+    },
+    {
+        'id': 'SYS.1.6.A6',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.19', 'G 0.20', 'G 0.21', 'G 0.23', 'G 0.25', 'G 0.27', 'G 0.30', 'G 0.31', 'G 0.32', 'G 0.37', 'G 0.39', 'G 0.40', 'G 0.46']
+    },
+    {
+        'id': 'SYS.1.6.A7',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.30', 'G 0.37', 'G 0.45']
+    },
+    {
+        'id': 'SYS.1.6.A8',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.19', 'G 0.23', 'G 0.30', 'G 0.32', 'G 0.46']
+    },
+    {
+        'id': 'SYS.1.6.A9',
+        'cia': None,
+        'gefahren': ['G 0.19', 'G 0.20', 'G 0.21', 'G 0.24', 'G 0.27', 'G 0.28', 'G 0.30', 'G 0.31', 'G 0.32', 'G 0.39', 'G 0.40', 'G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'SYS.1.6.A10',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.19', 'G 0.20', 'G 0.21', 'G 0.23', 'G 0.25', 'G 0.27', 'G 0.28', 'G 0.30', 'G 0.31', 'G 0.32', 'G 0.37', 'G 0.39', 'G 0.40', 'G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'SYS.1.6.A11',
+        'cia': None,
+        'gefahren': ['G 0.19', 'G 0.25']
+    },
+    {
+        'id': 'SYS.1.6.A12',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.20', 'G 0.21', 'G 0.22', 'G 0.28', 'G 0.30', 'G 0.31', 'G 0.32', 'G 0.37', 'G 0.39', 'G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'SYS.1.6.A13',
+        'cia': None,
+        'gefahren': ['G 0.20', 'G 0.21', 'G 0.22', 'G 0.25', 'G 0.27', 'G 0.30', 'G 0.37', 'G 0.39', 'G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'SYS.1.6.A14',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.18', 'G 0.20', 'G 0.21', 'G 0.25', 'G 0.27', 'G 0.37', 'G 0.39', 'G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'SYS.1.6.A15',
+        'cia': None,
+        'gefahren': ['G 0.27', 'G 0.28', 'G 0.39', 'G 0.40']
+    },
+    {
+        'id': 'SYS.1.6.A16',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.19', 'G 0.21', 'G 0.23', 'G 0.25', 'G 0.28', 'G 0.30', 'G 0.31', 'G 0.32', 'G 0.39', 'G 0.46']
+    },
+    {
+        'id': 'SYS.1.6.A17',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.28', 'G 0.30', 'G 0.31', 'G 0.32', 'G 0.39', 'G 0.46']
+    },
+    {
+        'id': 'SYS.1.6.A18',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.19', 'G 0.23', 'G 0.28', 'G 0.30', 'G 0.31', 'G 0.32', 'G 0.39', 'G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'SYS.1.6.A19',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.19', 'G 0.21', 'G 0.22', 'G 0.27', 'G 0.39', 'G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'SYS.1.6.A20',
+        'cia': None,
+        'gefahren': ['G 0.21', 'G 0.22', 'G 0.37']
+    },
+    {
+        'id': 'SYS.1.6.A21',
+        'cia': 'CIA',
+        'gefahren': ['G 0.14', 'G 0.19', 'G 0.23', 'G 0.27', 'G 0.28', 'G 0.30', 'G 0.31', 'G 0.32', 'G 0.39', 'G 0.40', 'G 0.46']
+    },
+    {
+        'id': 'SYS.1.6.A22',
+        'cia': 'CI',
+        'gefahren': ['G 0.18', 'G 0.37']
+    },
+    {
+        'id': 'SYS.1.6.A23',
+        'cia': 'I',
+        'gefahren': ['G 0.22', 'G 0.28', 'G 0.39', 'G 0.46']
+    },
+    {
+        'id': 'SYS.1.6.A24',
+        'cia': 'CIA',
+        'gefahren': ['G 0.14', 'G 0.18', 'G 0.19', 'G 0.21', 'G 0.22', 'G 0.28', 'G 0.30', 'G 0.31', 'G 0.32', 'G 0.39', 'G 0.40', 'G 0.46']
+    },
+    {
+        'id': 'SYS.1.6.A25',
+        'cia': 'A',
+        'gefahren': ['G 0.23', 'G 0.24', 'G 0.25', 'G 0.27', 'G 0.40']
+    },
+    {
+        'id': 'SYS.1.6.A26',
+        'cia': 'CI',
+        'gefahren': ['G 0.14', 'G 0.19', 'G 0.23', 'G 0.28', 'G 0.30', 'G 0.39', 'G 0.46']
+    },
+    {
+        'id': 'SYS.1.7.A1',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.19', 'G 0.21', 'G 0.22', 'G 0.23', 'G 0.30', 'G 0.32', 'G 0.36', 'G 0.37', 'G 0.40', 'G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'SYS.1.7.A2',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.19', 'G 0.21', 'G 0.22', 'G 0.23', 'G 0.30', 'G 0.32', 'G 0.36', 'G 0.37', 'G 0.40', 'G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'SYS.1.7.A3',
+        'cia': None,
+        'gefahren': ['G 0.20', 'G 0.21', 'G 0.22', 'G 0.23', 'G 0.25', 'G 0.26', 'G 0.28', 'G 0.30', 'G 0.40', 'G 0.43', 'G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'SYS.1.7.A4',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.19', 'G 0.31', 'G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'SYS.1.7.A5',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.19', 'G 0.21', 'G 0.22', 'G 0.23', 'G 0.30', 'G 0.43', 'G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'SYS.1.7.A6',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.19', 'G 0.20', 'G 0.21', 'G 0.22', 'G 0.23', 'G 0.30', 'G 0.36', 'G 0.43', 'G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'SYS.1.7.A7',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.19', 'G 0.21', 'G 0.22', 'G 0.23', 'G 0.30', 'G 0.32', 'G 0.36', 'G 0.37', 'G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'SYS.1.7.A8',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.18', 'G 0.19', 'G 0.21', 'G 0.22', 'G 0.23', 'G 0.30', 'G 0.32', 'G 0.36', 'G 0.37', 'G 0.39', 'G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'SYS.1.7.A9',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.18', 'G 0.19', 'G 0.21', 'G 0.22', 'G 0.30', 'G 0.31', 'G 0.32', 'G 0.36', 'G 0.37', 'G 0.39', 'G 0.43', 'G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'SYS.1.7.A11',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.19', 'G 0.23', 'G 0.30', 'G 0.32', 'G 0.36', 'G 0.37', 'G 0.43']
+    },
+    {
+        'id': 'SYS.1.7.A14',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.18', 'G 0.19', 'G 0.21', 'G 0.22', 'G 0.30', 'G 0.31', 'G 0.32', 'G 0.36', 'G 0.37', 'G 0.39', 'G 0.40', 'G 0.43', 'G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'SYS.1.7.A16',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.18', 'G 0.19', 'G 0.21', 'G 0.22', 'G 0.23', 'G 0.25', 'G 0.26', 'G 0.27', 'G 0.30', 'G 0.31', 'G 0.32', 'G 0.36', 'G 0.37', 'G 0.39', 'G 0.40', 'G 0.43', 'G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'SYS.1.7.A17',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.25', 'G 0.26', 'G 0.31', 'G 0.45']
+    },
+    {
+        'id': 'SYS.1.7.A18',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.27', 'G 0.31', 'G 0.33']
+    },
+    {
+        'id': 'SYS.1.7.A19',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.19', 'G 0.21', 'G 0.22', 'G 0.23', 'G 0.30', 'G 0.32', 'G 0.36', 'G 0.37', 'G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'SYS.1.7.A20',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.19', 'G 0.23', 'G 0.26', 'G 0.30', 'G 0.36']
+    },
+    {
+        'id': 'SYS.1.7.A21',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.25', 'G 0.26', 'G 0.31', 'G 0.33']
+    },
+    {
+        'id': 'SYS.1.7.A22',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.18', 'G 0.19', 'G 0.21', 'G 0.22', 'G 0.23', 'G 0.25', 'G 0.26', 'G 0.30', 'G 0.31', 'G 0.32', 'G 0.36', 'G 0.37', 'G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'SYS.1.7.A23',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.18', 'G 0.19', 'G 0.20', 'G 0.21', 'G 0.22', 'G 0.23', 'G 0.28', 'G 0.30', 'G 0.31', 'G 0.32', 'G 0.36', 'G 0.37', 'G 0.40', 'G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'SYS.1.7.A24',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.18', 'G 0.19', 'G 0.21', 'G 0.22', 'G 0.23', 'G 0.26', 'G 0.27', 'G 0.30', 'G 0.32', 'G 0.36', 'G 0.37', 'G 0.39', 'G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'SYS.1.7.A25',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.25', 'G 0.26', 'G 0.27', 'G 0.31', 'G 0.45']
+    },
+    {
+        'id': 'SYS.1.7.A26',
+        'cia': None,
+        'gefahren': ['G 0.19', 'G 0.21', 'G 0.22', 'G 0.23', 'G 0.25', 'G 0.26', 'G 0.27', 'G 0.30', 'G 0.32', 'G 0.36', 'G 0.37', 'G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'SYS.1.7.A27',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.25', 'G 0.26', 'G 0.28', 'G 0.31', 'G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'SYS.1.7.A28',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.25', 'G 0.26', 'G 0.27']
+    },
+    {
+        'id': 'SYS.1.7.A29',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.19', 'G 0.21', 'G 0.22', 'G 0.23', 'G 0.25', 'G 0.26', 'G 0.27', 'G 0.30', 'G 0.32', 'G 0.36', 'G 0.37', 'G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'SYS.1.7.A30',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.19', 'G 0.23', 'G 0.30', 'G 0.32', 'G 0.36', 'G 0.37', 'G 0.43']
+    },
+    {
+        'id': 'SYS.1.7.A31',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.25', 'G 0.26', 'G 0.31', 'G 0.33', 'G 0.40', 'G 0.45']
+    },
+    {
+        'id': 'SYS.1.7.A32',
+        'cia': 'CIA',
+        'gefahren': ['G 0.18', 'G 0.31']
+    },
+    {
+        'id': 'SYS.1.7.A33',
+        'cia': 'CIA',
+        'gefahren': ['G 0.14', 'G 0.19', 'G 0.20', 'G 0.21', 'G 0.22', 'G 0.23', 'G 0.25', 'G 0.26', 'G 0.28', 'G 0.30', 'G 0.31', 'G 0.32', 'G 0.36', 'G 0.37', 'G 0.39', 'G 0.43', 'G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'SYS.1.7.A34',
+        'cia': 'CIA',
+        'gefahren': ['G 0.14', 'G 0.18', 'G 0.19', 'G 0.21', 'G 0.22', 'G 0.23', 'G 0.25', 'G 0.26', 'G 0.27', 'G 0.30', 'G 0.32', 'G 0.36', 'G 0.37', 'G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'SYS.1.7.A35',
+        'cia': 'CIA',
+        'gefahren': ['G 0.14', 'G 0.19', 'G 0.21', 'G 0.22', 'G 0.23', 'G 0.25', 'G 0.26', 'G 0.30', 'G 0.32', 'G 0.36', 'G 0.37', 'G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'SYS.1.7.A36',
+        'cia': 'CIA',
+        'gefahren': ['G 0.14', 'G 0.19', 'G 0.22', 'G 0.23', 'G 0.27', 'G 0.30', 'G 0.36', 'G 0.37', 'G 0.39', 'G 0.40', 'G 0.43', 'G 0.46']
+    },
+    {
+        'id': 'SYS.1.7.A37',
+        'cia': 'CIA',
+        'gefahren': ['G 0.18', 'G 0.25', 'G 0.26', 'G 0.27', 'G 0.40', 'G 0.45']
+    },
+    {
+        'id': 'SYS.1.7.A38',
+        'cia': 'CIA',
+        'gefahren': ['G 0.14', 'G 0.19', 'G 0.22', 'G 0.23', 'G 0.30', 'G 0.40', 'G 0.43', 'G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'SYS.1.8.A1',
+        'cia': None,
+        'gefahren': ['G 0.2', 'G 0.8', 'G 0.16', 'G 0.44']
+    },
+    {
+        'id': 'SYS.1.8.A2',
+        'cia': None,
+        'gefahren': ['G 0.15', 'G 0.19', 'G 0.23', 'G 0.28', 'G 0.30']
+    },
+    {
+        'id': 'SYS.1.8.A4',
+        'cia': None,
+        'gefahren': ['G 0.23', 'G 0.30']
+    },
+    {
+        'id': 'SYS.1.8.A6',
+        'cia': None,
+        'gefahren': ['G 0.29']
+    },
+    {
+        'id': 'SYS.1.8.A7',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'SYS.1.8.A8',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'SYS.1.8.A9',
+        'cia': None,
+        'gefahren': ['G 0.11', 'G 0.18']
+    },
+    {
+        'id': 'SYS.1.8.A10',
+        'cia': None,
+        'gefahren': ['G 0.29']
+    },
+    {
+        'id': 'SYS.1.8.A11',
+        'cia': None,
+        'gefahren': ['G 0.25', 'G 0.26', 'G 0.27']
+    },
+    {
+        'id': 'SYS.1.8.A13',
+        'cia': None,
+        'gefahren': ['G 0.25', 'G 0.26', 'G 0.27']
+    },
+    {
+        'id': 'SYS.1.8.A14',
+        'cia': None,
+        'gefahren': ['G 0.19', 'G 0.22', 'G 0.27', 'G 0.30']
+    },
+    {
+        'id': 'SYS.1.8.A15',
+        'cia': None,
+        'gefahren': ['G 0.19', 'G 0.22', 'G 0.27', 'G 0.30']
+    },
+    {
+        'id': 'SYS.1.8.A16',
+        'cia': None,
+        'gefahren': ['G 0.19']
+    },
+    {
+        'id': 'SYS.1.8.A17',
+        'cia': None,
+        'gefahren': ['G 0.29']
+    },
+    {
+        'id': 'SYS.1.8.A18',
+        'cia': None,
+        'gefahren': ['G 0.29']
+    },
+    {
+        'id': 'SYS.1.8.A19',
+        'cia': None,
+        'gefahren': ['G 0.19', 'G 0.26']
+    },
+    {
+        'id': 'SYS.1.8.A20',
+        'cia': None,
+        'gefahren': ['G 0.19', 'G 0.25', 'G 0.45']
+    },
+    {
+        'id': 'SYS.1.8.A21',
+        'cia': 'CIA',
+        'gefahren': ['G 0.19', 'G 0.22', 'G 0.30']
+    },
+    {
+        'id': 'SYS.1.8.A22',
+        'cia': 'A',
+        'gefahren': ['G 0.25']
+    },
+    {
+        'id': 'SYS.1.8.A23',
+        'cia': 'CI',
+        'gefahren': ['G 0.15', 'G 0.46']
+    },
+    {
+        'id': 'SYS.1.8.A24',
+        'cia': 'I',
+        'gefahren': ['G 0.23', 'G 0.46']
+    },
+    {
+        'id': 'SYS.1.8.A25',
+        'cia': 'C',
+        'gefahren': ['G 0.19']
+    },
+    {
+        'id': 'SYS.1.8.A26',
+        'cia': 'CIA',
+        'gefahren': ['G 0.19', 'G 0.22', 'G 0.30']
+    },
+    {
+        'id': 'SYS.1.9.A1',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.15', 'G 0.19', 'G 0.28']
+    },
+    {
+        'id': 'SYS.1.9.A2',
+        'cia': None,
+        'gefahren': ['G 0.9', 'G 0.18', 'G 0.27', 'G 0.29', 'G 0.31']
+    },
+    {
+        'id': 'SYS.1.9.A3',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.31', 'G 0.41', 'G 0.43']
+    },
+    {
+        'id': 'SYS.1.9.A4',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.19', 'G 0.41', 'G 0.43']
+    },
+    {
+        'id': 'SYS.1.9.A5',
+        'cia': None,
+        'gefahren': ['G 0.19', 'G 0.22']
+    },
+    {
+        'id': 'SYS.1.9.A6',
+        'cia': None,
+        'gefahren': ['G 0.9', 'G 0.18', 'G 0.23', 'G 0.27', 'G 0.31', 'G 0.36', 'G 0.39']
+    },
+    {
+        'id': 'SYS.1.9.A7',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.15', 'G 0.19', 'G 0.22', 'G 0.28', 'G 0.36']
+    },
+    {
+        'id': 'SYS.1.9.A8',
+        'cia': None,
+        'gefahren': ['G 0.15', 'G 0.39']
+    },
+    {
+        'id': 'SYS.1.9.A9',
+        'cia': None,
+        'gefahren': ['G 0.19', 'G 0.27', 'G 0.31']
+    },
+    {
+        'id': 'SYS.1.9.A10',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.15', 'G 0.19', 'G 0.28']
+    },
+    {
+        'id': 'SYS.1.9.A11',
+        'cia': None,
+        'gefahren': ['G 0.9']
+    },
+    {
+        'id': 'SYS.1.9.A12',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.27', 'G 0.31']
+    },
+    {
+        'id': 'SYS.1.9.A13',
+        'cia': None,
+        'gefahren': ['G 0.23', 'G 0.39']
+    },
+    {
+        'id': 'SYS.1.9.A14',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.27', 'G 0.31']
+    },
+    {
+        'id': 'SYS.1.9.A15',
+        'cia': None,
+        'gefahren': ['G 0.19', 'G 0.22', 'G 0.43']
+    },
+    {
+        'id': 'SYS.1.9.A16',
+        'cia': None,
+        'gefahren': ['G 0.9']
+    },
+    {
+        'id': 'SYS.1.9.A17',
+        'cia': 'CI',
+        'gefahren': ['G 0.14', 'G 0.15', 'G 0.22', 'G 0.28']
+    },
+    {
+        'id': 'SYS.1.9.A18',
+        'cia': 'IA',
+        'gefahren': ['G 0.14', 'G 0.19']
+    },
+    {
+        'id': 'SYS.1.9.A19',
+        'cia': 'CIA',
+        'gefahren': ['G 0.23', 'G 0.36', 'G 0.39']
+    },
+    {
+        'id': 'SYS.1.9.A20',
+        'cia': 'CIA',
+        'gefahren': ['G 0.14', 'G 0.19', 'G 0.22', 'G 0.23', 'G 0.43']
+    },
+    {
+        'id': 'SYS.1.9.A21',
+        'cia': 'A',
+        'gefahren': ['G 0.9', 'G 0.41']
+    },
+    {
+        'id': 'SYS.1.9.A22',
+        'cia': 'IA',
+        'gefahren': ['G 0.14', 'G 0.15', 'G 0.19', 'G 0.28', 'G 0.41']
+    },
+    {
+        'id': 'SYS.2.1.A1',
+        'cia': None,
+        'gefahren': ['G 0.30']
+    },
+    {
+        'id': 'SYS.2.1.A3',
+        'cia': None,
+        'gefahren': ['G 0.28']
+    },
+    {
+        'id': 'SYS.2.1.A6',
+        'cia': None,
+        'gefahren': ['G 0.39']
+    },
+    {
+        'id': 'SYS.2.1.A8',
+        'cia': None,
+        'gefahren': ['G 0.22', 'G 0.30']
+    },
+    {
+        'id': 'SYS.2.1.A9',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'SYS.2.1.A10',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'SYS.2.1.A11',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'SYS.2.1.A13',
+        'cia': None,
+        'gefahren': ['G 0.21', 'G 0.30']
+    },
+    {
+        'id': 'SYS.2.1.A14',
+        'cia': None,
+        'gefahren': ['G 0.28']
+    },
+    {
+        'id': 'SYS.2.1.A15',
+        'cia': None,
+        'gefahren': ['G 0.23', 'G 0.30']
+    },
+    {
+        'id': 'SYS.2.1.A16',
+        'cia': None,
+        'gefahren': ['G 0.23', 'G 0.28', 'G 0.30']
+    },
+    {
+        'id': 'SYS.2.1.A18',
+        'cia': None,
+        'gefahren': ['G 0.15', 'G 0.46']
+    },
+    {
+        'id': 'SYS.2.1.A20',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.21', 'G 0.30']
+    },
+    {
+        'id': 'SYS.2.1.A21',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.15']
+    },
+    {
+        'id': 'SYS.2.1.A23',
+        'cia': None,
+        'gefahren': ['G 0.22', 'G 0.23', 'G 0.25', 'G 0.31']
+    },
+    {
+        'id': 'SYS.2.1.A24',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.21', 'G 0.23', 'G 0.31', 'G 0.39']
+    },
+    {
+        'id': 'SYS.2.1.A26',
+        'cia': None,
+        'gefahren': ['G 0.23', 'G 0.28']
+    },
+    {
+        'id': 'SYS.2.1.A27',
+        'cia': None,
+        'gefahren': ['G 0.19', 'G 0.45']
+    },
+    {
+        'id': 'SYS.2.1.A28',
+        'cia': 'C',
+        'gefahren': ['G 0.14', 'G 0.19', 'G 0.31']
+    },
+    {
+        'id': 'SYS.2.1.A29',
+        'cia': 'A',
+        'gefahren': ['G 0.25', 'G 0.26']
+    },
+    {
+        'id': 'SYS.2.1.A30',
+        'cia': 'CIA',
+        'gefahren': ['G 0.25', 'G 0.26', 'G 0.31']
+    },
+    {
+        'id': 'SYS.2.1.A31',
+        'cia': 'CIA',
+        'gefahren': ['G 0.23', 'G 0.30', 'G 0.40']
+    },
+    {
+        'id': 'SYS.2.1.A32',
+        'cia': 'CIA',
+        'gefahren': ['G 0.23', 'G 0.28']
+    },
+    {
+        'id': 'SYS.2.1.A33',
+        'cia': 'CI',
+        'gefahren': ['G 0.23', 'G 0.31', 'G 0.39']
+    },
+    {
+        'id': 'SYS.2.1.A34',
+        'cia': 'CIA',
+        'gefahren': ['G 0.21', 'G 0.31', 'G 0.39', 'G 0.45']
+    },
+    {
+        'id': 'SYS.2.1.A35',
+        'cia': 'CI',
+        'gefahren': ['G 0.14', 'G 0.15', 'G 0.19', 'G 0.40']
+    },
+    {
+        'id': 'SYS.2.1.A36',
+        'cia': 'CI',
+        'gefahren': ['G 0.21']
+    },
+    {
+        'id': 'SYS.2.1.A37',
+        'cia': 'C',
+        'gefahren': ['G 0.14', 'G 0.19', 'G 0.23', 'G 0.30', 'G 0.36']
+    },
+    {
+        'id': 'SYS.2.1.A38',
+        'cia': 'A',
+        'gefahren': ['G 0.25', 'G 0.26']
+    },
+    {
+        'id': 'SYS.2.1.A39',
+        'cia': 'A',
+        'gefahren': ['G 0.8', 'G 0.26']
+    },
+    {
+        'id': 'SYS.2.1.A40',
+        'cia': 'A',
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'SYS.2.1.A41',
+        'cia': 'A',
+        'gefahren': ['G 0.27']
+    },
+    {
+        'id': 'SYS.2.1.A42',
+        'cia': None,
+        'gefahren': ['G 0.19', 'G 0.29']
+    },
+    {
+        'id': 'SYS.2.1.A43',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.29']
+    },
+    {
+        'id': 'SYS.2.1.A44',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.30', 'G 0.31']
+    },
+    {
+        'id': 'SYS.2.1.A45',
+        'cia': 'CIA',
+        'gefahren': ['G 0.37']
+    },
+    {
+        'id': 'SYS.2.2.3.A1',
+        'cia': None,
+        'gefahren': ['G 0.15', 'G 0.18', 'G 0.29']
+    },
+    {
+        'id': 'SYS.2.2.3.A2',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.29']
+    },
+    {
+        'id': 'SYS.2.2.3.A4',
+        'cia': None,
+        'gefahren': ['G 0.19']
+    },
+    {
+        'id': 'SYS.2.2.3.A5',
+        'cia': None,
+        'gefahren': ['G 0.39']
+    },
+    {
+        'id': 'SYS.2.2.3.A6',
+        'cia': None,
+        'gefahren': ['G 0.19']
+    },
+    {
+        'id': 'SYS.2.2.3.A9',
+        'cia': None,
+        'gefahren': ['G 0.23', 'G 0.30']
+    },
+    {
+        'id': 'SYS.2.2.3.A12',
+        'cia': None,
+        'gefahren': ['G 0.22', 'G 0.30']
+    },
+    {
+        'id': 'SYS.2.2.3.A13',
+        'cia': None,
+        'gefahren': ['G 0.19']
+    },
+    {
+        'id': 'SYS.2.2.3.A14',
+        'cia': None,
+        'gefahren': ['G 0.15', 'G 0.19']
+    },
+    {
+        'id': 'SYS.2.2.3.A15',
+        'cia': None,
+        'gefahren': ['G 0.19']
+    },
+    {
+        'id': 'SYS.2.2.3.A16',
+        'cia': None,
+        'gefahren': ['G 0.19', 'G 0.28', 'G 0.29']
+    },
+    {
+        'id': 'SYS.2.2.3.A17',
+        'cia': None,
+        'gefahren': ['G 0.19', 'G 0.23', 'G 0.30']
+    },
+    {
+        'id': 'SYS.2.2.3.A18',
+        'cia': None,
+        'gefahren': ['G 0.23', 'G 0.30']
+    },
+    {
+        'id': 'SYS.2.2.3.A19',
+        'cia': None,
+        'gefahren': ['G 0.23', 'G 0.30']
+    },
+    {
+        'id': 'SYS.2.2.3.A20',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'SYS.2.2.3.A21',
+        'cia': 'CI',
+        'gefahren': ['G 0.14', 'G 0.19']
+    },
+    {
+        'id': 'SYS.2.2.3.A22',
+        'cia': 'CIA',
+        'gefahren': ['G 0.22', 'G 0.30']
+    },
+    {
+        'id': 'SYS.2.2.3.A23',
+        'cia': 'CI',
+        'gefahren': ['G 0.14', 'G 0.19', 'G 0.22']
+    },
+    {
+        'id': 'SYS.2.2.3.A24',
+        'cia': 'A',
+        'gefahren': ['G 0.18', 'G 0.29', 'G 0.37']
+    },
+    {
+        'id': 'SYS.2.2.3.A25',
+        'cia': 'CI',
+        'gefahren': ['G 0.23', 'G 0.30', 'G 0.36', 'G 0.37']
+    },
+    {
+        'id': 'SYS.2.2.3.A26',
+        'cia': 'A',
+        'gefahren': ['G 0.18', 'G 0.22', 'G 0.29']
+    },
+    {
+        'id': 'SYS.2.3.A1',
+        'cia': None,
+        'gefahren': ['G 0.31', 'G 0.32', 'G 0.37']
+    },
+    {
+        'id': 'SYS.2.3.A2',
+        'cia': None,
+        'gefahren': ['G 0.20', 'G 0.28']
+    },
+    {
+        'id': 'SYS.2.3.A4',
+        'cia': None,
+        'gefahren': ['G 0.25', 'G 0.28']
+    },
+    {
+        'id': 'SYS.2.3.A5',
+        'cia': None,
+        'gefahren': ['G 0.20', 'G 0.28', 'G 0.31', 'G 0.39']
+    },
+    {
+        'id': 'SYS.2.3.A6',
+        'cia': None,
+        'gefahren': ['G 0.28', 'G 0.39']
+    },
+    {
+        'id': 'SYS.2.3.A7',
+        'cia': None,
+        'gefahren': ['G 0.19', 'G 0.21', 'G 0.22', 'G 0.30']
+    },
+    {
+        'id': 'SYS.2.3.A8',
+        'cia': None,
+        'gefahren': ['G 0.19', 'G 0.21', 'G 0.22', 'G 0.28', 'G 0.30']
+    },
+    {
+        'id': 'SYS.2.3.A9',
+        'cia': None,
+        'gefahren': ['G 0.19']
+    },
+    {
+        'id': 'SYS.2.3.A11',
+        'cia': None,
+        'gefahren': ['G 0.27']
+    },
+    {
+        'id': 'SYS.2.3.A12',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'SYS.2.3.A14',
+        'cia': 'CIA',
+        'gefahren': ['G 0.23', 'G 0.28', 'G 0.30']
+    },
+    {
+        'id': 'SYS.2.3.A15',
+        'cia': 'CI',
+        'gefahren': ['G 0.23', 'G 0.30']
+    },
+    {
+        'id': 'SYS.2.3.A17',
+        'cia': 'CI',
+        'gefahren': ['G 0.28']
+    },
+    {
+        'id': 'SYS.2.3.A18',
+        'cia': 'CI',
+        'gefahren': ['G 0.21', 'G 0.22', 'G 0.23', 'G 0.28']
+    },
+    {
+        'id': 'SYS.2.3.A19',
+        'cia': 'CI',
+        'gefahren': ['G 0.14', 'G 0.19']
+    },
+    {
+        'id': 'SYS.2.3.A20',
+        'cia': 'CIA',
+        'gefahren': ['G 0.30']
+    },
+    {
+        'id': 'SYS.2.4.A1',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'SYS.2.4.A2',
+        'cia': None,
+        'gefahren': ['G 0.21', 'G 0.23', 'G 0.39']
+    },
+    {
+        'id': 'SYS.2.4.A3',
+        'cia': None,
+        'gefahren': ['G 0.23', 'G 0.30', 'G 0.37']
+    },
+    {
+        'id': 'SYS.2.4.A4',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.19']
+    },
+    {
+        'id': 'SYS.2.4.A5',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.19', 'G 0.21', 'G 0.23', 'G 0.28', 'G 0.39']
+    },
+    {
+        'id': 'SYS.2.4.A6',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.28', 'G 0.30']
+    },
+    {
+        'id': 'SYS.2.4.A7',
+        'cia': None,
+        'gefahren': ['G 0.36']
+    },
+    {
+        'id': 'SYS.2.4.A8',
+        'cia': None,
+        'gefahren': ['G 0.19']
+    },
+    {
+        'id': 'SYS.2.4.A9',
+        'cia': None,
+        'gefahren': ['G 0.39']
+    },
+    {
+        'id': 'SYS.2.4.A10',
+        'cia': None,
+        'gefahren': ['G 0.23']
+    },
+    {
+        'id': 'SYS.2.4.A11',
+        'cia': None,
+        'gefahren': ['G 0.19', 'G 0.29']
+    },
+    {
+        'id': 'SYS.2.4.A12',
+        'cia': 'CIA',
+        'gefahren': ['G 0.21', 'G 0.30']
+    },
+    {
+        'id': 'SYS.2.5.A1',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.27']
+    },
+    {
+        'id': 'SYS.2.5.A2',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.23', 'G 0.27', 'G 0.28', 'G 0.30', 'G 0.32', 'G 0.39']
+    },
+    {
+        'id': 'SYS.2.5.A3',
+        'cia': None,
+        'gefahren': ['G 0.28', 'G 0.30', 'G 0.31', 'G 0.32', 'G 0.39']
+    },
+    {
+        'id': 'SYS.2.5.A4',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.23', 'G 0.27', 'G 0.28', 'G 0.30', 'G 0.31', 'G 0.32']
+    },
+    {
+        'id': 'SYS.2.5.A5',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.23', 'G 0.28', 'G 0.30', 'G 0.32']
+    },
+    {
+        'id': 'SYS.2.5.A6',
+        'cia': None,
+        'gefahren': ['G 0.25', 'G 0.31', 'G 0.45']
+    },
+    {
+        'id': 'SYS.2.5.A7',
+        'cia': None,
+        'gefahren': ['G 0.27', 'G 0.30']
+    },
+    {
+        'id': 'SYS.2.5.A8',
+        'cia': None,
+        'gefahren': ['G 0.23', 'G 0.30', 'G 0.39']
+    },
+    {
+        'id': 'SYS.2.5.A9',
+        'cia': None,
+        'gefahren': ['G 0.25', 'G 0.28', 'G 0.31', 'G 0.39', 'G 0.45']
+    },
+    {
+        'id': 'SYS.2.5.A10',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.27', 'G 0.28', 'G 0.30', 'G 0.31', 'G 0.32']
+    },
+    {
+        'id': 'SYS.2.5.A11',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.23', 'G 0.28', 'G 0.31', 'G 0.39']
+    },
+    {
+        'id': 'SYS.2.5.A12',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.27', 'G 0.31', 'G 0.45']
+    },
+    {
+        'id': 'SYS.2.5.A13',
+        'cia': 'CI',
+        'gefahren': ['G 0.23', 'G 0.30']
+    },
+    {
+        'id': 'SYS.2.5.A14',
+        'cia': 'CIA',
+        'gefahren': ['G 0.18', 'G 0.23']
+    },
+    {
+        'id': 'SYS.2.5.A15',
+        'cia': 'A',
+        'gefahren': ['G 0.25', 'G 0.27', 'G 0.30', 'G 0.31']
+    },
+    {
+        'id': 'SYS.2.5.A16',
+        'cia': 'CIA',
+        'gefahren': ['G 0.23', 'G 0.30', 'G 0.32']
+    },
+    {
+        'id': 'SYS.2.5.A17',
+        'cia': 'CIA',
+        'gefahren': ['G 0.28', 'G 0.30', 'G 0.31', 'G 0.32', 'G 0.39']
+    },
+    {
+        'id': 'SYS.2.5.A18',
+        'cia': 'A',
+        'gefahren': ['G 0.25']
+    },
+    {
+        'id': 'SYS.2.6.A1',
+        'cia': None,
+        'gefahren': ['G 0.9', 'G 0.18', 'G 0.27']
+    },
+    {
+        'id': 'SYS.2.6.A2',
+        'cia': None,
+        'gefahren': ['G 0.9', 'G 0.28', 'G 0.30', 'G 0.31', 'G 0.36', 'G 0.45']
+    },
+    {
+        'id': 'SYS.2.6.A3',
+        'cia': None,
+        'gefahren': ['G 0.28', 'G 0.31', 'G 0.36']
+    },
+    {
+        'id': 'SYS.2.6.A4',
+        'cia': None,
+        'gefahren': ['G 0.23']
+    },
+    {
+        'id': 'SYS.2.6.A5',
+        'cia': None,
+        'gefahren': ['G 0.23', 'G 0.28', 'G 0.31']
+    },
+    {
+        'id': 'SYS.2.6.A6',
+        'cia': None,
+        'gefahren': ['G 0.23', 'G 0.27']
+    },
+    {
+        'id': 'SYS.2.6.A7',
+        'cia': None,
+        'gefahren': ['G 0.23', 'G 0.28', 'G 0.36']
+    },
+    {
+        'id': 'SYS.2.6.A8',
+        'cia': None,
+        'gefahren': ['G 0.23', 'G 0.28', 'G 0.31', 'G 0.36']
+    },
+    {
+        'id': 'SYS.2.6.A9',
+        'cia': None,
+        'gefahren': ['G 0.28', 'G 0.31', 'G 0.36', 'G 0.45']
+    },
+    {
+        'id': 'SYS.2.6.A10',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.27']
+    },
+    {
+        'id': 'SYS.2.6.A11',
+        'cia': None,
+        'gefahren': ['G 0.23', 'G 0.30', 'G 0.36']
+    },
+    {
+        'id': 'SYS.2.6.A12',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.27']
+    },
+    {
+        'id': 'SYS.2.6.A13',
+        'cia': 'CIA',
+        'gefahren': ['G 0.23', 'G 0.36']
+    },
+    {
+        'id': 'SYS.2.6.A14',
+        'cia': 'A',
+        'gefahren': ['G 0.28', 'G 0.36']
+    },
+    {
+        'id': 'SYS.2.6.A15',
+        'cia': 'A',
+        'gefahren': ['G 0.9', 'G 0.45']
+    },
+    {
+        'id': 'SYS.2.6.A16',
+        'cia': 'CIA',
+        'gefahren': ['G 0.23', 'G 0.30']
+    },
+    {
+        'id': 'SYS.3.1.A1',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.31']
+    },
+    {
+        'id': 'SYS.3.1.A3',
+        'cia': None,
+        'gefahren': ['G 0.23']
+    },
+    {
+        'id': 'SYS.3.1.A6',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.31']
+    },
+    {
+        'id': 'SYS.3.1.A7',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.19', 'G 0.31']
+    },
+    {
+        'id': 'SYS.3.1.A8',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.23']
+    },
+    {
+        'id': 'SYS.3.1.A9',
+        'cia': None,
+        'gefahren': ['G 0.15', 'G 0.22', 'G 0.43']
+    },
+    {
+        'id': 'SYS.3.1.A10',
+        'cia': None,
+        'gefahren': ['G 0.45']
+    },
+    {
+        'id': 'SYS.3.1.A11',
+        'cia': None,
+        'gefahren': ['G 0.24', 'G 0.27']
+    },
+    {
+        'id': 'SYS.3.1.A12',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.21']
+    },
+    {
+        'id': 'SYS.3.1.A13',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.19']
+    },
+    {
+        'id': 'SYS.3.1.A14',
+        'cia': None,
+        'gefahren': ['G 0.16']
+    },
+    {
+        'id': 'SYS.3.1.A15',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'SYS.3.1.A16',
+        'cia': 'CI',
+        'gefahren': ['G 0.18', 'G 0.31']
+    },
+    {
+        'id': 'SYS.3.1.A17',
+        'cia': 'A',
+        'gefahren': ['G 0.4', 'G 0.16']
+    },
+    {
+        'id': 'SYS.3.1.A18',
+        'cia': 'CIA',
+        'gefahren': ['G 0.16']
+    },
+    {
+        'id': 'SYS.3.2.1.A1',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.19', 'G 0.30', 'G 0.31']
+    },
+    {
+        'id': 'SYS.3.2.1.A2',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.19']
+    },
+    {
+        'id': 'SYS.3.2.1.A3',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.23', 'G 0.31']
+    },
+    {
+        'id': 'SYS.3.2.1.A4',
+        'cia': None,
+        'gefahren': ['G 0.30']
+    },
+    {
+        'id': 'SYS.3.2.1.A5',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.28']
+    },
+    {
+        'id': 'SYS.3.2.1.A6',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.19', 'G 0.30']
+    },
+    {
+        'id': 'SYS.3.2.1.A7',
+        'cia': None,
+        'gefahren': ['G 0.19']
+    },
+    {
+        'id': 'SYS.3.2.1.A8',
+        'cia': None,
+        'gefahren': ['G 0.28', 'G 0.30', 'G 0.39']
+    },
+    {
+        'id': 'SYS.3.2.1.A9',
+        'cia': None,
+        'gefahren': ['G 0.19', 'G 0.45', 'G 0.46']
+    },
+    {
+        'id': 'SYS.3.2.1.A10',
+        'cia': None,
+        'gefahren': ['G 0.16', 'G 0.17', 'G 0.18', 'G 0.30']
+    },
+    {
+        'id': 'SYS.3.2.1.A11',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.19']
+    },
+    {
+        'id': 'SYS.3.2.1.A12',
+        'cia': None,
+        'gefahren': ['G 0.19']
+    },
+    {
+        'id': 'SYS.3.2.1.A13',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.19', 'G 0.30']
+    },
+    {
+        'id': 'SYS.3.2.1.A16',
+        'cia': None,
+        'gefahren': ['G 0.15', 'G 0.19', 'G 0.23', 'G 0.30']
+    },
+    {
+        'id': 'SYS.3.2.1.A18',
+        'cia': None,
+        'gefahren': ['G 0.23', 'G 0.36']
+    },
+    {
+        'id': 'SYS.3.2.1.A19',
+        'cia': None,
+        'gefahren': ['G 0.15', 'G 0.19']
+    },
+    {
+        'id': 'SYS.3.2.1.A22',
+        'cia': None,
+        'gefahren': ['G 0.15', 'G 0.18', 'G 0.22']
+    },
+    {
+        'id': 'SYS.3.2.1.A25',
+        'cia': 'CI',
+        'gefahren': ['G 0.19', 'G 0.31']
+    },
+    {
+        'id': 'SYS.3.2.1.A26',
+        'cia': 'CIA',
+        'gefahren': ['G 0.14', 'G 0.19', 'G 0.22']
+    },
+    {
+        'id': 'SYS.3.2.1.A27',
+        'cia': 'CIA',
+        'gefahren': ['G 0.19']
+    },
+    {
+        'id': 'SYS.3.2.1.A28',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.19', 'G 0.31', 'G 0.39']
+    },
+    {
+        'id': 'SYS.3.2.1.A29',
+        'cia': 'CIA',
+        'gefahren': ['G 0.23', 'G 0.30', 'G 0.36']
+    },
+    {
+        'id': 'SYS.3.2.1.A30',
+        'cia': 'CIA',
+        'gefahren': ['G 0.20', 'G 0.30', 'G 0.36']
+    },
+    {
+        'id': 'SYS.3.2.1.A31',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'SYS.3.2.1.A32',
+        'cia': None,
+        'gefahren': ['G 0.30', 'G 0.31']
+    },
+    {
+        'id': 'SYS.3.2.1.A33',
+        'cia': None,
+        'gefahren': ['G 0.31', 'G 0.39']
+    },
+    {
+        'id': 'SYS.3.2.1.A34',
+        'cia': None,
+        'gefahren': ['G 0.15', 'G 0.19', 'G 0.22']
+    },
+    {
+        'id': 'SYS.3.2.1.A35',
+        'cia': 'CIA',
+        'gefahren': ['G 0.19', 'G 0.23']
+    },
+    {
+        'id': 'SYS.3.2.2.A1',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.29']
+    },
+    {
+        'id': 'SYS.3.2.2.A2',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'SYS.3.2.2.A3',
+        'cia': None,
+        'gefahren': ['G 0.11', 'G 0.18', 'G 0.45']
+    },
+    {
+        'id': 'SYS.3.2.2.A4',
+        'cia': None,
+        'gefahren': ['G 0.13', 'G 0.14', 'G 0.21', 'G 0.22', 'G 0.23', 'G 0.30', 'G 0.31', 'G 0.36', 'G 0.39']
+    },
+    {
+        'id': 'SYS.3.2.2.A5',
+        'cia': None,
+        'gefahren': ['G 0.13', 'G 0.14', 'G 0.21', 'G 0.22', 'G 0.23', 'G 0.30', 'G 0.31', 'G 0.36', 'G 0.39']
+    },
+    {
+        'id': 'SYS.3.2.2.A6',
+        'cia': None,
+        'gefahren': ['G 0.30', 'G 0.31', 'G 0.32', 'G 0.37']
+    },
+    {
+        'id': 'SYS.3.2.2.A7',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.16', 'G 0.19', 'G 0.21', 'G 0.22', 'G 0.23', 'G 0.24', 'G 0.25', 'G 0.29', 'G 0.30', 'G 0.31', 'G 0.32', 'G 0.36', 'G 0.39']
+    },
+    {
+        'id': 'SYS.3.2.2.A12',
+        'cia': None,
+        'gefahren': ['G 0.23', 'G 0.30', 'G 0.32', 'G 0.38']
+    },
+    {
+        'id': 'SYS.3.2.2.A14',
+        'cia': 'CI',
+        'gefahren': ['G 0.14', 'G 0.16', 'G 0.19', 'G 0.22', 'G 0.23', 'G 0.28', 'G 0.30', 'G 0.36', 'G 0.39']
+    },
+    {
+        'id': 'SYS.3.2.2.A17',
+        'cia': 'I',
+        'gefahren': ['G 0.29', 'G 0.30', 'G 0.31', 'G 0.32', 'G 0.37']
+    },
+    {
+        'id': 'SYS.3.2.2.A19',
+        'cia': 'CI',
+        'gefahren': ['G 0.14']
+    },
+    {
+        'id': 'SYS.3.2.2.A20',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.19', 'G 0.21', 'G 0.23', 'G 0.29', 'G 0.30', 'G 0.31', 'G 0.32']
+    },
+    {
+        'id': 'SYS.3.2.2.A21',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.15', 'G 0.18', 'G 0.19', 'G 0.22', 'G 0.23', 'G 0.29', 'G 0.30', 'G 0.31', 'G 0.32', 'G 0.36', 'G 0.38']
+    },
+    {
+        'id': 'SYS.3.2.2.A22',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.15', 'G 0.16', 'G 0.17', 'G 0.18', 'G 0.19', 'G 0.24', 'G 0.29', 'G 0.30', 'G 0.36', 'G 0.38']
+    },
+    {
+        'id': 'SYS.3.2.2.A23',
+        'cia': 'CI',
+        'gefahren': ['G 0.16', 'G 0.21', 'G 0.22', 'G 0.29']
+    },
+    {
+        'id': 'SYS.3.2.3.A1',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.16', 'G 0.19', 'G 0.21', 'G 0.22', 'G 0.23', 'G 0.25', 'G 0.28', 'G 0.29', 'G 0.30', 'G 0.32', 'G 0.37', 'G 0.38', 'G 0.41', 'G 0.46']
+    },
+    {
+        'id': 'SYS.3.2.3.A2',
+        'cia': None,
+        'gefahren': ['G 0.11', 'G 0.14', 'G 0.19', 'G 0.29', 'G 0.36', 'G 0.38', 'G 0.46']
+    },
+    {
+        'id': 'SYS.3.2.3.A7',
+        'cia': None,
+        'gefahren': ['G 0.19', 'G 0.21', 'G 0.22', 'G 0.23', 'G 0.30', 'G 0.32', 'G 0.35', 'G 0.37', 'G 0.38', 'G 0.41', 'G 0.46']
+    },
+    {
+        'id': 'SYS.3.2.3.A12',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.16', 'G 0.19', 'G 0.32', 'G 0.35', 'G 0.36', 'G 0.37', 'G 0.41', 'G 0.42', 'G 0.46']
+    },
+    {
+        'id': 'SYS.3.2.3.A13',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.16', 'G 0.19', 'G 0.21', 'G 0.22', 'G 0.23', 'G 0.26', 'G 0.28', 'G 0.29', 'G 0.30', 'G 0.32', 'G 0.36', 'G 0.37', 'G 0.38', 'G 0.41', 'G 0.42', 'G 0.46']
+    },
+    {
+        'id': 'SYS.3.2.3.A14',
+        'cia': None,
+        'gefahren': ['G 0.9', 'G 0.11', 'G 0.14', 'G 0.16', 'G 0.19', 'G 0.23', 'G 0.29']
+    },
+    {
+        'id': 'SYS.3.2.3.A15',
+        'cia': None,
+        'gefahren': ['G 0.11', 'G 0.19', 'G 0.29', 'G 0.46']
+    },
+    {
+        'id': 'SYS.3.2.3.A17',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.16', 'G 0.19', 'G 0.21', 'G 0.22', 'G 0.23', 'G 0.32', 'G 0.36', 'G 0.46']
+    },
+    {
+        'id': 'SYS.3.2.3.A18',
+        'cia': None,
+        'gefahren': ['G 0.26', 'G 0.28']
+    },
+    {
+        'id': 'SYS.3.2.3.A21',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.19', 'G 0.21', 'G 0.25', 'G 0.26', 'G 0.28', 'G 0.32', 'G 0.39', 'G 0.41', 'G 0.46']
+    },
+    {
+        'id': 'SYS.3.2.3.A23',
+        'cia': 'CI',
+        'gefahren': ['G 0.11', 'G 0.16', 'G 0.27', 'G 0.30']
+    },
+    {
+        'id': 'SYS.3.2.3.A25',
+        'cia': 'CI',
+        'gefahren': ['G 0.16', 'G 0.19', 'G 0.29', 'G 0.35', 'G 0.46']
+    },
+    {
+        'id': 'SYS.3.2.3.A26',
+        'cia': 'CI',
+        'gefahren': ['G 0.11', 'G 0.14', 'G 0.16', 'G 0.19', 'G 0.21', 'G 0.22', 'G 0.23', 'G 0.28', 'G 0.29', 'G 0.30', 'G 0.32', 'G 0.35', 'G 0.36', 'G 0.38', 'G 0.39', 'G 0.41', 'G 0.42', 'G 0.46']
+    },
+    {
+        'id': 'SYS.3.2.4.A2',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.21', 'G 0.32', 'G 0.41', 'G 0.46']
+    },
+    {
+        'id': 'SYS.3.2.4.A3',
+        'cia': None,
+        'gefahren': ['G 0.30', 'G 0.32', 'G 0.38']
+    },
+    {
+        'id': 'SYS.3.2.4.A5',
+        'cia': None,
+        'gefahren': ['G 0.30']
+    },
+    {
+        'id': 'SYS.3.3.A1',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.15', 'G 0.19', 'G 0.22', 'G 0.27', 'G 0.31']
+    },
+    {
+        'id': 'SYS.3.3.A2',
+        'cia': None,
+        'gefahren': ['G 0.19', 'G 0.22', 'G 0.23', 'G 0.29']
+    },
+    {
+        'id': 'SYS.3.3.A3',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.15', 'G 0.16', 'G 0.19', 'G 0.27', 'G 0.29', 'G 0.31']
+    },
+    {
+        'id': 'SYS.3.3.A4',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.15', 'G 0.16', 'G 0.17', 'G 0.19', 'G 0.29']
+    },
+    {
+        'id': 'SYS.3.3.A5',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.19', 'G 0.22']
+    },
+    {
+        'id': 'SYS.3.3.A6',
+        'cia': None,
+        'gefahren': ['G 0.31']
+    },
+    {
+        'id': 'SYS.3.3.A7',
+        'cia': None,
+        'gefahren': ['G 0.27']
+    },
+    {
+        'id': 'SYS.3.3.A8',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.15', 'G 0.22', 'G 0.23']
+    },
+    {
+        'id': 'SYS.3.3.A9',
+        'cia': 'A',
+        'gefahren': ['G 0.25', 'G 0.27']
+    },
+    {
+        'id': 'SYS.3.3.A10',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.15', 'G 0.22', 'G 0.23']
+    },
+    {
+        'id': 'SYS.3.3.A11',
+        'cia': None,
+        'gefahren': ['G 0.25']
+    },
+    {
+        'id': 'SYS.3.3.A12',
+        'cia': None,
+        'gefahren': ['G 0.27']
+    },
+    {
+        'id': 'SYS.3.3.A13',
+        'cia': 'C',
+        'gefahren': ['G 0.14', 'G 0.19', 'G 0.29']
+    },
+    {
+        'id': 'SYS.3.3.A14',
+        'cia': 'C',
+        'gefahren': ['G 0.14', 'G 0.19', 'G 0.29']
+    },
+    {
+        'id': 'SYS.3.3.A15',
+        'cia': 'C',
+        'gefahren': ['G 0.14', 'G 0.15']
+    },
+    {
+        'id': 'SYS.4.1.A1',
+        'cia': None,
+        'gefahren': ['G 0.16', 'G 0.18']
+    },
+    {
+        'id': 'SYS.4.1.A2',
+        'cia': None,
+        'gefahren': ['G 0.16', 'G 0.19', 'G 0.21']
+    },
+    {
+        'id': 'SYS.4.1.A4',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.30']
+    },
+    {
+        'id': 'SYS.4.1.A5',
+        'cia': None,
+        'gefahren': ['G 0.31']
+    },
+    {
+        'id': 'SYS.4.1.A7',
+        'cia': None,
+        'gefahren': ['G 0.15', 'G 0.23', 'G 0.30']
+    },
+    {
+        'id': 'SYS.4.1.A11',
+        'cia': None,
+        'gefahren': ['G 0.15', 'G 0.23', 'G 0.30']
+    },
+    {
+        'id': 'SYS.4.1.A14',
+        'cia': 'CIA',
+        'gefahren': ['G 0.19', 'G 0.30']
+    },
+    {
+        'id': 'SYS.4.1.A15',
+        'cia': None,
+        'gefahren': ['G 0.15', 'G 0.19', 'G 0.22']
+    },
+    {
+        'id': 'SYS.4.1.A16',
+        'cia': 'A',
+        'gefahren': ['G 0.25']
+    },
+    {
+        'id': 'SYS.4.1.A17',
+        'cia': None,
+        'gefahren': ['G 0.19']
+    },
+    {
+        'id': 'SYS.4.1.A18',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.19', 'G 0.22']
+    },
+    {
+        'id': 'SYS.4.1.A20',
+        'cia': 'C',
+        'gefahren': ['G 0.19']
+    },
+    {
+        'id': 'SYS.4.1.A21',
+        'cia': 'CIA',
+        'gefahren': ['G 0.18', 'G 0.21']
+    },
+    {
+        'id': 'SYS.4.1.A22',
+        'cia': None,
+        'gefahren': ['G 0.19']
+    },
+    {
+        'id': 'SYS.4.3.A1',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.29', 'G 0.31']
+    },
+    {
+        'id': 'SYS.4.3.A2',
+        'cia': None,
+        'gefahren': ['G 0.23', 'G 0.30']
+    },
+    {
+        'id': 'SYS.4.3.A3',
+        'cia': None,
+        'gefahren': ['G 0.21', 'G 0.22', 'G 0.23', 'G 0.25', 'G 0.26', 'G 0.30', 'G 0.37']
+    },
+    {
+        'id': 'SYS.4.3.A4',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.20']
+    },
+    {
+        'id': 'SYS.4.3.A5',
+        'cia': None,
+        'gefahren': ['G 0.4', 'G 0.25']
+    },
+    {
+        'id': 'SYS.4.3.A6',
+        'cia': None,
+        'gefahren': ['G 0.23', 'G 0.30']
+    },
+    {
+        'id': 'SYS.4.3.A7',
+        'cia': None,
+        'gefahren': ['G 0.21', 'G 0.22', 'G 0.23', 'G 0.24']
+    },
+    {
+        'id': 'SYS.4.3.A8',
+        'cia': None,
+        'gefahren': ['G 0.15', 'G 0.20', 'G 0.21', 'G 0.22', 'G 0.23', 'G 0.28', 'G 0.46']
+    },
+    {
+        'id': 'SYS.4.3.A9',
+        'cia': None,
+        'gefahren': ['G 0.15', 'G 0.21', 'G 0.22', 'G 0.23', 'G 0.46']
+    },
+    {
+        'id': 'SYS.4.3.A10',
+        'cia': None,
+        'gefahren': ['G 0.25', 'G 0.31']
+    },
+    {
+        'id': 'SYS.4.3.A11',
+        'cia': None,
+        'gefahren': ['G 0.15', 'G 0.19']
+    },
+    {
+        'id': 'SYS.4.3.A12',
+        'cia': 'CIA',
+        'gefahren': ['G 0.4', 'G 0.18', 'G 0.20', 'G 0.21', 'G 0.22', 'G 0.30']
+    },
+    {
+        'id': 'SYS.4.3.A13',
+        'cia': 'CIA',
+        'gefahren': ['G 0.15', 'G 0.20', 'G 0.21', 'G 0.22', 'G 0.23', 'G 0.28', 'G 0.46']
+    },
+    {
+        'id': 'SYS.4.3.A14',
+        'cia': 'CI',
+        'gefahren': ['G 0.21', 'G 0.22', 'G 0.30', 'G 0.39']
+    },
+    {
+        'id': 'SYS.4.3.A15',
+        'cia': 'CI',
+        'gefahren': ['G 0.21', 'G 0.22', 'G 0.39']
+    },
+    {
+        'id': 'SYS.4.3.A16',
+        'cia': 'CI',
+        'gefahren': ['G 0.21', 'G 0.22', 'G 0.24', 'G 0.31']
+    },
+    {
+        'id': 'SYS.4.3.A17',
+        'cia': 'IA',
+        'gefahren': ['G 0.21', 'G 0.22', 'G 0.25', 'G 0.26', 'G 0.46']
+    },
+    {
+        'id': 'SYS.4.3.A18',
+        'cia': 'C',
+        'gefahren': ['G 0.15', 'G 0.21', 'G 0.46']
+    },
+    {
+        'id': 'SYS.4.4.A1',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.30']
+    },
+    {
+        'id': 'SYS.4.4.A2',
+        'cia': None,
+        'gefahren': ['G 0.30']
+    },
+    {
+        'id': 'SYS.4.4.A5',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.19', 'G 0.23']
+    },
+    {
+        'id': 'SYS.4.4.A6',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'SYS.4.4.A7',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'SYS.4.4.A8',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.28']
+    },
+    {
+        'id': 'SYS.4.4.A9',
+        'cia': None,
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'SYS.4.4.A10',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.18', 'G 0.19', 'G 0.21', 'G 0.23', 'G 0.25', 'G 0.28', 'G 0.30', 'G 0.38', 'G 0.39', 'G 0.40']
+    },
+    {
+        'id': 'SYS.4.4.A11',
+        'cia': None,
+        'gefahren': ['G 0.16']
+    },
+    {
+        'id': 'SYS.4.4.A13',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.19', 'G 0.23', 'G 0.28']
+    },
+    {
+        'id': 'SYS.4.4.A15',
+        'cia': None,
+        'gefahren': ['G 0.30']
+    },
+    {
+        'id': 'SYS.4.4.A16',
+        'cia': None,
+        'gefahren': ['G 0.39']
+    },
+    {
+        'id': 'SYS.4.4.A17',
+        'cia': None,
+        'gefahren': ['G 0.23']
+    },
+    {
+        'id': 'SYS.4.4.A18',
+        'cia': None,
+        'gefahren': ['G 0.37']
+    },
+    {
+        'id': 'SYS.4.4.A19',
+        'cia': None,
+        'gefahren': ['G 0.23', 'G 0.28', 'G 0.30']
+    },
+    {
+        'id': 'SYS.4.4.A20',
+        'cia': None,
+        'gefahren': ['G 0.18', 'G 0.19', 'G 0.45']
+    },
+    {
+        'id': 'SYS.4.4.A21',
+        'cia': 'I',
+        'gefahren': ['G 0.2', 'G 0.4', 'G 0.8', 'G 0.16', 'G 0.18']
+    },
+    {
+        'id': 'SYS.4.4.A22',
+        'cia': 'A',
+        'gefahren': ['G 0.18', 'G 0.40']
+    },
+    {
+        'id': 'SYS.4.4.A23',
+        'cia': 'CIA',
+        'gefahren': ['G 0.18']
+    },
+    {
+        'id': 'SYS.4.4.A24',
+        'cia': 'CIA',
+        'gefahren': ['G 0.23']
+    },
+    {
+        'id': 'SYS.4.5.A1',
+        'cia': None,
+        'gefahren': ['G 0.2', 'G 0.4', 'G 0.16', 'G 0.17', 'G 0.21', 'G 0.22', 'G 0.23', 'G 0.29']
+    },
+    {
+        'id': 'SYS.4.5.A2',
+        'cia': None,
+        'gefahren': ['G 0.16', 'G 0.21']
+    },
+    {
+        'id': 'SYS.4.5.A4',
+        'cia': None,
+        'gefahren': ['G 0.19', 'G 0.22', 'G 0.39']
+    },
+    {
+        'id': 'SYS.4.5.A5',
+        'cia': None,
+        'gefahren': ['G 0.16', 'G 0.17', 'G 0.19']
+    },
+    {
+        'id': 'SYS.4.5.A6',
+        'cia': None,
+        'gefahren': ['G 0.2', 'G 0.4', 'G 0.17']
+    },
+    {
+        'id': 'SYS.4.5.A7',
+        'cia': None,
+        'gefahren': ['G 0.19']
+    },
+    {
+        'id': 'SYS.4.5.A10',
+        'cia': None,
+        'gefahren': ['G 0.14', 'G 0.19']
+    },
+    {
+        'id': 'SYS.4.5.A11',
+        'cia': 'I',
+        'gefahren': ['G 0.22', 'G 0.46']
+    },
+    {
+        'id': 'SYS.4.5.A12',
+        'cia': None,
+        'gefahren': ['G 0.39']
+    },
+    {
+        'id': 'SYS.4.5.A13',
+        'cia': None,
+        'gefahren': ['G 0.17', 'G 0.19']
+    },
+    {
+        'id': 'SYS.4.5.A14',
+        'cia': 'CIA',
+        'gefahren': ['G 0.2', 'G 0.4', 'G 0.17']
+    },
+    {
+        'id': 'SYS.4.5.A15',
+        'cia': 'CIA',
+        'gefahren': ['G 0.20']
+    },
+    {
+        'id': 'SYS.4.5.A16',
+        'cia': 'CI',
+        'gefahren': ['G 0.39']
+    },
+    {
+        'id': 'SYS.4.5.A17',
+        'cia': None,
+        'gefahren': ['G 0.46']
+    }
+]

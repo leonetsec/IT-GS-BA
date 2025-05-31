@@ -1563,6 +1563,7 @@ def checklist_integration(checklist_path, filename, dokument, implemented, partl
         else:
             i += 1
 
+# Speichert einen Dataframe in einem gewünschten Format
 def save_df(df, export_file_path, index_number):
     file_format = input("In welchem Format soll die Tabelle gespeichert werden?\n\n"
                         "1. Excel\n2. CSV\n3. JSON\n4. Markdown\n5. HTML\n6. XML\n"
@@ -1591,8 +1592,7 @@ def save_df(df, export_file_path, index_number):
     else: print("Keine gültige Auswahl, wird als .xlsx Datei gespeichert")
     print("Datei erfolgreich gespeichert")
 
-
-
+# Durchsucht die Tabellen eines Ordners nach verschiedenen Möglichkeiten
 def search(directory):
     if not os.path.isdir(directory):
         print(f"Fehler: '{directory}' ist kein gültiges Verzeichnis.")
@@ -1639,6 +1639,103 @@ def search(directory):
     export_file_path = os.path.join(export_dir, f"Search result {datetime.today().strftime('%d-%m-%Y')}")
     save_df(df, export_file_path, False)
 
+# Analysiert die abgedeckten elementaren Gefährdungen einer Datei
+def risk_analysis(file_path):
+    df = load_data(file_path)
+    implemented = get_specific_df(df, "Umsetzung", "ja")
+    covered_risks = set()
+    covered_cia = set()
+
+    for req_id in implemented["ID-Anforderung"].unique():
+        for item in mapping.krt:
+            if item['id'] == req_id:
+                covered_risks.update(item['gefahren'])
+                if item['cia']:
+                    for char in item['cia']:
+                        if char not in covered_cia:
+                            covered_cia.add(char)
+                break
+
+    return covered_risks, covered_cia
+
+# Handler für Datei oder Ordner
+def risk_handler(file_or_dir):
+    if os.path.isfile(file_or_dir) and is_format(file_or_dir):
+        covered_risks_codes, covered_cia_codes = risk_analysis(file_or_dir)
+
+        print(f"\n--- Analyse für Datei: {os.path.basename(file_or_dir)} ---")
+
+        if covered_risks_codes:
+            print("(Teilweise) abgedeckte Elementare Gefährdungen:")
+            for risk_code in sorted(list(covered_risks_codes)):
+                print(f"- {risk_code}: {mapping.gefahren[risk_code]}")
+        else:
+            print("\nKeine Elementaren Gefährdungen abgedeckt.")
+
+        if covered_cia_codes:
+            print("\n(Teilweise) abgedeckte CIA-Attribute:")
+            for cia_code in sorted(list(covered_cia_codes)):
+                full_name = mapping.cia.get(cia_code)
+                print(f"- {full_name} ({cia_code})")
+        else:
+            print("\nKeine CIA-Attribute abgedeckt.")
+
+    elif os.path.isdir(file_or_dir):
+        all_covered_risks_across_files = set()
+        all_covered_cia_across_files = set()
+        processed_files_count = 0
+
+        print(f"\n--- Analyse für Ordner: {os.path.basename(file_or_dir)} ---")
+        for file_name in os.listdir(file_or_dir):
+            file_path = os.path.join(file_or_dir, file_name)
+            if os.path.isfile(file_path) and is_format(file_name):
+                covered_risks_for_file, covered_cia_for_file = risk_analysis(file_path)
+
+                all_covered_risks_across_files.update(covered_risks_for_file)
+                all_covered_cia_across_files.update(covered_cia_for_file)
+                processed_files_count += 1
+            else:
+                print(f"Skipping: {file_name} (Kein gültiges Dateiformat)")
+
+        if processed_files_count == 0:
+            print("Keine gültigen Dateien im Ordner gefunden")
+            return
+
+        total_possible_risks = set(mapping.gefahren.keys())
+        missing_risks = total_possible_risks - all_covered_risks_across_files
+
+        print("\nSummierte (teilweise) abgedeckte Elementare Gefährdungen:")
+        if all_covered_risks_across_files:
+            for risk_code in sorted(list(all_covered_risks_across_files)):
+                print(f"- {risk_code}: {mapping.gefahren[risk_code]}")
+        else:
+            print("Keine Elementaren Gefährdungen abgedeckt.")
+
+        if missing_risks:
+            print("\nAn keiner Stelle abgedeckte Elementare Gefährdungen:")
+            for risk_code in sorted(list(missing_risks)):
+                print(f"- {risk_code}: {mapping.gefahren[risk_code]}")
+        else:
+            print("\nAlle möglichen Elementaren Gefährdungen sind an mind. einer Stelle abgedeckt!")
+
+        total_possible_cia = set(mapping.cia.keys())
+        missing_cia = total_possible_cia - all_covered_cia_across_files
+
+        if all_covered_cia_across_files:
+            print("\nSummierte (teilweise) abgedeckte CIA-Attribute:")
+            for cia_code in sorted(list(all_covered_cia_across_files)):
+                full_name = mapping.cia.get(cia_code, cia_code)
+                print(f"- {full_name} ({cia_code})")
+
+        if missing_cia:
+            print("\nNoch nicht an mind. einer Stelle abgedeckte CIA-Attribute:")
+            for cia_code in sorted(list(missing_cia)):
+                full_name = mapping.cia.get(cia_code, cia_code)
+                print(f"- {full_name} ({cia_code})")
+
+    else:
+        print("Kein gültiger Pfad: Bitte geben Sie eine gültige Datei im Format Checkliste_XXX.X.X.xlsx oder einen Ordner an.")
+
 
 def main():
     parser = argparse.ArgumentParser(description='Arbeitet mit IT-Grundschutz-Check Excel Tabellen')
@@ -1657,6 +1754,7 @@ def main():
     parser.add_argument('--merge', nargs=2, metavar=("file1", "file2"), help="Führt zwei Tabellen der selben Art zusammen und behandelt Konflikte")
     parser.add_argument('--modify', action='store_true', help='Modifiziert alle Bausteine eines Ordners im docx-Format, wahlweise Export zu PDF (Menü öffnet sich)')
     parser.add_argument('--search', action='store_true', help='Durchsuche alle Tabellen eines Ordners auf verschiedene Arten')
+    parser.add_argument('--risks', action='store_true', help='Zeigt die abgedeckten elementaren Gefährdungen an')
 
     args = parser.parse_args()
 
@@ -1673,6 +1771,7 @@ def main():
         args.report: lambda: report(args.file_or_dir),
         args.modify: lambda: modify(args.file_or_dir),
         args.search: lambda: search(args.file_or_dir),
+        args.risks: lambda: risk_handler(args.file_or_dir),
     }
 
     for condition, action in actions.items():
