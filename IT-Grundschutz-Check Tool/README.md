@@ -15,8 +15,8 @@ Dieses Tool vereinfacht den IT-Grundschutz-Check ([Version 2023](https://www.bsi
 Das Tool funktioniert mit den Checklisten im Format "Checkliste_XXX.X.X_xlsx", deren Blätter nach dem Kürzel des Bausteins benannt sind.
 
 Übergibt man dem Tool nur einen Pfad ohne Parameter werden folgende Analysen durchgeführt:
-- Einzelne Datei: Gesamtanzahl an Anforderungen, Umgesetzte Anforderungen, Teilweise umgesetzte Anforderungen, Entbehrliche Anforderungen, Nicht umgesetzte Anforderungen (aufgeschlüsselt nach Basis, Standard, erhöhter Schutzbedarf), Summierte Kostenschätzung, Verantwortliche.
-- Alle Dateien eines Ordners: Zahl analysierter Tabellen, Gesamtanzahl an Anforderungen, Umgesetzte Anforderungen, Teilweise umgesetzte Anforderungen, Entbehrliche Anforderungen, Nicht umgesetzte Anforderungen (insgesamt aufgeschlüsselt nach Basis, Standard, erhöhter Schutzbedarf), Summierte Kostenschätzung.
+- Einzelne Datei: Gesamtanzahl an Anforderungen, Umgesetzte Anforderungen, Teilweise umgesetzte Anforderungen, Entbehrliche Anforderungen, Nicht umgesetzte Anforderungen (aufgeschlüsselt nach Basis, Standard, erhöhter Schutzbedarf), Summierte Kostenschätzung, Verantwortliche, (teilweise) abgedeckte elementare Gefährdungen, (teilweise) abgedeckte Schutzziele.
+- Alle Dateien eines Ordners: Zahl analysierter Tabellen, Gesamtanzahl an Anforderungen, Umgesetzte Anforderungen, Teilweise umgesetzte Anforderungen, Entbehrliche Anforderungen, Nicht umgesetzte Anforderungen (insgesamt aufgeschlüsselt nach Basis, Standard, erhöhter Schutzbedarf), Summierte Kostenschätzung, (teilweise) abgedeckte elementare Gefährdungen, (teilweise) abgedeckte Schutzziele.
 
 Weitere Funktionen mittels Parameter, die sowohl auf einzelne Dateien als auch ganze Ordner anwendbar sind:
 - ```--mapping```: Anzeige des vollständigen Bausteinnamen für die jeweilige Datei, z.B. Checkliste_APP.1.1.xlsx &#8594; Office Produkte

@@ -941,8 +941,8 @@ def save_results_to_pdf(results, file_name, reports_dir, risk, file_path):
             for risk_krz in risks_krz_list:
                 risk_names.append(f"{risk_krz}: {mapping.gefahren[risk_krz]}")
 
-            hazards_combined = "<br/>".join(risk_names)
-            table_data.append([req_id, hazards_combined])
+            risks_combined = "<br/>".join(risk_names)
+            table_data.append([req_id, risks_combined])
 
         table = get_custom_table(table_data)
         story.append(table)
