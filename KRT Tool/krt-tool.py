@@ -2,9 +2,11 @@ import collections
 
 import mapping
 
+# Gibt das Bausteinkürzel zurück, z.B. APP.1.1 statt APP.1.1.A2
 def get_baustein_id_for_anforderung(anforderung_id):
     return anforderung_id.split(".A")[0]
 
+# Gibt für alle angezeigten Bausteine und Gefährdungen den vollständigen Namen aus
 def print_glossar(displayed_baustein_ids, displayed_gefaehrdung_ids):
     print("\n" + "=" * 25 + " GLOSSAR " + "=" * 26)
 
@@ -20,13 +22,13 @@ def print_glossar(displayed_baustein_ids, displayed_gefaehrdung_ids):
             beschreibung = mapping.gefahren.get(g_id)
             print(f"  {g_id}: {beschreibung}")
 
-    #print("\n--- Schutzziele ---")
-    #for code, name in mapping.cia.items():
-    #    print(f"  {code}: {name}")
+    print("\n--- Schutzziele ---")
+    for code, name in mapping.cia.items():
+        print(f"  {code}: {name}")
 
     print("=" * 60)
 
-
+# Gibt die Gefährdungen und dazu passende Anforderungen aus
 def print_gefaehrdungen():
     print("\n--- Elementare Gefährdungen ---")
 
@@ -159,7 +161,7 @@ def print_gefaehrdungen():
                         print(
                             f"\n--- Anforderungen für Baustein {selected_b_id}: {mapping.bsi_ref_titles.get(selected_b_id)} ---")
                         for an_krt in sorted(anforderungen_per_baustein[selected_b_id], key=lambda x: x['id']):
-                            print(f"  Anforderung: {an_krt['id']} - {an_krt.get('name')}")
+                            print(f" - {an_krt['id']} - {an_krt.get('name')}")
                             cia_info = an_krt.get('cia')
                             gefahren_info = ", ".join(an_krt.get('gefahren', []))
                             displayed_gefaehrdung_ids_glossar.update(an_krt.get('gefahren', []))
@@ -177,7 +179,7 @@ def print_gefaehrdungen():
         elif view_choice == '2':
             print("\n--- Betroffene Anforderungen ---")
             for an_krt in sorted(filtered_anforderungen, key=lambda x: x['id']):
-                print(f"  Anforderung: {an_krt['id']} - {an_krt.get('name')}")
+                print(f" - {an_krt['id']} - {an_krt.get('name')}")
                 cia_info = an_krt.get('cia')
                 gefahren_info = ", ".join(an_krt.get('gefahren', []))
                 displayed_gefaehrdung_ids_glossar.update(an_krt.get('gefahren', []))
@@ -191,7 +193,7 @@ def print_gefaehrdungen():
         else:
             print("Ungültige Wahl.")
 
-
+# Gibt die Bausteine und ihre Anforderungen aus
 def print_bausteine():
     print("\n--- Baustein Übersicht ---")
 
@@ -247,17 +249,18 @@ def print_bausteine():
 
     print("\n--- Anforderungen ---")
     for an_krt in sorted(filtered_anforderungen, key=lambda x: x['id']):
-        print(f"  Anforderung: {an_krt['id']} - {an_krt.get('name')}")
+        print(f" - {an_krt['id']} - {an_krt.get('name')}")
         cia_info = an_krt.get('cia')
         gefahren_info = ", ".join(an_krt.get('gefahren', []))
         displayed_gefaehrdung_ids_glossar.update(an_krt.get('gefahren', []))
         displayed_baustein_ids_glossar.add(get_baustein_id_for_anforderung(an_krt['id']))
         if cia_info is None:
-            print(f"    Gefahren: {gefahren_info}")
+            print(f"    Gefährdungen: {gefahren_info}")
         else:
-            print(f"    CIA: {cia_info}, Gefahren: {gefahren_info}")
+            print(f"    CIA: {cia_info}, Gefährdungen: {gefahren_info}")
     print_glossar(displayed_baustein_ids_glossar, displayed_gefaehrdung_ids_glossar)
 
+# Gibt die Schutzziele und die dazugehörigen Anforderungen aus
 def print_schutzziele():
     print("\n--- Schutzziele ---")
 
@@ -328,7 +331,7 @@ def print_schutzziele():
 
     print("\n--- Gefundene Anforderungen ---")
     for an_krt in sorted(anforderungen_fuer_schutzziele, key=lambda x: x['id']):
-        print(f"  Anforderung: {an_krt['id']} - {an_krt.get('name')}")
+        print(f" - {an_krt['id']} - {an_krt.get('name')}")
         cia_info = an_krt.get('cia')
         gefahren_info = ", ".join(an_krt.get('gefahren', []))
         displayed_gefaehrdung_ids_glossar.update(an_krt.get('gefahren', []))
@@ -338,6 +341,8 @@ def print_schutzziele():
         else:
             print(f"    CIA: {cia_info}, Gefährdungen: {gefahren_info}")
     print_glossar(displayed_baustein_ids_glossar, displayed_gefaehrdung_ids_glossar)
+
+# Ermöglicht eine Textsuche über alle Anforderungen
 def suchfunktion():
     print("\n--- Suchfunktion ---")
     displayed_baustein_ids_glossar = set()
@@ -369,7 +374,7 @@ def suchfunktion():
 
     print("\n--- Passende Anforderungen ---")
     for an_krt in sorted(matching_anforderungen, key=lambda x: x['id']):
-        print(f"  Anforderung: {an_krt['id']} - {an_krt.get('name')}")
+        print(f" - {an_krt['id']} - {an_krt.get('name')}")
         cia_info = an_krt.get('cia')
         gefahren_info = ", ".join(an_krt.get('gefahren', []))
         displayed_gefaehrdung_ids_glossar.update(an_krt.get('gefahren', []))

@@ -10,6 +10,6 @@ Dieses Tool vereinfacht die Arbeit mit den [Kreuzreferenztabellen](https://www.b
 ## Nutzung
 ```python KRT-Tool.py```
 
-Das Tool funktioniert nur mit der Datei ```mapping.py``` im selben Ordner.
+Das Tool funktioniert nur mit der Datei ```mapping.py``` im selben Ordner. Dort können auch weitere Gefährdungen manuell hinzugefügt und den Anforderungen zugeordnet werden.
 
 Es können Anforderungen nach Gefährdungen, Bausteinen und Schutzzielen gefiltert werden sowie nach Strings durchsucht werden. Siehe IT-Grundschutz-Check-Tool für weitere Funktionen.
