@@ -1,4 +1,10 @@
+import argparse
 import collections
+import os
+import pprint
+import pandas as pd
+import sys
+import warnings
 
 import mapping
 
@@ -385,8 +391,78 @@ def suchfunktion():
             print(f"    CIA: {cia_info}, Gefährdungen: {gefahren_info}")
     print_glossar(displayed_baustein_ids_glossar, displayed_gefaehrdung_ids_glossar)
 
+# Liest die Kreuzreferenztabellen in ein einfacheres Format ein
+def get_krt(path):
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore", category=UserWarning, lineno=48, append=False)
+        try:
+            all_sheets = pd.read_excel(path, sheet_name=None, header=0)
+        except Exception as e:
+            print(f"Fehler beim Lesen der Excel-Datei: {e}")
+            sys.exit(1)
+
+    krt_data = []
+    for _, df in all_sheets.items():
+
+        gefahr_cols = df.columns[3:]
+
+        for _, row in df.iterrows():
+            if pd.isna(row.iloc[0]) or not str(row.iloc[0]).strip():
+                continue
+
+            gefahren_list = [
+                str(col).strip() for col in gefahr_cols
+                if pd.notna(row[col]) and str(row[col]).strip().upper() == 'X'
+            ]
+
+            name_val = str(row.iloc[1]).strip() if len(df.columns) > 1 and pd.notna(row.iloc[1]) else None
+            cia_val = str(row.iloc[2]).strip() if len(df.columns) > 2 and pd.notna(row.iloc[2]) else None
+
+            if cia_val or gefahren_list:
+                krt_data.append({
+                    'id': str(row.iloc[0]).strip(),
+                    'name': name_val,
+                    'cia': cia_val,
+                    'gefahren': gefahren_list
+                })
+
+    return krt_data
+
+# Aktualisiert die mapping.py Datei für neue Kreuzreferenztabellen
+def update_krt():
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    path = input("Pfad zur neuen Kreuzreferenztabelle: ").strip().strip('"')
+
+    krt = get_krt(path)
+
+    bsi_ref_titles = mapping.bsi_ref_titles
+    cia = mapping.cia
+    gefahren = mapping.gefahren
+
+    mapping_file_path = os.path.join(current_dir, 'mapping.py')
+
+    print(f"Aktualisiere '{mapping_file_path}'...")
+
+    try:
+        with open(mapping_file_path, 'w', encoding='utf-8') as f:
+            f.write("# Enthält alle Mappings für Bausteinnamen und die Kreuzreferenztabellen\n\n")
+            f.write(f"bsi_ref_titles = {pprint.pformat(bsi_ref_titles)}\n\n")
+            f.write(f"cia = {pprint.pformat(cia)}\n\n")
+            f.write(f"gefahren = {pprint.pformat(gefahren)}\n\n")
+            f.write(f"krt = {pprint.pformat(krt)}\n\n")
+        print("Die Kreuzreferenztabellen wurden erfolgreich aktualisiert\n")
+    except Exception as e:
+        print(f"Ein Fehler ist aufgetreten: {e}")
+
+
 def main():
-    print("--- Tool zur Ansicht der Kreuzreferenztabellen des BSI IT-Grundschutzes (2023) ---")
+    parser = argparse.ArgumentParser(description='Tool zur Ansicht der Kreuzreferenztabellen des BSI IT-Grundschutzes.')
+    parser.add_argument('--update', action='store_true', help='Kreuzreferenztabellen aktualisieren')
+    args = parser.parse_args()
+    if args.update:
+        update_krt()
+
+    print("--- Tool zur Ansicht der Kreuzreferenztabellen des BSI IT-Grundschutzes ---")
 
     while True:
         print("\nWählen Sie eine Option per Zahl aus:")
