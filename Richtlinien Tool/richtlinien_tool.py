@@ -3,7 +3,7 @@ import yaml
 import subprocess
 import argparse
 import os
-from mapping import bsi_ref_mapping, bsi_ref_titles, template
+from mapping import bsi_ref_mapping, bsi_ref_titles, template, bsi_ref_names
 
 # Jahr festlegen auf aktuellen IT-Grundschutz
 year = '2023'
@@ -65,58 +65,64 @@ def generate_bsi_link(reference):
             
     return "Kein gültiger BSI-Link verfügbar"
 
+
 # Funktion, um den Metadatenblock zu extrahieren, verarbeiten und den neuen Inhalt zu generieren
 def process_content(content, space, parents):
     used_references = set()  # Doppelte Referenzen für die aktuelle Datei verhindern
-    
-    # Entfernen des Abschnitts "### BSI-Grundschutz" und dessen Inhalt falls vorhanden
-    content = re.sub(r"(?s)### BSI-Grundschutz.*?###", "###", content, flags=re.DOTALL)
-    
+
+    # Entfernen des Abschnitts "## BSI-Grundschutz" und dessen Inhalt falls vorhanden
+    content = re.sub(r"(?s)## BSI-Grundschutz.*?##", "##", content, flags=re.DOTALL)
+
     # Extrahiere den YAML-Metadatenblock
     metadata_match = re.match(r"^---\n(.*?)\n---\n", content, re.DOTALL)
     if metadata_match:
         metadata_block = metadata_match.group(1)
-        
+
         # Entferne den Metadatenblock aus dem Originalinhalt und speichere den Inhalt
         content_without_metadata = re.sub(r"^---\n(.*?)\n---\n", "", content, flags=re.DOTALL)
-        
+
         # Verarbeite den YAML-Block
         metadata = yaml.safe_load(metadata_block)
-        
-        # Generiere den neuen Inhalt mit den Metadaten, falls nicht vorhanden setze ihn 
-        author = metadata.get("editor", "Missing")
+
+        # Generiere den neuen Inhalt mit den Metadaten, falls nicht vorhanden setze ihn
+        author = metadata.get("author", "Missing")
         date = metadata.get("date", "Missing")
         approved_date = metadata.get("approved", "Missing")
+        approver = metadata.get("approver", "Missing")
         title = metadata.get("title", "Missing")
+        status = metadata.get("status", "Missing")
 
         # Hole die BSI-Referenzen und generiere Links für jede Hauptreferenz
         bsi_references = metadata.get("refs", [{}])[0].get("bsi", ["Kein Link verfügbar"])
         bsi_links = []
-        #used_references = set()  # Set zur Verfolgung verwendeter Referenzen
+        # used_references = set()  # Set zur Verfolgung verwendeter Referenzen
 
         for bsi_reference in bsi_references:
+            main_reference = bsi_reference.upper()
+
             # Splitte die Referenz bei ".A" und behalte nur den Hauptteil
-            main_reference = bsi_reference.split('.A')[0]  # z.B. aus "OPS.1.A7" wird "OPS.1"
-            
-            main_reference = main_reference.upper()
-            
+            main_reference = main_reference.split('.A')[0]  # z.B. aus "OPS.1.A7" wird "OPS.1"
+
+            main_reference = main_reference.replace("-", ".")
+
             # Überprüfe, ob die Hauptreferenz bereits verwendet wurde
             if main_reference not in used_references:
                 used_references.add(main_reference)  # Füge die verlinkte Referenz hinzu
-                bsi_links.append(f"- [{main_reference}]({generate_bsi_link(main_reference)})")
+                bsi_links.append(
+                    f"- [{main_reference}]({generate_bsi_link(main_reference)}): {bsi_ref_names[main_reference]}")
 
         parents_str = "\n".join([f"<!-- Parent: {p} -->" for p in parents])
         mark_header = f"""<!-- Space: {space} -->\n{parents_str}\n<!-- Title: {title} -->"""
 
         # Füge die BSI-Links in das Markdown-Dokument ein
         bsi_links_str = "\n".join(bsi_links) if bsi_links else "Keine BSI-Referenzen verfügbar."
-        
-         # Teile den Inhalt an der Stelle "## Anhang"
-        parts = re.split(r"(## Anhang)", content_without_metadata, maxsplit=1)
-        
+
+        # Teile den Inhalt an der Stelle "## Sonstige Referenzen"
+        parts = re.split(r"(## Sonstige Referenzen)", content_without_metadata, maxsplit=1)
+
         if len(parts) > 1:
             content_before_split = parts[0]
-            split_section = "".join(parts[1:])  # "## Anhang" und der Rest
+            split_section = "".join(parts[1:])  # "## Sonstige Referenzen" und der Rest
         else:
             content_before_split = content_without_metadata
             split_section = ""
@@ -124,20 +130,24 @@ def process_content(content, space, parents):
         # Dokument zusammenbauen
         new_content = f"""
 {mark_header}
-
-{content_before_split}
-
-## Metadaten und BSI IT-Grundschutz-Referenzen
-
 **Autor**: {author}  
 **Datum**: {date}  
-**Abnahmedatum**: {approved_date}  
-**BSI-Grundschutz-Kompendium**:  
-{bsi_links_str}
+**Abnahme von**: {approver}  
+**Abnahme am**: {approved_date}  
+**Status**: {status}  
 
+**Inhaltsverzeichnis**
+<!-- Include: ac:toc --> 
+
+# {title}
+
+{content_before_split}## BSI IT-Grundschutz-Referenzen
+
+{bsi_links_str}
 {split_section}
 """
         return new_content.strip()
+
 
 # Funktion, um eine Markdown-Datei einzulesen, zu verarbeiten und wieder zu speichern
 def process_markdown_file(file_path, space, parent, config, keep_structure, folder, mark_arg):

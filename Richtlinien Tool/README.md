@@ -22,7 +22,7 @@ Title: <!-- Title: Titel der Richtline -->
 ```
 
 Um Mark zu benutzen ist folgender Befehl notwendig: ```mark --config mark.conf -f Test.md```
-Hier wird mit```--config``` eine Konfigurationsdatei angegeben in der ein Confluence API Key, die Confluence base URL, ob der Titel aus dem Header übernommen werden soll und ob die erste Überschrift entfernt werden soll (gegen Dopplung) definiert sind.
+Hier wird mit```--config``` eine Konfigurationsdatei angegeben in der ein Confluence API Key, die Confluence base URL, ob der Titel aus der ersten Überschrift übernommen und ob die erste Überschrift entfernt werden soll definiert wird.
 Dies kann wie folgt aussehen: <br>
 ```
 password = "api-key"
@@ -34,8 +34,8 @@ Als zweiter Parameter unter ```-f``` benötigt der Mark-Befehl das die Datei die
 
 Um den Prozess zu automatisieren, kann das Script **richtlinien_tool.py** benutzt werden.
 Es arbeitet wie folgt.
-- Es entfernt einen Yaml-Block mit Metadaten am Anfang und fügt diese Metadaten vor den Anhang am Ende der Richtlinie
-- Es werden Referenzen zu den BSI Richtlinien als Hyperlink gesetzt
+- Es entfernt einen Yaml-Block mit Metadaten am Anfang und fügt die Metadaten an den Anfang bzw. in den Referenzteil
+- Es werden Referenzen zu den BSI Richtlinien als Hyperlink gesetzt und der Name des Bausteins hinterlegt
 - Doppelte Referenzen werden zusammengefasst
 - Referenzen auf einzelne Anforderungen der Richtlinie werden als Referenz auf die gesamte Richtlinie aufgefasst
 - Aus den Metadaten wird der Mark Tool Header erstellt
@@ -58,7 +58,7 @@ Weitere Befehle, die das Tool unterstützt sind:
 - --minor-edit: Sende keine Benachrichtigung wenn das Dokument auf Confluence aktualisiert wird
 - --changes-only: Nur geänderte Dokumente hochladen
 - --mark-arg: Argument(e) an Mark-Tool weitergeben
-- --new: Erstellt eine neue Richtlinien nach Template"
+- --new: Erstellt eine neue Richtlinien nach Template
 
 
-Sollten bereits Dateien mit dem gleichen Namen im gleichen Verzeichnis vorhanden sein werde diese mit dem Hochladen auf Confluence überschrieben. Der Seitenname für Confluence wird aus den Metadaten entnommen.
+Sollten bereits Dateien mit dem gleichen Namen im gleichen Verzeichnis vorhanden sein werde diese mit dem Hochladen auf Confluence überschrieben. Der Seitenname für Confluence wird aus den Metadaten entnommen, als erste Überschrift eingefügt und dann entfernt.

@@ -1,8 +1,8 @@
 # Richtlinien Template (nicht vom BSI)
 template = """---
 title: Richtlinie Template
-editor: 
-date: 2023-05-15
+author: 
+date: 2025-06-12
 approver:
 approved:
 refs:
@@ -15,23 +15,22 @@ refs:
 Dies ist ein Template für Richtlinien. Es zeigt die allgemeine Struktur einer
 Richtlinie.
 
-Nicht Teil der Richtlinie ist/sind:
+Nicht Teil der Richtllinie ist/sind:
   - Gefährdungslage
 Diese können in einem internen Dokument festgehalten werden.
 
 
-## Einleitung
+# Einleitung
 
 Die Einleitung beschreibt kurz den Kontext der Richtlinie.
 Dies ist keine Zusammenfassung der Richtlinie, sondern eine kurze Einführung in die Thematik.
 
 
-## Ziel
+# Ziel
 
 Das Ziel der Richtlinie wird hier beschrieben.
-"Ziel der Richtlinie ist es, die Sicherheit zu erhöhen." ;-)
 
-## Anwendungsbereich (Geltungsbereich)
+# Anwendungsbereich (Geltungsbereich)
 
 Allgemein für alle Mitarbeitenden: "Die Richtlinie gilt für alle Mitarbeitenden."
 
@@ -47,7 +46,7 @@ Für Rollen und Systeme kombiniert: "Die Richtlinie gilt für alle Mitarbeitende
 
 Für spezifische Personen: "Die Richtlinie gilt für den/die [(Titel der) Person, z. B. Informationssicherheitsbeauftragte(n), Datenschutzbeauftragte(n)], der/die für [Aufgabe] verantwortlich ist."
 
-## Verantwortlichkeiten
+# Verantwortlichkeiten
 
 Hier wird beschrieben, wer für die Einhaltung der Richtlinie verantwortlich ist.
 An dieser Stelle nur interne Stellen verwenden.
@@ -57,17 +56,17 @@ An dieser Stelle nur interne Stellen verwenden.
 Für die Umsetzung: Mitarbeiter:innen (für allgemeines wie Passwörter)
                    Administratoren der Dienste (für technische Umsetzung)
 
-## Anforderungen
+# Anforderungen
 
 Hier werden die Regelungen der Richtlinie beschrieben.
-Anforderungen so konkret wie möglich formulieren.
+Anforderungen so konkkret wie nöglich formulieren.
 
-<!-- ## Ausnahmen
+<!-- # Ausnahmen
 In übergeordneter Leitlinie festlegen, dass Ausnahmen nur in begründeten Fällen und mit Zustimmung der Leitung möglich sind.
 Und dokumentiert erfolgen.
 -->
 
-## Kontrolle
+# Kontrolle
 
 Hier wird beschrieben, wer die Einhaltung kontrolliert
 und wie die Einhaltung der Richtlinie kontrolliert wird.
@@ -79,20 +78,20 @@ siehe: Richtlinie internes Audit
 regelmäßig: mindestens einmal im Jahr
 stichprobenartig: nicht immer die gleichen Systeme
 
-## Referenzen
+# Referenzen
 
 Hier werden Referenzen zu anderen Richtlinien oder Gesetzen angegeben.
 
-### BSI-Grundschutz
+## BSI-Grundschutz
 
 Hier werden die Anforderungen aus den BSI IT-Grundschutzkatalogen aufgeführt, die
 durch die Richtlinie abgedeckt werden.
 
-### Sonstige Referenzen
+## Sonstige Referenzen
 
 Hier werden sonstige Referenzen aufgeführt. Beispielsweise Rundschreiben, Standards (ISO, DIN, etc.), Hilfestellungen in Confluence, etc.
 
-## Anhang
+# Anhang
 
 Hier können Anhänge zur Richtlinie aufgeführt werden. Beispiele sind
 Musterformulare, Checklisten, etc.
@@ -226,4 +225,118 @@ bsi_ref_titles = {
     'INF.12': 'INF_12_Verkabelung',
     'INF.13': 'INF_13_Technisches_Gebaeudemanagement',
     'INF.14': 'INF_14_Gebaeudeautomation',
+}
+
+bsi_ref_names = {
+    'ISMS.1': 'Sicherheitsmanagement',
+    'ORP.1': 'Organisation',
+    'ORP.2': 'Personal',
+    'ORP.3': 'Sensibilisierung und Schulung zur Informationssicherheit',
+    'ORP.4': 'Identitäts- und Berechtigungsmanagement',
+    'ORP.5': 'Compliance Management',
+    'CON.1': 'Kryptokonzept',
+    'CON.2': 'Datenschutz',
+    'CON.3': 'Datensicherungskonzept',
+    'CON.6': 'Löschen und Vernichten',
+    'CON.7': 'Informationssicherheit auf Auslandsreisen',
+    'CON.8': 'Software Entwicklung',
+    'CON.9': 'Informationsaustausch',
+    'CON.10': 'Entwicklung von Webanwendungen',
+    'CON.11.1': 'Geheimschutz',
+    'OPS.1.1.1': 'Allgemeiner IT Betrieb',
+    'OPS.1.1.2': 'Ordnungsgemäße IT Administration',
+    'OPS.1.1.3': 'Patch und Änderungsmanagement',
+    'OPS.1.1.4': 'Schutz vor Schadprogrammen',
+    'OPS.1.1.5': 'Protokollierung',
+    'OPS.1.1.6': 'Software, Tests und Freigaben',
+    'OPS.1.1.7': 'Systemmanagement',
+    'OPS.1.2.2': 'Archivierung',
+    'OPS.1.2.4': 'Telearbeit',
+    'OPS.1.2.5': 'Fernwartung',
+    'OPS.1.2.6': 'NTP Zeitsynchronisation',
+    'OPS.2.2': 'Cloud Nutzung',
+    'OPS.2.3': 'Nutzung von Outsourcing',
+    'OPS.3.2': 'Anbieten von Outsourcing',
+    'DER.1': 'Detektion von sicherheitsrelevanten Ereignissen',
+    'DER.2.1': 'Behandlung von Sicherheitsvorfällen',
+    'DER.2.2': 'Vorsorge für die IT-Forensik',
+    'DER.2.3': 'Bereinigung weitreichender Sicherheitsvorfälle',
+    'DER.3.1': 'Audits und Revisionen',
+    'DER.3.2': 'Revisionen auf Basis des Leitfadens IS-Revisionen',
+    'DER.4': 'Notfallmanagement',
+    'APP.1.1': 'Office Produkte',
+    'APP.1.2': 'Webbrowser',
+    'APP.1.4': 'Mobile Anwendungen',
+    'APP.2.1': 'Allgemeiner Verzeichnisdienst',
+    'APP.2.2': 'Active Directory Domain Services',
+    'APP.2.3': 'OpenLDAP',
+    'APP.3.1': 'Webanwendungen und Webservices',
+    'APP.3.2': 'Webserver',
+    'APP.3.3': 'Fileserver',
+    'APP.3.4': 'Samba',
+    'APP.3.6': 'DNS Server',
+    'APP.4.2': 'SAP ERP System',
+    'APP.4.3': 'Relationale Datenbanksysteme',
+    'APP.4.4': 'Kubernetes',
+    'APP.4.6': 'SAP ABAP Programmierung',
+    'APP.5.2': 'Microsoft Exchange und Outlook',
+    'APP.5.3': 'Allgemeiner Email Client und Server',
+    'APP.5.4': 'Unified Communications und Collaboration',
+    'APP.6': 'Allgemeine Software',
+    'APP.7': 'Entwicklung von Individualsoftware',
+    'SYS.1.1': 'Allgemeiner Server',
+    'SYS.1.2.2': 'Windows Server 2012',
+    'SYS.1.2.3': 'Windows Server',
+    'SYS.1.3': 'Server unter Linux und Unix',
+    'SYS.1.5': 'Virtualisierung',
+    'SYS.1.6': 'Containerisierung',
+    'SYS.1.7': 'IBM Z',
+    'SYS.1.8': 'Speicherlösungen',
+    'SYS.1.9': 'Terminalserver',
+    'SYS.2.1': 'Allgemeiner Client',
+    'SYS.2.2.3': 'Clients unter Windows',
+    'SYS.2.3': 'Clients unter Linux und Unix',
+    'SYS.2.4': 'Clients unter macOS',
+    'SYS.2.5': 'Client Virtualisierung',
+    'SYS.2.6': 'Virtual Desktop Infrastructure',
+    'SYS.3.1': 'Laptops',
+    'SYS.3.2.1': 'Allgemeine Smartphones und Tablets',
+    'SYS.3.2.2': 'Mobile Device Management',
+    'SYS.3.2.3': 'iOS for Enterprise',
+    'SYS.3.2.4': 'Android',
+    'SYS.3.3': 'Mobiltelefon',
+    'SYS.4.1': 'Drucker, Kopierer und Multifunktionsgeräte',
+    'SYS.4.3': 'Eingebettete Systeme',
+    'SYS.4.4': 'Allgemeines IoT-Gerät',
+    'SYS.4.5': 'Wechseldatenträger',
+    'IND.1': 'Prozessleit- und Automatisierungstechnik',
+    'IND.2.1': 'Allgemeine ICS Komponente',
+    'IND.2.2': 'Speicherprogrammierbare Steuerung',
+    'IND.2.3': 'Sensoren und Aktoren',
+    'IND.2.4': 'Maschine',
+    'IND.2.7': 'Safety Instrumented Systems',
+    'IND.3.2': 'Fernwartung im industriellen Umfeld',
+    'NET.1.1': 'Netzarchitektur und -design',
+    'NET.1.2': 'Netzmanagement',
+    'NET.2.1': 'WLAN Betrieb',
+    'NET.2.2': 'WLAN Nutzung',
+    'NET.3.1': 'Router und Switches',
+    'NET.3.2': 'Firewall',
+    'NET.3.3': 'VPN',
+    'NET.3.4': 'Network Access Control',
+    'NET.4.1': 'TK-Anlagen',
+    'NET.4.2': 'VoIP',
+    'NET.4.3': 'Faxgeräte und Faxserver',
+    'INF.1': 'Allgemeines Gebäude',
+    'INF.2': 'Rechenzentrum und Serverraum',
+    'INF.5': 'Raum sowie Schrank für technische Infrastruktur',
+    'INF.6': 'Datenträgerarchiv',
+    'INF.7': 'Büroarbeitsplatz',
+    'INF.8': 'Häuslicher Arbeitsplatz',
+    'INF.9': 'Mobiler Arbeitsplatz',
+    'INF.10': 'Besprechungs-, Veranstaltungs- und Schulungsräume',
+    'INF.11': 'Allgemeines Fahrzeug',
+    'INF.12': 'Verkabelung',
+    'INF.13': 'Technisches Gebäudemanagement',
+    'INF.14': 'Gebäudeautomation'
 }
