@@ -15,7 +15,7 @@ refs:
 Dies ist ein Template für Richtlinien. Es zeigt die allgemeine Struktur einer
 Richtlinie.
 
-Nicht Teil der Richtllinie ist/sind:
+Nicht Teil der Richtlinie ist/sind:
   - Gefährdungslage
 Diese können in einem internen Dokument festgehalten werden.
 
@@ -59,7 +59,7 @@ Für die Umsetzung: Mitarbeiter:innen (für allgemeines wie Passwörter)
 # Anforderungen
 
 Hier werden die Regelungen der Richtlinie beschrieben.
-Anforderungen so konkkret wie nöglich formulieren.
+Anforderungen so konkkret wie möglich formulieren.
 
 <!-- # Ausnahmen
 In übergeordneter Leitlinie festlegen, dass Ausnahmen nur in begründeten Fällen und mit Zustimmung der Leitung möglich sind.
