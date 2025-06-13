@@ -6,7 +6,7 @@ import pandas as pd
 import sys
 import warnings
 
-import mapping
+import mapping, profiles
 
 # Gibt das Bausteinkürzel zurück, z.B. APP.1.1 statt APP.1.1.A2
 def get_baustein_id_for_anforderung(anforderung_id):
@@ -35,7 +35,7 @@ def print_glossar(displayed_baustein_ids, displayed_gefaehrdung_ids):
     print("=" * 60)
 
 # Gibt die Gefährdungen und dazu passende Anforderungen aus
-def print_gefaehrdungen():
+def print_gefaehrdungen(krt):
     print("\n--- Elementare Gefährdungen ---")
 
     displayed_baustein_ids_glossar = set()
@@ -86,7 +86,7 @@ def print_gefaehrdungen():
 
 
     anforderungen_fuer_gefaehrdungen = []
-    for anforderung_krt in mapping.krt:
+    for anforderung_krt in krt:
         anforderung_gefahren = set(anforderung_krt.get('gefahren', []))
 
         if multi:
@@ -200,12 +200,18 @@ def print_gefaehrdungen():
             print("Ungültige Wahl.")
 
 # Gibt die Bausteine und ihre Anforderungen aus
-def print_bausteine():
+def print_bausteine(krt):
     print("\n--- Baustein Übersicht ---")
 
     displayed_baustein_ids_glossar = set()
     displayed_gefaehrdung_ids_glossar = set()
-    baustein_list = list(mapping.bsi_ref_titles.items())
+    vorhandene_baustein_ids = {get_baustein_id_for_anforderung(item['id']) for item in krt}
+    relevante_bausteine = {
+        ref: title for ref, title in mapping.bsi_ref_titles.items()
+        if ref in vorhandene_baustein_ids
+    }
+    baustein_list = list(relevante_bausteine.items())
+
     for i, (ref, title) in enumerate(baustein_list):
         print(f"  {i + 1}. {ref}: {title}")
 
@@ -244,7 +250,7 @@ def print_bausteine():
     print(f"\nAusgewählte Bausteine: {', '.join(selected_baustein_ids)}")
 
     filtered_anforderungen = []
-    for anforderung_krt in mapping.krt:
+    for anforderung_krt in krt:
         b_id = get_baustein_id_for_anforderung(anforderung_krt['id'])
         if b_id in selected_baustein_ids:
             filtered_anforderungen.append(anforderung_krt)
@@ -267,14 +273,14 @@ def print_bausteine():
     print_glossar(displayed_baustein_ids_glossar, displayed_gefaehrdung_ids_glossar)
 
 # Gibt die Schutzziele und die dazugehörigen Anforderungen aus
-def print_schutzziele():
+def print_schutzziele(krt):
     print("\n--- Schutzziele ---")
 
     displayed_baustein_ids_glossar = set()
     displayed_gefaehrdung_ids_glossar = set()
     schutzziel_options = {}
     for code, name in mapping.cia.items():
-        count = sum(1 for an_krt in mapping.krt if an_krt.get('cia') and code in an_krt['cia'])
+        count = sum(1 for an_krt in krt if an_krt.get('cia') and code in an_krt['cia'])
         schutzziel_options[code.upper()] = {'name': name, 'count': count}
         print(f"  {code.upper()}: {name} ({count} passende Anforderungen)")
 
@@ -321,7 +327,7 @@ def print_schutzziele():
             multi = True
 
     anforderungen_fuer_schutzziele = []
-    for anforderung_krt in mapping.krt:
+    for anforderung_krt in krt:
         anforderung_cia = set(anforderung_krt.get('cia') or [])
 
         if multi:
@@ -349,7 +355,7 @@ def print_schutzziele():
     print_glossar(displayed_baustein_ids_glossar, displayed_gefaehrdung_ids_glossar)
 
 # Ermöglicht eine Textsuche über alle Anforderungen
-def suchfunktion():
+def suchfunktion(krt):
     print("\n--- Suchfunktion ---")
     displayed_baustein_ids_glossar = set()
     displayed_gefaehrdung_ids_glossar = set()
@@ -360,7 +366,7 @@ def suchfunktion():
         return
 
     matching_anforderungen = []
-    for anforderung_krt in mapping.krt:
+    for anforderung_krt in krt:
         search_fields = [
             anforderung_krt.get('id', '').lower(),
             anforderung_krt.get('name', '').lower()
@@ -373,7 +379,7 @@ def suchfunktion():
             matching_anforderungen.append(anforderung_krt)
 
     if not matching_anforderungen:
-        print(f"Keine Anforderungen gefunden, die den Suchbegriff '{search_term}' enthalten.")
+        print(f"Keine Anforderungen gefunden, die den Suchbegriff enthalten.")
         return
 
     print(f"\n{len(matching_anforderungen)} Anforderungen gefunden")
@@ -454,6 +460,38 @@ def update_krt():
     except Exception as e:
         print(f"Ein Fehler ist aufgetreten: {e}")
 
+# Filtert die Tabellen nach Profilen
+def profile(krt):
+    print("\nFolgende IT-Grundschutz-Profile stehen zur Verfügung:")
+    for key, value in profiles.profile_names.items():
+        print(f"{key}: {value}")
+    user_input = input("\nAuswahl: ").strip()
+    if user_input in profiles.profiles_mapping:
+        profile_name = profiles.profiles_mapping[user_input]
+        profil = getattr(profiles, profile_name)
+    else:
+        print("Ungültige Eingabe")
+        return
+    profil_krt = [item for item in krt if get_baustein_id_for_anforderung(item['id']) in profil.keys()]
+
+    while True:
+        print("\nWählen Sie eine Option per Zahl aus:")
+        choice = input("1. Elementare Gefährdungen\n2. Bausteine\n3. Schutzziele\n4. Suchfunktion\n\nAuswahl: ")
+        if choice == "1":
+            print_gefaehrdungen(profil_krt)
+            break
+        elif choice == "2":
+            print_bausteine(profil_krt)
+            break
+        elif choice == "3":
+            print_schutzziele(profil_krt)
+            break
+        elif choice == "4":
+            suchfunktion(profil_krt)
+            break
+        else:
+            print(f"\nUngültige Auswahl")
+
 
 def main():
     parser = argparse.ArgumentParser(description='Tool zur Ansicht der Kreuzreferenztabellen des BSI IT-Grundschutzes.')
@@ -464,20 +502,24 @@ def main():
 
     print("--- Tool zur Ansicht der Kreuzreferenztabellen des BSI IT-Grundschutzes ---")
 
+    krt = mapping.krt
     while True:
         print("\nWählen Sie eine Option per Zahl aus:")
-        choice = input("1. Elementare Gefährdungen\n2. Bausteine\n3. Schutzziele\n4. Suchfunktion\n\nAuswahl: ")
+        choice = input("1. Elementare Gefährdungen\n2. Bausteine\n3. Schutzziele\n4. Suchfunktion\n5. Profile\n\nAuswahl: ")
         if choice == "1":
-            print_gefaehrdungen()
+            print_gefaehrdungen(krt)
             break
         elif choice == "2":
-            print_bausteine()
+            print_bausteine(krt)
             break
         elif choice == "3":
-            print_schutzziele()
+            print_schutzziele(krt)
             break
         elif choice == "4":
-            suchfunktion()
+            suchfunktion(krt)
+            break
+        elif choice == "5":
+            profile(krt)
             break
         else:
             print(f"\nUngültige Auswahl")
