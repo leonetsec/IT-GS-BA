@@ -1602,6 +1602,7 @@ def checklist_integration(checklist_path, filename, dokument, implemented, partl
             found_checklist = os.path.join(checklist_path, checklist)
     if found_checklist is None:
         print(f"Keine passende Checkliste für {filename} gefunden")
+        return
 
     df = load_data(found_checklist)
     df = remove_specific_requirements(df, "Titel", "ENTFALLEN")
