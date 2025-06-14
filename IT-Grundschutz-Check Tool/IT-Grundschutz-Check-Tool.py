@@ -20,6 +20,7 @@ from docx import Document
 from docx.oxml.table import CT_Tbl
 from docx.oxml.text.paragraph import CT_P
 import duckdb
+import string
 
 import mapping
 
@@ -1836,6 +1837,110 @@ def risk_handler(file_or_dir):
     else:
         print("Kein gültiger Pfad: Bitte geben Sie eine gültige Datei im Format Checkliste_XXX.X.X.xlsx oder einen Ordner an.")
 
+# Überprüft, ob IDs schon eindeutig sind
+def id_check(file_or_dir):
+    if os.path.isfile(file_or_dir):
+        df = load_data(file_or_dir)
+        df = df[["ID-Anforderung"]].dropna()
+
+        if df["ID-Anforderung"].astype(str).str.match(r'.*\d$').all():
+            return 1
+        else:
+            if df["ID-Anforderung"].duplicated().any():
+                return 3
+            else:
+                return 2
+    else:
+        results = {}
+        for file_name in os.listdir(file_or_dir):
+            file_path = os.path.join(file_or_dir, file_name)
+            if os.path.isfile(file_path) and is_format(file_name):
+                df = load_data(file_path)
+                df = df[["ID-Anforderung"]].dropna()
+
+                if df["ID-Anforderung"].astype(str).str.match(r'.*\d$').all():
+                    results[file_name] = 1
+                else:
+                    if df["ID-Anforderung"].duplicated().any():
+                        results[file_name] = 3
+                    else:
+                        results[file_name] = 2
+
+        unique_values = set(results.values())
+        if len(unique_values) == 1:
+            return unique_values.pop()
+        else:
+            status_map = {1: "Nicht eindeutige IDs", 2: "Eindeutige IDs", 3: "Gemischte IDs"}
+            return {file: status_map.get(status) for file, status in results.items()}
+
+# Setzt die IDs einer Datei, eindeutig bei 1, zurück auf nicht eindeutig bei 2
+def id_setter(file, mode):
+    workbook = openpyxl.load_workbook(file)
+    sheet = workbook.active
+
+    if mode == 1:
+        id_counts = defaultdict(int)
+        for row in range(6, sheet.max_row + 1):
+            cell = sheet.cell(row=row, column=2)
+            original_value = str(cell.value) if cell.value else ""
+            if original_value:
+                letter_to_add = string.ascii_lowercase[id_counts[original_value]]
+                cell.value = f"{original_value}{letter_to_add}"
+                id_counts[original_value] += 1
+
+    elif mode == 2:
+        for row in range(6, sheet.max_row + 1):
+            cell = sheet.cell(row=row, column=2)
+            if cell.value and isinstance(cell.value, str) and cell.value[-1].isalpha():
+                cell.value = cell.value[:-1]
+
+    workbook.save(file)
+
+# Behandelt für Dateien und Ordner, wie mit der Eindeutigmachung der IDs umgegangen werden soll
+def id_handler(file_or_dir):
+    if os.path.isfile(file_or_dir) and is_format(file_or_dir):
+        mode = id_check(file_or_dir)
+        if mode not in [1,2]:
+            print("Sowohl eindeutige als auch nicht eindeutige IDs in der Datei vorhanden. Vorgang wird abgebrochen.")
+            return
+        id_setter(file_or_dir, mode)
+        if mode == 1: print("Eindeutige IDs erfolgreich hinzugefügt")
+        elif mode == 2: print("Eindeutige IDs erfolgreich wieder entfernt")
+    elif os.path.isdir(file_or_dir):
+        print("Starte ID-Modifikation...")
+        mode = id_check(file_or_dir)
+        if mode not in [1,2]:
+            print("Sowohl eindeutige als auch nicht eindeutige IDs gefunden, wie soll verfahren werden?")
+            choice = input("\n1. Alle IDs eindeutig machen\n2. Alle IDs auf nicht eindeutig zurücksetzen\n3. Liste ausgeben\n4. Abbruch\n\nAuswahl: ").strip()
+            if choice in ['1','2']:
+                mode = int(choice)
+            elif choice == '3':
+                for file, status in mode.items():
+                    print(f"- {file}: {status}")
+                print("\nWie soll verfahren werden?")
+                choice2 = input("\n1. Alle IDs eindeutig machen\n2. Alle IDs auf nicht eindeutig zurücksetzen\n3. Abbruch\n\nAuswahl: ").strip()
+                if choice2 in ['1','2']:
+                    mode = int(choice2)
+                elif choice2 == '3':
+                    print("Vorgang wird abgebrochen")
+                    return
+                else:
+                    print("Ungültige Auswahl, Vorgang wird abgebrochen.")
+                    return
+            elif choice == '4':
+                print("Vorgang wird abgebrochen.")
+                return
+            else:
+                print("Ungültige Auswahl, Vorgang wird abgebrochen.")
+                return
+
+        for file_name in os.listdir(file_or_dir):
+            if is_format(file_name):
+                file_path = os.path.join(file_or_dir, file_name)
+                id_setter(file_path, mode)
+        if mode == 1: print("Eindeutige IDs erfolgreich hinzugefügt")
+        elif mode == 2: print("Eindeutige IDs erfolgreich wieder entfernt")
+    else: print("Keine gültige Datei gefunden")
 
 def main():
     parser = argparse.ArgumentParser(description='Arbeitet mit IT-Grundschutz-Check Excel Tabellen')
@@ -1848,13 +1953,15 @@ def main():
     parser.add_argument('--fully', action='store_true', help='(Mit --ignore-[...]) Setzt auch Anforderungen mit Umsetzung = Ja/Nein/Teilweise auf entbehrlich')
     parser.add_argument('--list', action='store_true', help='Listet Dateien eines Ordners nach verschiedene Kriterien (Menü öffnet sich)')
     parser.add_argument('--wiba-transfer', action='store_true', help='Markiert alle leeren, in WiBA enthaltenen Anforderungen als umgesetzt')
-    parser.add_argument('--set-scale', action='store_true', help='Ändert die Umsetzungsskala')
+    parser.add_argument('--set-scale', action='store_true', help='Ändert die Umsetzungsskala. Führt evtl. zu Funktionseinschränkungen des Tools.')
     parser.add_argument('--export', action='store_true', help='Exportiere beliebige Spalten der Dateien in verschiedene Formate')
     parser.add_argument('--report', action='store_true', help='Erstelle einen PDF-Report für eine oder alle Dateien')
     parser.add_argument('--merge', nargs=2, metavar=("file1", "file2"), help="Führt zwei Tabellen der selben Art zusammen und behandelt Konflikte")
     parser.add_argument('--modify', action='store_true', help='Modifiziert alle Bausteine eines Ordners im docx-Format, wahlweise Export zu PDF (Menü öffnet sich)')
     parser.add_argument('--search', action='store_true', help='Durchsuche alle Tabellen eines Ordners auf verschiedene Arten')
-    parser.add_argument('--risks', action='store_true', help='Zeigt die abgedeckten elementaren Gefährdungen an')
+    parser.add_argument('--risks', action='store_true', help='Zeigt die von umgesetzten Anforderungen abgedeckten elementaren Gefährdungen an')
+    parser.add_argument('--id', action='store_true', help='Gibt den einzelnen Anforderungen eine eindeutige ID bzw. entfernt sie wieder. Führt evtl. zu Funktionseinschränkungen des Tools')
+
 
     args = parser.parse_args()
 
@@ -1872,6 +1979,7 @@ def main():
         args.modify: lambda: modify(args.file_or_dir),
         args.search: lambda: search(args.file_or_dir),
         args.risks: lambda: risk_handler(args.file_or_dir),
+        args.id: lambda: id_handler(args.file_or_dir)
     }
 
     for condition, action in actions.items():
