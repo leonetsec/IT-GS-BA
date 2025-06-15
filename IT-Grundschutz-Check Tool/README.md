@@ -34,6 +34,6 @@ Weitere Funktionen mittels Parameter, die sowohl auf einzelne Dateien als auch g
 - ```--modify```: Modifiziert alle Bausteine eines Ordners im Docx Format, indem gewünschte Abschnitte oder Anforderungen entfernt werden
 - ```--search```: Durchsucht alle Tabellen auf verschiedene Arten und speichert das Suchergebnis ab
 - ```--risks```: Zeigt die durch umgesetzte Anforderungen abgedeckten elementaren Gefährdungen nach Kreuzreferenztabelle an, entweder für eine Datei oder einen ganzen Ordner
-- ```--id```: Gibt den Anforderungen eindeutige IDs bzw. entfernt diese wieder
+- ```--id```: Gibt den Anforderungen eindeutige IDs bzw. entfernt diese wieder. Andere Funktionen wurden angepasst, um auch mit eindeutigen IDs umzugehen. Evtl. kommt es dennoch zu leichten Funktionseinschränkungen
 
 Hinweis: Aus Sicherheitsgründen können Basis-Anforderungen und als nicht entbehrlich markierte Anforderungen nicht automatisch als entbehrlich gesetzt werden.

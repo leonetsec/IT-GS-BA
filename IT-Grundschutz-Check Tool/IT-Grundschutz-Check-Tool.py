@@ -453,12 +453,21 @@ def wiba_setter(file_path):
 
     wiba_mapping = {w: i for i, w in enumerate(wiba)}
 
+    id_status = id_check(file_path)
+    if id_status == 1:
+        ids = df["ID-Anforderung"]
+    elif id_status == 2:
+        ids = pd.Series([req_id[:-1] for req_id in df["ID-Anforderung"]])
+    else:
+        print(f"Sowohl eindeutige als auch nicht eindeutige IDs in {file_path} gefunden, eventuell können nicht alle WiBA-Anforderungen zugeordnet werden")
+        ids = df["ID-Anforderung"]
+
     # Überprüfung, ob Inhalt und ID gleich sind, da der Inhalt einiger Anforderungen doppelt vorkommt
     mask = (
             df["Inhalt"].isin(wiba) &
-            df["ID-Anforderung"].isin(wiba_ids) &
+            ids.isin(wiba_ids) &
             df["Inhalt"].map(wiba_mapping).notna() &
-            (df["ID-Anforderung"] == df["Inhalt"].map(
+            (ids == df["Inhalt"].map(
                 lambda x: wiba_ids[wiba_mapping[x]] if x in wiba_mapping else None)) &
             df["Umsetzung"].isna()
     )
@@ -824,6 +833,12 @@ def save_results_to_pdf(results, file_name, reports_dir, risk, file_path):
 
     if risk:
         story.append(Paragraph("<font color=red>WARNUNG: Es sind nicht alle Basis-Anforderungen umgesetzt!</font>", normal_style))
+    id_status = id_check(file_path)
+    if id_status == 2:
+        story.append(Paragraph("<font color=red>Hinweis: Die IDs der Anforderungen wurden modifiziert, sodass sie für alle Teilanforderungen einzigartig sind</font>", normal_style))
+    if id_status == 3:
+        story.append(Paragraph("<font color=red>Hinweis: Die IDs der Anforderungen wurden teilweise modifiziert, möglicherweise werden sie nicht richtig gruppiert</font>", normal_style))
+
 
     image_path1 = plot_pie_chart_to_image({
         "Umgesetzt": results["Umgesetzte Anforderungen"],
@@ -923,7 +938,13 @@ def save_results_to_pdf(results, file_name, reports_dir, risk, file_path):
     implemented = get_specific_df(df, "Umsetzung", "ja")
     grouped_items = {}
 
-    for req_id in implemented["ID-Anforderung"].unique():
+    id_status = id_check(file_path)
+    if id_status == 2:
+        ids = [req_id[:-1] for req_id in implemented["ID-Anforderung"].unique()]
+    else:
+        ids = implemented["ID-Anforderung"].unique()
+
+    for req_id in ids:
         for item in mapping.krt:
             if item['id'] == req_id:
                 for risk_krz in item.get('gefahren', []):
@@ -1746,7 +1767,16 @@ def risk_analysis(file_path):
     covered_risks = set()
     covered_cia = set()
 
-    for req_id in implemented["ID-Anforderung"].unique():
+    id_status = id_check(file_path)
+    if id_status == 1:
+        ids = implemented["ID-Anforderung"].unique()
+    elif id_status == 2:
+        ids = [req_id[:-1] for req_id in implemented["ID-Anforderung"].unique()]
+    else:
+        print(f"Die Datei {file_path} enthält sowohl eindeutige als auch nicht eindeutige IDs, möglicherweise können nicht alle Gefährdungen zugeordnet werden")
+        ids = implemented["ID-Anforderung"].unique()
+
+    for req_id in ids:
         for item in mapping.krt:
             if item['id'] == req_id:
                 covered_risks.update(item['gefahren'])
@@ -1960,7 +1990,7 @@ def main():
     parser.add_argument('--modify', action='store_true', help='Modifiziert alle Bausteine eines Ordners im docx-Format, wahlweise Export zu PDF (Menü öffnet sich)')
     parser.add_argument('--search', action='store_true', help='Durchsuche alle Tabellen eines Ordners auf verschiedene Arten')
     parser.add_argument('--risks', action='store_true', help='Zeigt die von umgesetzten Anforderungen abgedeckten elementaren Gefährdungen an')
-    parser.add_argument('--id', action='store_true', help='Gibt den einzelnen Anforderungen eine eindeutige ID bzw. entfernt sie wieder. Führt evtl. zu Funktionseinschränkungen des Tools')
+    parser.add_argument('--id', action='store_true', help='Gibt den einzelnen Anforderungen eine eindeutige ID bzw. entfernt sie wieder. Führt evtl. zu leichten Funktionseinschränkungen des Tools')
 
 
     args = parser.parse_args()
