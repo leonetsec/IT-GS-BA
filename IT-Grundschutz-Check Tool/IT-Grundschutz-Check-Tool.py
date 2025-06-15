@@ -835,7 +835,8 @@ def save_results_to_pdf(results, file_name, reports_dir, risk, file_path):
         story.append(Paragraph("<font color=red>WARNUNG: Es sind nicht alle Basis-Anforderungen umgesetzt!</font>", normal_style))
     id_status = id_check(file_path)
     if id_status == 2:
-        story.append(Paragraph("<font color=red>Hinweis: Die IDs der Anforderungen wurden modifiziert, sodass sie für alle Teilanforderungen einzigartig sind</font>", normal_style))
+        df["ID-Anforderung"] = df["ID-Anforderung"].astype(str).apply(lambda x: x[:-1] if len(x) > 1 else x)
+        story.append(Paragraph("<font color=red>Hinweis: Die IDs der Anforderungen wurden modifiziert, sodass sie für alle Teil-Anforderungen einzigartig sind</font>", normal_style))
     if id_status == 3:
         story.append(Paragraph("<font color=red>Hinweis: Die IDs der Anforderungen wurden teilweise modifiziert, möglicherweise werden sie nicht richtig gruppiert</font>", normal_style))
 
@@ -925,7 +926,7 @@ def save_results_to_pdf(results, file_name, reports_dir, risk, file_path):
         plt.bar(grouped_data["ID-Anforderung"], grouped_data["Kostenschätzung"])
         plt.xlabel("ID der Anforderung")
         plt.ylabel("Geschätzte Kosten")
-        plt.title("Kostenschätzung pro Anforderung (Summe aus Teilanforderungen)")
+        plt.title("Kostenschätzung pro Anforderung (Summe aus Teil-Anforderungen)")
         plt.xticks(rotation=45, ha="right")
         plt.tight_layout()
 
@@ -938,11 +939,7 @@ def save_results_to_pdf(results, file_name, reports_dir, risk, file_path):
     implemented = get_specific_df(df, "Umsetzung", "ja")
     grouped_items = {}
 
-    id_status = id_check(file_path)
-    if id_status == 2:
-        ids = [req_id[:-1] for req_id in implemented["ID-Anforderung"].unique()]
-    else:
-        ids = implemented["ID-Anforderung"].unique()
+    ids = implemented["ID-Anforderung"].unique()
 
     for req_id in ids:
         for item in mapping.krt:
@@ -1867,7 +1864,7 @@ def risk_handler(file_or_dir):
     else:
         print("Kein gültiger Pfad: Bitte geben Sie eine gültige Datei im Format Checkliste_XXX.X.X.xlsx oder einen Ordner an.")
 
-# Überprüft, ob IDs schon eindeutig sind
+# Überprüft, ob IDs eindeutig sind
 def id_check(file_or_dir):
     if os.path.isfile(file_or_dir):
         df = load_data(file_or_dir)
@@ -1990,7 +1987,7 @@ def main():
     parser.add_argument('--modify', action='store_true', help='Modifiziert alle Bausteine eines Ordners im docx-Format, wahlweise Export zu PDF (Menü öffnet sich)')
     parser.add_argument('--search', action='store_true', help='Durchsuche alle Tabellen eines Ordners auf verschiedene Arten')
     parser.add_argument('--risks', action='store_true', help='Zeigt die von umgesetzten Anforderungen abgedeckten elementaren Gefährdungen an')
-    parser.add_argument('--id', action='store_true', help='Gibt den einzelnen Anforderungen eine eindeutige ID bzw. entfernt sie wieder. Führt evtl. zu leichten Funktionseinschränkungen des Tools')
+    parser.add_argument('--id', action='store_true', help='Gibt den einzelnen Anforderungen eine eindeutige ID bzw. entfernt sie wieder')
 
 
     args = parser.parse_args()
