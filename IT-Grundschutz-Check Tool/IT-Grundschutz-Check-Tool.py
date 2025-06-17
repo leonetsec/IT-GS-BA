@@ -99,6 +99,15 @@ def load_data(file_path):
         print(f"Ein unerwarteter Fehler ist beim Öffnen der Datei {file_path} aufgetreten: {e}")
     exit(1)
 
+# Fragt den User eine Frage und gibt True/False zurück
+def ask_user(prompt, default_yes=True):
+    if default_yes:
+        user_input = input(f"\n{prompt} (Ja/nein): ").strip().lower()
+        return user_input != "nein"
+    else:
+        user_input = input(f"\n{prompt} (ja/Nein): ").strip().lower()
+        return user_input == "ja"
+
 # Entfernt Anforderungen, bei denen eine spezifische Bedingung erfüllt ist, z.B. "Titel" ist "ENTFALLEN"
 def remove_specific_requirements(df, where, is_value):
     return df[df[where] != is_value]
@@ -574,17 +583,17 @@ def scale_setter(file_path, values):
 
 # Handler für Datei oder Ordner
 def export_handler(file_or_dir):
-    file_format, columns, omitted, unnecessary, implemented, index_numbers, types_to_remove = get_export_settings()
+    file_format, columns, omitted, unnecessary, implemented, baustein, gefahren, index_numbers, types_to_remove = get_export_settings()
 
     if os.path.isfile(file_or_dir) and is_format(file_or_dir):
-        export(file_or_dir, file_format, columns, omitted, unnecessary, implemented, index_numbers, types_to_remove)
+        export(file_or_dir, file_format, columns, omitted, unnecessary, implemented, baustein, gefahren, index_numbers, types_to_remove)
         print("\nDatei erfolgreich exportiert")
     elif os.path.isdir(file_or_dir):
         exported_count = 0
         for file_name in os.listdir(file_or_dir):
             file_path = os.path.join(file_or_dir, file_name)
             if os.path.isfile(file_path) and is_format(file_name):  
-                export(file_path, file_format, columns, omitted, unnecessary, implemented, index_numbers, types_to_remove)
+                export(file_path, file_format, columns, omitted, unnecessary, implemented, baustein, gefahren, index_numbers, types_to_remove)
                 exported_count += 1
         if exported_count > 0:
             print(f"\n{exported_count} Dateien erfolgreich exportiert")
@@ -645,32 +654,18 @@ def get_export_settings():
             except (ValueError, IndexError):
                 print("Ungültige Eingabe.")
 
-    omitted_choice = input(
-        "\nMöchten Sie entfallene Anforderungen entfernen? (Ja/nein): ").strip().lower()
-    if omitted_choice == "nein":
-        omitted = False
-    else: omitted = True
+    omitted = ask_user("Möchten Sie entfallene Anforderungen entfernen?")
+    unnecessary = ask_user("Möchten Sie als entbehrlich markierte Anforderungen entfernen?")
+    implemented = ask_user("Möchten Sie bereits umgesetzte Anforderungen entfernen?", default_yes=False)
+    index_numbers = ask_user("Möchten Sie nummerierte Zeilen?")
+    baustein = ask_user("Soll jede Anforderung den Bausteinnamen enthalten?", default_yes=False)
+    gefahren = ask_user("Sollen die elementaren Gefährdungen aus den Kreuzreferenztabellen hinzugefügt werden?", default_yes=False)
 
-    unnecessary_choice = input(
-        "\nMöchten Sie als entbehrlich markierte Anforderungen entfernen? (Ja/nein): ").strip().lower()
-    if unnecessary_choice == "nein":
-        unnecessary = False
-    else:
-        unnecessary = True
-
-    implemented_choice = input(
-        "\nMöchten Sie bereits umgesetzte Anforderungen entfernen? (ja/Nein): ").strip().lower()
-    if implemented_choice == "ja":
-        implemented = True
-    else:
-        implemented = False
-
-    index_choice = input(
-        "\nMöchten Sie nummerierte Zeilen? (Ja/nein): ").strip().lower()
-    if index_choice == "nein":
-        index_numbers = False
-    else:
-        index_numbers = True
+    if baustein:
+        selected_columns.append("Baustein")
+    if gefahren:
+        selected_columns.append("Abgedeckte elementare Gefährdungen")
+        selected_columns.append("Abgedeckte Schutzziele")
 
     if export_format == "json" and index_numbers:
         print("\nNummerierte Zeilen bei JSON nicht möglich")
@@ -688,10 +683,10 @@ def get_export_settings():
         removed_invalid = original_input_types - set(types_to_remove)
         if removed_invalid:
             print(f"Warnung: Ungültige Typen ignoriert: {', '.join(removed_invalid)}")
-    return export_format, selected_columns, omitted, unnecessary, implemented, index_numbers, types_to_remove
+    return export_format, selected_columns, omitted, unnecessary, implemented, baustein, gefahren, index_numbers, types_to_remove
 
 # Exportiert den Tabelleninhalt in ein gewünschtes Format mit diversen Anpassungsmöglichkeiten
-def export(file_path, file_format, columns, omitted, unnecessary, implemented, index_numbers, types_to_remove):
+def export(file_path, file_format, columns, omitted, unnecessary, implemented, baustein, gefahren, index_numbers, types_to_remove):
     df = load_data(file_path)
     if omitted:
         df = remove_specific_requirements(df, "Titel", "ENTFALLEN")
@@ -699,6 +694,45 @@ def export(file_path, file_format, columns, omitted, unnecessary, implemented, i
         df = remove_specific_requirements(df, "Entbehrlich", "Ja")
     if implemented:
         df = remove_specific_requirements(df, "Umsetzung", "Ja")
+    if baustein:
+        baustein_name = f"{get_name(file_path, True)} - {get_name(file_path, False)}"
+        df["Baustein"] = baustein_name
+    if gefahren:
+        temp_id_anforderung = df["ID-Anforderung"].astype(str).copy()
+        if id_check(file_path) == 2:
+            temp_id_anforderung = temp_id_anforderung.apply(lambda x: x[:-1] if len(x) > 1 else x)
+
+        def get_krt_eintrag(req_id):
+            for entry in mapping.krt:
+                if entry.get('id') == str(req_id):
+                    return entry
+            return {}
+
+        def get_gefahren(req_id):
+            krt_entry = get_krt_eintrag(req_id)
+            gefahren_ids = krt_entry.get('gefahren')
+            if gefahren_ids:
+                gefahren_definitions = []
+                for g_id in gefahren_ids:
+                    definition = mapping.gefahren.get(g_id)
+                    gefahren_definitions.append(f"{g_id}: {definition}")
+                return ", ".join(gefahren_definitions)
+            return ""
+
+        def get_cia(req_id):
+            krt_entry = get_krt_eintrag(req_id)
+            cia_string = krt_entry.get('cia')
+            if cia_string:
+                cia_definitions = []
+                for char in cia_string:
+                    definition = mapping.cia.get(char)
+                    cia_definitions.append(definition)
+                return ", ".join(cia_definitions)
+            return "Keine"
+
+        df["Abgedeckte elementare Gefährdungen"] = temp_id_anforderung.apply(get_gefahren)
+        df["Abgedeckte Schutzziele"] = temp_id_anforderung.apply(get_cia)
+
     if types_to_remove:
         for t in types_to_remove:
             df = remove_specific_requirements(df, "Typ", t)
