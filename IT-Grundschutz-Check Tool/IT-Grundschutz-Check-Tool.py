@@ -103,10 +103,10 @@ def load_data(file_path):
 def ask_user(prompt, default_yes=True):
     if default_yes:
         user_input = input(f"\n{prompt} (Ja/nein): ").strip().lower()
-        return user_input != "nein"
+        return user_input != "nein" and user_input != "n"
     else:
         user_input = input(f"\n{prompt} (ja/Nein): ").strip().lower()
-        return user_input == "ja"
+        return user_input == "ja" or user_input == "j"
 
 # Entfernt Anforderungen, bei denen eine spezifische Bedingung erfüllt ist, z.B. "Titel" ist "ENTFALLEN"
 def remove_specific_requirements(df, where, is_value):
@@ -522,9 +522,9 @@ def wiba_transfer(path):
 
 # Handler für Datei oder Ordner
 def scale_setter_handler(file_or_dir):
-    user_choice = input("Möchten Sie eine eigene Skala angeben? (ja/Nein) Sonst wird der im Code definierte Default verwendet: ").strip().lower()
+    user_choice = ask_user("Möchten Sie eine eigene Skala angeben? Sonst wird der im Code definierte Default verwendet", default_yes=False)
     values = None
-    if user_choice == "ja":
+    if user_choice:
         num_values = int(input("Wie viele Werte? ").strip())
         values_list = []
 
@@ -1397,6 +1397,9 @@ def merge_tables(file1_path, file2_path):
         if len(df1) != len(df2):
             print("Verschiedene Tabellen. Vorgang wird abgebrochen.")
             exit(1)
+        if id_check(file1_path) != id_check(file2_path):
+            print("Eine Datei hat eindeutige, die andere nicht eindeutige IDs, Vorgang wird abgebrochen")
+            exit(1)
     except PermissionError:
         print(f"Fehler: Eine der Dateien ist möglicherweise geöffnet und kann nicht gelesen werden. Vorgang wird abgebrochen.")
         exit(1)
@@ -1489,36 +1492,24 @@ def modify(directory):
     partly_implemented = False
     not_implemented = False
     unnecessary = True
+    checklist_path = None
     if not anforderungen_selected:
-        remove_entfallen = input("\n- Entfallene Anforderungen entfernen? (Ja/nein): ")
-        if remove_entfallen.strip().lower() in ["nein", "n"]:
-            delete_entfallen = False
-        checklisten_choice = input("\n- Excel Checklisten integrieren? (ja/Nein): ")
-        if checklisten_choice.strip().lower() in ["j", "ja"]:
-            integrate_checklists = True
+        delete_entfallen = ask_user("- Entfallene Anforderungen entfernen?")
+        integrate_checklists = ask_user("- Excel Checklisten integrieren?", default_yes=False)
+        if integrate_checklists:
             while True:
                 checklist_path = input("\nPfad zum Ordner mit den Checklisten: ").strip().strip('"')
                 if os.path.isdir(checklist_path):
                     break
                 else:
                     print("Kein gültiger Pfad zu einem Ordner")
-            print("Hinweis: Es werden nur Anforderungen entfernt, die vollständig die nachfolgenden Auswahlmöglichkeiten erfüllen.\n")
-            implemented_choice = input("- In Tabellen bereits umgesetzte Anforderungen entfernen? (Ja/nein): ")
-            if implemented_choice.strip().lower() in ["nein", "n"]:
-                implemented = False
-            partly_implemented_choice = input("- In Tabellen teilweise umgesetzte Anforderungen entfernen? (ja/Nein): ")
-            if partly_implemented_choice.strip().lower() in ["ja", "j"]:
-                partly_implemented = True
-            not_implemented_choice = input("- In Tabellen nicht umgesetzte Anforderungen entfernen? (ja/Nein): ")
-            if not_implemented_choice.strip().lower() in ["ja", "j"]:
-                not_implemented = True
-            unnecessary_choice = input("- In Tabellen entbehrliche Anforderungen entfernen? (Ja/nein): ")
-            if unnecessary_choice.strip().lower() in ["nein", "n"]:
-                unnecessary = False
+            print("\nHinweis: Es werden nur Anforderungen entfernt, bei denen alle Teil-Anforderungen die nachfolgenden Auswahlmöglichkeiten erfüllen.\n")
+            implemented = ask_user("- In Tabellen bereits umgesetzte Anforderungen entfernen?")
+            partly_implemented = ask_user("- In Tabellen teilweise umgesetzte Anforderungen entfernen?", default_yes=False)
+            not_implemented = ask_user("- In Tabellen nicht umgesetzte Anforderungen entfernen?", default_yes=False)
+            unnecessary = ask_user("- In Tabellen entbehrliche Anforderungen entfernen?")
 
-
-    save_as_pdf = input("\n- Dokumente auch als PDF speichern? Hinweis: Diese Operation ist sehr rechenaufwendig.\n  Antwort (ja/Nein): ")
-    save_as_pdf = save_as_pdf.strip().lower() in ["ja", "j"]
+    save_as_pdf = ask_user("\n- Dokumente auch als PDF speichern? Hinweis: Diese Operation ist sehr rechenaufwendig.", default_yes=False)
 
     sections_for_removal = [title for title, remove in sections_to_remove_flags.items() if remove]
 
@@ -1657,7 +1648,14 @@ def checklist_integration(checklist_path, filename, dokument, implemented, partl
         print(f"Keine passende Checkliste für {filename} gefunden")
         return
 
+
     df = load_data(found_checklist)
+    id_status = id_check(found_checklist)
+    if id_status == 2:
+        df["ID-Anforderung"] = df["ID-Anforderung"].astype(str).apply(lambda x: x[:-1] if len(x) > 1 else x)
+    if id_status == 3:
+        print(f"In {found_checklist} gibt es sowohl eindeutige als auch nicht eindeutige IDs, diese Datei wird übersprungen für die Integration")
+        return
     df = remove_specific_requirements(df, "Titel", "ENTFALLEN")
     if implemented:
         df = remove_specific_requirements(df, "Umsetzung", "Ja")
@@ -1855,7 +1853,7 @@ def risk_handler(file_or_dir):
                 all_covered_cia_across_files.update(covered_cia_for_file)
                 processed_files_count += 1
             else:
-                print(f"Skipping: {file_name} (Kein gültiges Dateiformat)")
+                print(f"Überspringe: {file_name} (Kein gültiges Dateiformat)")
 
         if processed_files_count == 0:
             print("Keine gültigen Dateien im Ordner gefunden")
