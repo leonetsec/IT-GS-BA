@@ -198,7 +198,21 @@ sort_list = {
     '13' : 'Verantwortliche',
     '14' : 'Zahl der Anforderungen insgesamt',
     '15' : 'Umsetzung bis',
+    '16' : '(Teilweise) abgedeckte elementare Gefährdungen',
+    '17' : '(Teilweise) abgedeckte Schutzziele'
 }
+
+format_options = {
+        "1": "Excel",
+        "2": "CSV",
+        "3": "JSON",
+        "4": "Markdown",
+        "5": "HTML",
+        "6": "XML",
+        "7": "Leerzeichengetrennt",
+        "8": "Tabstoppgetrennt",
+        "9": "Benutzerdefiniertes Trennzeichen"
+    }
 
 # Nicht ausreichend, da Anforderungen oft nur teilweise erfüllt werden.
 wiba_old = ['APP.6.A1', 'APP.1.1.A13', 'APP.1.2.A1', 'APP.1.2.A2', 'APP.1.2.A3', 'APP.1.2.A6',

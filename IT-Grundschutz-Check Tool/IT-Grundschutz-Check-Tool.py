@@ -26,11 +26,11 @@ import mapping
 
 FILENAME_PATTERN = re.compile(r"(?<=\bCheckliste[_\s])([A-Z]{3,4}(?:\.[0-9]+){1,3})(?:.*?)?(?=\.xlsx$)")
 
+# Default-Wert für Skalenmodifikation kann in scale_setter() gesetzt werden
+
 # Gibt zurück, ob eine Datei dem Format der Checkliste entspricht
 def is_format(filename):
-    if filename.endswith('.xlsx') and "Checkliste" in filename:
-        return True
-    else: return False
+    return filename.endswith('.xlsx') and "Checkliste" in filename
 
 # Gibt den Namen eines Bausteins anhand des Dateinamens zurück, entweder kurz "APP.1.1" oder lang "Office Produkte"
 def get_name(filename, short):
@@ -76,7 +76,7 @@ def is_docx(file):
                 return True
     return False
 
-# Ordnet den Tabellen ihren Namen zu
+# Ordnet den Tabellen ihren Namen zu und gibt aus, wenn die Dateien einem IT-Grundschutz-Profil entsprechen
 def map_xlsx_files(path):
     if os.path.isfile(path):
         file_name = os.path.basename(path)
@@ -86,6 +86,15 @@ def map_xlsx_files(path):
         for filename in os.listdir(path):
             mapped_name = get_name(filename, False)
             print(f"{filename} → {mapped_name if mapped_name else 'Keine Zuordnung gefunden'}")
+
+        matching_profiles, files_in_dir = match_profile(path)
+
+        if matching_profiles and len(files_in_dir) < 111:
+            if len(matching_profiles) == 1:
+                print(f"\nZugeordnetes IT-Grundschutz-Profil: {matching_profiles[0]}")
+            else:
+                print(f"\nPassende zugeordnete IT-Grundschutz-Profile: {', '.join(matching_profiles)})")
+
     else: print("Datei oder Ordner nicht gefunden")
 
 # Lädt Exceldateien und überspringt Metadaten
@@ -95,6 +104,8 @@ def load_data(file_path):
         return pd.read_excel(file_path, sheet_name=sheet_name, skiprows=4)
     except PermissionError:
         print(f"Fehler: Die Datei {get_name(file_path, True)} ist möglicherweise geöffnet und kann nicht gelesen werden. Vorgang wird abgebrochen.")
+    except ValueError:
+        print(f"Fehler: Der erwartete Tabellenblattname '{sheet_name}' wurde in der Datei '{file_path}' nicht gefunden.")
     except Exception as e:
         print(f"Ein unerwarteter Fehler ist beim Öffnen der Datei {file_path} aufgetreten: {e}")
     exit(1)
@@ -107,6 +118,87 @@ def ask_user(prompt, default_yes=True):
     else:
         user_input = input(f"\n{prompt} (ja/Nein): ").strip().lower()
         return user_input == "ja" or user_input == "j"
+
+# Gibt dem Nutzer Auswahlmöglichkeiten, entweder eine oder mehrere Antworten können ausgewählt werden
+def multiple_choice(options_dict, prompt_message, multi, default_value=None):
+    print(prompt_message)
+    for key, value in options_dict.items():
+        print(f"{key}. {value}")
+
+    while True:
+        user_input = input("\nAuswahl: ").strip()
+
+        if user_input == "" and default_value is not None:
+            if multi:
+                return [str(val) for val in default_value] if isinstance(default_value, list) else [str(default_value)]
+            else:
+                return str(default_value)
+
+        if multi:
+            choices = []
+            try:
+                selected_keys = [c.strip() for c in user_input.split(',')]
+                for key in selected_keys:
+                    if key in options_dict:
+                        choices.append(key)
+                    else:
+                        print(f"'{key}' ist keine gültige Auswahl. Bitte geben Sie gültige Nummern ein.")
+                        choices = []
+                        break
+                if choices:
+                    return choices
+            except Exception:
+                print("Ungültige Eingabe. Bitte geben Sie kommagetrennte Nummern ein (z.B. 1,3,5).")
+        else:
+            if user_input in options_dict:
+                return user_input
+            else:
+                print("Ungültige Auswahl. Bitte geben Sie eine gültige Nummer ein.")
+
+def match_profile(directory):
+    files_in_dir = {get_name(file, True) for file in os.listdir(directory) if is_format(file)}
+    matching_profiles = []
+    for profile_name, profile_files in mapping.profiles_mapping.items():
+        profile_set = set(getattr(mapping, profile_files))
+        if files_in_dir == profile_set:
+            matching_profiles.append(mapping.profile_names[profile_name])
+    return matching_profiles, files_in_dir
+
+# Überprüft, ob IDs eindeutig sind
+def id_check(file_or_dir):
+    if os.path.isfile(file_or_dir):
+        df = load_data(file_or_dir)
+        df = df[["ID-Anforderung"]].dropna()
+
+        if df["ID-Anforderung"].astype(str).str.match(r'.*\d$').all():
+            return 1
+        else:
+            if df["ID-Anforderung"].duplicated().any():
+                return 3
+            else:
+                return 2
+    else:
+        results = {}
+        for file_name in os.listdir(file_or_dir):
+            file_path = os.path.join(file_or_dir, file_name)
+            if os.path.isfile(file_path) and is_format(file_name):
+                df = load_data(file_path)
+                df = df[["ID-Anforderung"]].dropna()
+
+                if df["ID-Anforderung"].astype(str).str.match(r'.*\d$').all():
+                    results[file_name] = 1
+                else:
+                    if df["ID-Anforderung"].duplicated().any():
+                        results[file_name] = 3
+                    else:
+                        results[file_name] = 2
+
+        unique_values = set(results.values())
+        if len(unique_values) == 1:
+            return unique_values.pop()
+        else:
+            status_map = {1: "Nicht eindeutige IDs", 2: "Eindeutige IDs", 3: "Gemischte IDs"}
+            return {file: status_map.get(status) for file, status in results.items()}
 
 # Entfernt Anforderungen, bei denen eine spezifische Bedingung erfüllt ist, z.B. "Titel" ist "ENTFALLEN"
 def remove_specific_requirements(df, where, is_value):
@@ -139,18 +231,13 @@ def cost_count(df):
     return df["Kostenschätzung_cleaned"].fillna(0).sum()
 
 # Zählt wie viele Basis, Standard und erhöhte Schutzbedarfsanforderungen vorliegen
-def type_count(df):
+def get_type(df, default_len=True):
     basis = df[df["Typ"] == "Basis"]
     standard = df[df["Typ"] == "Standard"]
     high = df[df["Typ"] == "Hoch"]
-    return len(basis), len(standard), len(high)
-
-# Gibt einzelne Dataframes für verschiedene Schutzbedarfstypen zurück
-def get_type_dfs(df):
-    basis = df[df["Typ"] == "Basis"]
-    standard = df[df["Typ"] == "Standard"]
-    high = df[df["Typ"] == "Hoch"]
-    return basis, standard, high
+    if default_len:
+        return len(basis), len(standard), len(high)
+    else: return basis, standard, high
 
 # Gibt Verantwortliche zurück
 def get_responsible(df):
@@ -183,25 +270,19 @@ def analyze_single_file(file_path):
         return
     df = load_data(file_path)
 
-    # Relevante Spalten auswählen
-    df = df[["ID-Anforderung", "Titel", "Inhalt", "Typ", "Entbehrlich", "Begründung für Entbehrlichkeit", "Umsetzung", "Umsetzung bis", "Verantwortlich", "Bemerkungen / Begründung für Nicht-Umsetzung", "Kostenschätzung"]]
+    df = df[["Titel", "Typ", "Entbehrlich", "Umsetzung", "Verantwortlich", "Kostenschätzung"]]
 
-    # Entfallene Anforderungen entfernen
     df = remove_specific_requirements(df, "Titel", "ENTFALLEN")
 
-    # Analyse Dataframes
     not_implemented, partly_implemented, fully_implemented, unnecessary = implementation_count(df)
     cost = cost_count(df)
     all_responsibles = f"{', '.join(get_responsible(df))}"
 
-    # Analyse nicht umgesetzter Anforderungen nach Typ
     ni = get_specific_df_with_two_conditions_and_emptiness(df, "Umsetzung", "nein", "Entbehrlich", "nein")
-    ni_basis, ni_standard, ni_high = type_count(ni)
+    ni_basis, ni_standard, ni_high = get_type(ni)
 
-    # Analyse elementarer Gefährdungen
     covered_risks, covered_cia = risk_analysis(file_path)
 
-    # Statistik ausgeben
     print(f"Gesamtanzahl Anforderungen: {len(df)}")
     print(f"Umgesetzte Anforderungen: {fully_implemented}")
     print(f"Teilweise umgesetzte Anforderungen: {partly_implemented}")
@@ -235,24 +316,18 @@ def analyze_all_files(folder_path):
             total_files += 1
             df = load_data(file_path)
 
-            # Relevante Spalten auswählen
             df = df[["Titel", "Typ", "Entbehrlich", "Umsetzung", "Kostenschätzung"]]
 
-            # Entfallene Anforderungen entfernen
             df = remove_specific_requirements(df, "Titel", "ENTFALLEN")
 
-            # Analyse Dataframes
             not_implemented, partly_implemented, fully_implemented, unnecessary = implementation_count(df)
             cost = cost_count(df)
 
-            # Analyse nicht umgesetzter Anforderungen nach Typ
             ni = get_specific_df_with_two_conditions_and_emptiness(df, "Umsetzung", "nein", "Entbehrlich", "nein")
-            ni_basis, ni_standard, ni_high = type_count(ni)
+            ni_basis, ni_standard, ni_high = get_type(ni)
 
-            # Analyse elementarer Gefährdungen
             covered_risks, covered_cia = risk_analysis(file_path)
 
-            # Analyse den Gesamtzählern hinzufügen
             total_df_count += len(df)
             total_fully_implemented += fully_implemented
             total_partly_implemented += partly_implemented
@@ -282,23 +357,23 @@ def analyze_all_files(folder_path):
     print(f"(Teilweise) abgedeckte Schutzziele: {total_cia_num}/3")
 
 # Behandelt die Prozentzahl an umgesetzten Anforderungen für eine Datei oder einen Ordner
+# Funktioniert nicht mit altem Windows cmd
 def percentages(path):
     if os.path.isfile(path) and is_format(path):
         df = load_data(path)
         df = df[["Titel", "Typ", "Entbehrlich", "Umsetzung"]]
         df = remove_specific_requirements(df, "Titel", "ENTFALLEN")
         percentage = get_percentage_missing(df)
-        print(f"Insgesamt vollständig erfüllte Anforderungen von {get_name(path, True)}: {percentage:.2f}%")
+        print(f"Insgesamt vollständig erfüllte Anforderungen von {get_name(path, True)}: {get_colored_percentage(percentage)}")
 
-        df_basis, df_standard, df_high = get_type_dfs(df)
+        df_basis, df_standard, df_high = get_type(df, default_len=False)
         basis_missing = get_percentage_missing(df_basis)
         standard_missing = get_percentage_missing(df_standard)
         high_missing = get_percentage_missing(df_high)
-        print(f"Basis-Anforderungen: {basis_missing:.2f}%")
-        print(f"Standard-Anforderungen: {standard_missing:.2f}%")
-        print(f"Anforderungen des erhöhten Schutzbedarfs: {high_missing:.2f}%")
+        print(f"Basis-Anforderungen: {get_colored_percentage(basis_missing)}")
+        print(f"Standard-Anforderungen: {get_colored_percentage(standard_missing)}")
+        print(f"Anforderungen des erhöhten Schutzbedarfs: {get_colored_percentage(high_missing)}")
 
-    # Funktioniert nicht mit altem Windows cmd
     elif os.path.isdir(path):
         print("Baustein → Prozent erfüllt")
         for file_name in os.listdir(path):
@@ -319,7 +394,7 @@ def profile_handler(file_or_dir):
         for key, value in mapping.profile_names.items():
             print(f"{key}: {value}")
         print("Wähle mit der Zahl aus. Hinweis: Es werden nur die Bausteine, die auf jeden Fall ausgeschlossen sind, verschoben.\nManche Profile besitzen außerdem zusätzliche Bausteine, die hiermit nicht installiert werden.")
-        user_input = input("Auswahl (oder exit): ").strip()
+        user_input = input("\nAuswahl (oder exit): ").strip()
         if user_input.lower() == "exit":
             print("Abgebrochen")
 
@@ -328,7 +403,7 @@ def profile_handler(file_or_dir):
                 profile_name = mapping.profiles_mapping[user_input]
                 profile = getattr(mapping, profile_name)
             else:
-                print("Ungültige Eingabe")
+                print("Ungültige Eingabe. Vorgang wird abgebrochen.")
                 return
 
             target_dir = os.path.join(file_or_dir, "Nach Profil nicht benötigt")
@@ -395,15 +470,16 @@ def sort_list(directory):
         print("Ordner nicht gefunden")
         return
 
-    print("Die Dateien können nach folgendem Kriterien absteigend sortiert werden:")
+    print("Die Dateien können nach folgenden Kriterien absteigend sortiert werden:")
     for key, value in mapping.sort_list.items():
         print(f"{key}: {value}")
     print("Wähle mit der Zahl aus.")
-    user_input = input("Auswahl (oder exit): ").strip()
-    if user_input.lower() == "exit":
+    sort_key = input("\nAuswahl (oder exit): ").strip()
+    if sort_key.lower() == "exit":
         print("Abgebrochen")
+        return
 
-    if user_input not in mapping.sort_list:
+    if sort_key not in mapping.sort_list:
         print("Ungültige Auswahl")
         return
 
@@ -416,38 +492,64 @@ def sort_list(directory):
             df = df[["Titel", "Typ", "Entbehrlich", "Umsetzung", "Umsetzung bis", "Verantwortlich", "Kostenschätzung"]]
             df = remove_specific_requirements(df, "Titel", "ENTFALLEN")
 
-            not_implemented, partly_implemented, fully_implemented, unnecessary = implementation_count(df)
-            not_unnecessary = len(df[df["Entbehrlich"].fillna("").astype(str).str.strip().str.lower() == "nein"])
-            cost = cost_count(df)
-            percentage = get_percentage_missing(df)
-            due_date = ", ".join(sorted(list(map(format_dates, df["Umsetzung bis"].dropna().unique()))))
-            ni = get_specific_df_with_two_conditions_and_emptiness(df, "Umsetzung", "nein", "Entbehrlich", "nein")
-            ni_basis, ni_standard, ni_high = type_count(ni)
+            current_file_results = {"file": file_name}
 
-            files_data.append({
-                "file": file_name,
-                "1": not_implemented + partly_implemented,
-                "2": not_implemented,
-                "3": fully_implemented,
-                "4": ni_basis,
-                "5": ni_standard,
-                "6": ni_high,
-                "7": ni_basis + ni_standard,
-                "8": partly_implemented,
-                "9": percentage,
-                "10": unnecessary,
-                "11": not_unnecessary,
-                "12": cost,
-                "13": get_responsible(df),
-                "14": len(df),
-                "15": due_date
-            })
+            if sort_key in ["1", "2", "3", "8", "10", "11"]:
+                not_implemented, partly_implemented, fully_implemented, unnecessary = implementation_count(df)
+                if sort_key == "1":
+                    current_file_results[sort_key] = not_implemented + partly_implemented
+                elif sort_key == "2":
+                    current_file_results[sort_key] = not_implemented
+                elif sort_key == "3":
+                    current_file_results[sort_key] = fully_implemented
+                elif sort_key == "8":
+                    current_file_results[sort_key] = partly_implemented
+                elif sort_key == "10":
+                    current_file_results[sort_key] = unnecessary
+                elif sort_key == "11":
+                    current_file_results[sort_key] = len(df[df["Entbehrlich"].fillna("").astype(str).str.strip().str.lower() == "nein"])
+
+            elif sort_key in ["4", "5", "6", "7"]:
+                ni = get_specific_df_with_two_conditions_and_emptiness(df, "Umsetzung", "nein", "Entbehrlich", "nein")
+                ni_basis, ni_standard, ni_high = get_type(ni)
+                if sort_key == "4":
+                    current_file_results[sort_key] = ni_basis
+                elif sort_key == "5":
+                    current_file_results[sort_key] = ni_standard
+                elif sort_key == "6":
+                    current_file_results[sort_key] = ni_high
+                elif sort_key == "7":
+                    current_file_results[sort_key] = ni_basis + ni_standard
+
+            elif sort_key == "9":
+                current_file_results[sort_key] = get_percentage_missing(df)
+
+            elif sort_key == "12":
+                current_file_results[sort_key] = cost_count(df)
+
+            elif sort_key == "13":
+                current_file_results[sort_key] = get_responsible(df)
+
+            elif sort_key == "14":
+                current_file_results[sort_key] = len(df)
+
+            elif sort_key == "15":
+                current_file_results[sort_key] = ", ".join(sorted(list(map(format_dates, df["Umsetzung bis"].dropna().unique()))))
+
+            elif sort_key in ["16", "17"]:
+                covered_risks, covered_cia = risk_analysis(file_path)
+                if sort_key == "16":
+                    current_file_results[sort_key] = len(covered_risks)
+                elif sort_key == "17":
+                    current_file_results[sort_key] = len(covered_cia)
+
+            if sort_key in current_file_results:
+                files_data.append(current_file_results)
 
     if not files_data:
-        print("Keine passenden Dateien gefunden")
+        print("Keine passenden Dateien gefunden.")
         return
 
-    sort_key = user_input
     files_data.sort(key=lambda x: x[sort_key], reverse=True)
 
     print(f"Dateien sortiert nach {mapping.sort_list[sort_key]}:\n")
@@ -455,9 +557,7 @@ def sort_list(directory):
         print(f"{get_name(item['file'], True)}: {item[sort_key]}")
 
 # Erkennt WiBA-Anforderungen anhand des Textes in einer Datei und setzt sie auf umgesetzt
-def wiba_setter(file_path):
-    wiba = mapping.wiba
-    wiba_ids = mapping.wiba_id
+def wiba_setter(file_path, wiba, wiba_ids):
     df = load_data(file_path)
 
     wiba_mapping = {w: i for i, w in enumerate(wiba)}
@@ -504,9 +604,11 @@ def wiba_setter(file_path):
 
 # Handler für Datei oder Ordner
 def wiba_transfer(path):
+    wiba = mapping.wiba
+    wiba_ids = mapping.wiba_id
     if os.path.isfile(path) and is_format(path):
         print("Starte WiBA Integration")
-        wiba_setter(path)
+        wiba_setter(path, wiba, wiba_ids)
         print(f"WiBA erfolgreich in {get_name(path, True)} integriert")
     elif os.path.isdir(path):
         print("Starte WiBA Integration")
@@ -514,7 +616,7 @@ def wiba_transfer(path):
         for file_name in os.listdir(path):
             file_path = os.path.join(path, file_name)
             if is_format(file_name):
-                temp += wiba_setter(file_path)
+                temp += wiba_setter(file_path, wiba, wiba_ids)
         if temp:
             print(f"WiBA erfolgreich in {temp} Dateien integriert")
         else: print("Keine Dateien im Ordner, die auch in WiBA vorkommen")
@@ -551,7 +653,7 @@ def scale_setter(file_path, values):
     df = load_data(file_path)
     cell_max = len(df) + 5
     if values is None:
-        values = '"Ja, Teilweise, Nein"'
+        values = '"Ja, Teilweise, Nein"'            # HIER DEFAULT FESTLEGEN
 
     wb = openpyxl.load_workbook(file_path)
     sheet_name = get_name(file_path, True)
@@ -602,57 +704,28 @@ def export_handler(file_or_dir):
     else:
         print(f"'{file_or_dir}' ist weder eine passende Excel-Datei noch ein Ordner.")
 
-# Fragt den Nutzer, welches Format und welches Spalten er exportieren möchte
+# Fragt den Nutzer, welches Format und welche Spalten er exportieren möchte
 def get_export_settings():
+    export_format = multiple_choice(mapping.format_options, "Wählen Sie das Exportformat:", multi=False, default_value="1")
 
-    print("Wählen Sie das Exportformat:")
-    print("1. CSV\n2. JSON\n3. Markdown\n4. HTML\n5. XML\n6. Leerzeichengetrennt\n7. Tabstoppgetrennt\n8. Benutzerdefiniertes Trennzeichen")
-
-    format_choice = input("\nAuswahl (1-8): ")
-
-    if format_choice == "1":
-        export_format = "csv"
-    elif format_choice == "2":
-        export_format = "json"
-    elif format_choice == "3":
-        export_format = "markdown"
-    elif format_choice == "4":
-        export_format = "html"
-    elif format_choice == "5":
-        export_format = "xml"
-    elif format_choice == "6":
-        export_format = "space"
-    elif format_choice == "7":
-        export_format = "tab"
-    elif format_choice == "8":
+    if export_format == "9":
         delimiter = input("Geben Sie das Trennzeichen ein: ")
         export_format = f"delimited:{delimiter}"
-    else:
-        print("Ungültige Auswahl. CSV wird verwendet.")
-        export_format = "csv"
 
-    print("\nWählen Sie die Spalten zum Exportieren aus:")
     columns = [
         "ID-Anforderung", "Titel", "Inhalt", "Typ", "Entbehrlich",
         "Begründung für Entbehrlichkeit", "Umsetzung", "Umsetzung bis",
         "Verantwortlich", "Bemerkungen / Begründung für Nicht-Umsetzung", "Kostenschätzung"
     ]
-    for i, col in enumerate(columns):
-        print(f"{i + 1}. {col}")
+    column_options = {str(i + 1): col for i, col in enumerate(columns)}
 
-    selected_columns = []
-    while True:
-        col_choice = input("\nSpaltenauswahl (z.B. 1,3,5 oder 'Alle'): ")
-        if col_choice.lower() == "alle" or col_choice == "":
-            selected_columns = columns
-            break
-        else:
-            try:
-                col_indices = [int(c) - 1 for c in col_choice.split(",")]
-                selected_columns = [columns[i] for i in col_indices]
-                break
-            except (ValueError, IndexError):
-                print("Ungültige Eingabe.")
+    selected_column_keys = multiple_choice(column_options, "\nSpaltenauswahl (z.B. 1,3,5 oder Enter für 'Alle'):", multi=True, default_value="Alle")
+
+    if "Alle" in selected_column_keys:
+        selected_columns = columns
+    else:
+        selected_columns = [columns[int(key) - 1] for key in selected_column_keys]
+
 
     omitted = ask_user("Möchten Sie entfallene Anforderungen entfernen?")
     unnecessary = ask_user("Möchten Sie als entbehrlich markierte Anforderungen entfernen?")
@@ -670,19 +743,16 @@ def get_export_settings():
     if export_format == "json" and index_numbers:
         print("\nNummerierte Zeilen bei JSON nicht möglich")
 
-    types_input = input(
-        "\nMöchten Sie Schutzbedarfstypen entfernen (Basis, Standard, Hoch)? \n"
-        "(Auswahl z.B. 'Standard, Hoch', Default=Keine): ").strip()
+    type_options = {
+        "1": "Basis",
+        "2": "Standard",
+        "3": "Hoch"
+    }
 
-    types_to_remove = []
-    if types_input:
-        types_to_remove = [t.strip().title() for t in types_input.split(',') if t.strip()]
-        valid_types = {"Basis", "Standard", "Hoch"}
-        original_input_types = set(types_to_remove)
-        types_to_remove = [t for t in types_to_remove if t in valid_types]
-        removed_invalid = original_input_types - set(types_to_remove)
-        if removed_invalid:
-            print(f"Warnung: Ungültige Typen ignoriert: {', '.join(removed_invalid)}")
+    types_to_remove_keys = multiple_choice(type_options, "\nAuswahl zur Entfernung der Schutzbedarfstypen (z.B. 2,3 oder Enter für 'Keine'):", multi=True, default_value=[])
+
+    types_to_remove = [type_options[key] for key in types_to_remove_keys if key in type_options]
+
     return export_format, selected_columns, omitted, unnecessary, implemented, baustein, gefahren, index_numbers, types_to_remove
 
 # Exportiert den Tabelleninhalt in ein gewünschtes Format mit diversen Anpassungsmöglichkeiten
@@ -744,32 +814,34 @@ def export(file_path, file_format, columns, omitted, unnecessary, implemented, b
     base_name = os.path.splitext(os.path.basename(file_path))[0]
     export_file_path = os.path.join(export_dir, base_name)
 
-    if file_format == "csv":
+    if file_format == "1":
+        df.to_excel(export_file_path + ".xlsx", index=index_numbers)
+    elif file_format == "2":
         df.to_csv(export_file_path + ".csv", index=index_numbers)
-    elif file_format == "json":
+    elif file_format == "3":
         df.to_json(export_file_path + ".json", orient="records")
-    elif file_format == "markdown":
+    elif file_format == "4":
         df.to_markdown(export_file_path + ".md", index=index_numbers)
-    elif file_format == "html":
+    elif file_format == "5":
         df.to_markdown(export_file_path + ".html", index=index_numbers)
-    elif file_format == "xml":
+    elif file_format == "6":
         df.to_xml(export_file_path + ".xml", index=index_numbers)
-    elif file_format == "space":
+    elif file_format == "7":
         df.to_csv(export_file_path + ".txt", sep=" ", index=index_numbers)
-    elif file_format == "tab":
+    elif file_format == "8":
         df.to_csv(export_file_path + ".tsv", sep="\t", index=index_numbers)
     elif file_format.startswith("delimited:"):
         delimiter = file_format.split(":")[1]
         df.to_csv(export_file_path + ".txt", sep=delimiter, index=index_numbers)
 
 # Überprüft, ob es nicht umgesetzte Basis-Anforderungen gibt
-def risk_check(file_path):
+def basis_risk_check(file_path):
     df = load_data(file_path)
     df = df[["ID-Anforderung", "Titel", "Inhalt", "Typ", "Entbehrlich", "Umsetzung"]]
     df = remove_specific_requirements(df, "Titel", "ENTFALLEN")
 
     ni = get_specific_df_with_two_conditions_and_emptiness(df, "Umsetzung", "nein", "Entbehrlich", "nein")
-    ni_basis, ni_standard, ni_high = type_count(ni)
+    ni_basis, ni_standard, ni_high = get_type(ni)
     if ni_basis != 0:
         return True
     else: return False
@@ -785,7 +857,7 @@ def report_analysis(file_path):
     due_date = ", ".join(sorted(list(map(format_dates, df["Umsetzung bis"].dropna().unique()))))
     all_responsibles = f"{', '.join(get_responsible(df))}"
     ni = get_specific_df_with_two_conditions_and_emptiness(df, "Umsetzung", "nein", "Entbehrlich", "nein")
-    ni_basis, ni_standard, ni_high = type_count(ni)
+    ni_basis, ni_standard, ni_high = get_type(ni)
 
     return {
         "Gesamtanzahl Anforderungen": len(df),
@@ -806,7 +878,7 @@ def report(file_or_dir):
             reports_dir = os.path.join(os.path.dirname(os.path.abspath(file_or_dir)), "Reports")
             os.makedirs(reports_dir, exist_ok=True)
             results = report_analysis(file_or_dir)
-            risk = risk_check(file_or_dir)
+            risk = basis_risk_check(file_or_dir)
             save_results_to_pdf(results, os.path.basename(file_or_dir), reports_dir, risk, file_or_dir)
             print("Report erstellt und gespeichert.")
         else:
@@ -831,7 +903,7 @@ def report(file_or_dir):
             file_path = os.path.join(file_or_dir, file_name)
             if is_format(file_name):
                 results = report_analysis(file_path)
-                risk = risk_check(file_path)
+                risk = basis_risk_check(file_path)
                 all_results[file_name] = results
                 all_risks[file_name] = risk
         if not all_results:
@@ -1107,7 +1179,7 @@ def whole_report(directory, output_directory):
             cost = cost_count(df)
 
             ni = get_specific_df_with_two_conditions_and_emptiness(df, "Umsetzung", "nein", "Entbehrlich", "nein")
-            ni_basis, ni_standard, ni_high = type_count(ni)
+            ni_basis, ni_standard, ni_high = get_type(ni)
             covered_risks, covered_cia = risk_analysis(file_path)
 
             total_df_count += len(df)
@@ -1160,13 +1232,7 @@ def save_whole_results_to_pdf(directory, results, reports_dir):
         else:
             story.append(Paragraph(f"<b>{key}:</b> {value}", normal_style))
 
-    files_in_dir = {get_name(file, True) for file in os.listdir(directory) if is_format(file)}
-
-    matching_profiles = []
-    for profile_name, profile_files in mapping.profiles_mapping.items():
-        profile_set = set(getattr(mapping, profile_files))
-        if files_in_dir == profile_set:
-            matching_profiles.append(mapping.profile_names[profile_name])
+    matching_profiles, files_in_dir = match_profile(directory)
 
     if matching_profiles and len(files_in_dir)<111:
         if len(matching_profiles) == 1:
@@ -1190,12 +1256,12 @@ def save_whole_results_to_pdf(directory, results, reports_dir):
             df = load_data(file_path)
             df = df[["ID-Anforderung", "Titel", "Inhalt", "Typ", "Umsetzung", "Umsetzung bis", "Bemerkungen / Begründung für Nicht-Umsetzung", "Entbehrlich", "Begründung für Entbehrlichkeit", "Verantwortlich", "Kostenschätzung"]]
             df = remove_specific_requirements(df, "Titel", "ENTFALLEN")
-            if risk_check(file_path):
+            if basis_risk_check(file_path):
                 risk_files.append(get_name(file_path, True))
             ni_df = get_specific_df_with_two_conditions_and_emptiness(df, "Umsetzung", "nein", "Entbehrlich", "nein")
             if not ni_df.empty:
                 not_implemented[get_name(file_name, True)] = len(ni_df)
-                ni_types[get_name(file_name, True)] = type_count(ni_df)
+                ni_types[get_name(file_name, True)] = get_type(ni_df)
             dl_df = df.dropna(subset=["Umsetzung bis"])
             if not dl_df.empty:
                 deadlines[get_name(file_name, True)] = []
@@ -1715,31 +1781,31 @@ def checklist_integration(checklist_path, filename, dokument, implemented, partl
 
 # Speichert einen Dataframe in einem gewünschten Format
 def save_df(df, export_file_path, index_number):
-    file_format = input("In welchem Format soll die Tabelle gespeichert werden?\n\n"
-                        "1. Excel\n2. CSV\n3. JSON\n4. Markdown\n5. HTML\n6. XML\n"
-                        "7. Leerzeichengetrennt\n8. Tabstoppgetrennt\n9. Benutzerdefiniertes Trennzeichen\n\n"
-                        "Auswahl (1-9): ")
+    file_format_choice_key = multiple_choice(mapping.format_options,"\nIn welchem Format soll die Tabelle gespeichert werden?", multi=False, default_value="1")
 
-    if file_format == "1":
+    if file_format_choice_key == "1":
         df.to_excel(export_file_path + ".xlsx", index=index_number)
-    elif file_format == "2":
+    elif file_format_choice_key == "2":
         df.to_csv(export_file_path + ".csv", index=index_number)
-    elif file_format == "3":
+    elif file_format_choice_key == "3":
         df.to_json(export_file_path + ".json", orient="records")
-    elif file_format == "4":
+    elif file_format_choice_key == "4":
         df.to_markdown(export_file_path + ".md", index=index_number)
-    elif file_format == "5":
-        df.to_markdown(export_file_path + ".html", index=index_number)
-    elif file_format == "6":
+    elif file_format_choice_key == "5":
+        df.to_html(export_file_path + ".html", index=index_number)
+    elif file_format_choice_key == "6":
         df.to_xml(export_file_path + ".xml", index=index_number)
-    elif file_format == "7":
+    elif file_format_choice_key == "7":
         df.to_csv(export_file_path + ".txt", sep=" ", index=index_number)
-    elif file_format == "8":
+    elif file_format_choice_key == "8":
         df.to_csv(export_file_path + ".tsv", sep="\t", index=index_number)
-    elif file_format == "9":
+    elif file_format_choice_key == "9":
         delimiter = input("\nTrennzeichen: ")
         df.to_csv(export_file_path + ".txt", sep=delimiter, index=index_number)
-    else: print("Keine gültige Auswahl, wird als .xlsx Datei gespeichert")
+    else:
+        print("Keine gültige Auswahl, wird als .xlsx Datei gespeichert")
+        df.to_excel(export_file_path + ".xlsx", index=index_number)
+
     print("Datei erfolgreich gespeichert")
 
 # Durchsucht die Tabellen eines Ordners nach verschiedenen Möglichkeiten
@@ -1779,8 +1845,8 @@ def search(directory):
     else: print("Ungültige Auswahl, Vorgang wird abgebrochen")
 
     if len(df) == 1:
-        print("1 Ergebnis gefunden")
-    else: print(f"{len(df)} Ergebnisse gefunden")
+        print("\n1 Ergebnis gefunden")
+    else: print(f"\n{len(df)} Ergebnisse gefunden")
     if len(df) == 0:
         return
 
@@ -1895,42 +1961,6 @@ def risk_handler(file_or_dir):
 
     else:
         print("Kein gültiger Pfad: Bitte geben Sie eine gültige Datei im Format Checkliste_XXX.X.X.xlsx oder einen Ordner an.")
-
-# Überprüft, ob IDs eindeutig sind
-def id_check(file_or_dir):
-    if os.path.isfile(file_or_dir):
-        df = load_data(file_or_dir)
-        df = df[["ID-Anforderung"]].dropna()
-
-        if df["ID-Anforderung"].astype(str).str.match(r'.*\d$').all():
-            return 1
-        else:
-            if df["ID-Anforderung"].duplicated().any():
-                return 3
-            else:
-                return 2
-    else:
-        results = {}
-        for file_name in os.listdir(file_or_dir):
-            file_path = os.path.join(file_or_dir, file_name)
-            if os.path.isfile(file_path) and is_format(file_name):
-                df = load_data(file_path)
-                df = df[["ID-Anforderung"]].dropna()
-
-                if df["ID-Anforderung"].astype(str).str.match(r'.*\d$').all():
-                    results[file_name] = 1
-                else:
-                    if df["ID-Anforderung"].duplicated().any():
-                        results[file_name] = 3
-                    else:
-                        results[file_name] = 2
-
-        unique_values = set(results.values())
-        if len(unique_values) == 1:
-            return unique_values.pop()
-        else:
-            status_map = {1: "Nicht eindeutige IDs", 2: "Eindeutige IDs", 3: "Gemischte IDs"}
-            return {file: status_map.get(status) for file, status in results.items()}
 
 # Setzt die IDs einer Datei, eindeutig bei 1, zurück auf nicht eindeutig bei 2
 def id_setter(file, mode):
