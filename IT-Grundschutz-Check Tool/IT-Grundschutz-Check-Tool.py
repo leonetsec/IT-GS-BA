@@ -43,7 +43,7 @@ def get_name(filename, short):
             return mapping.bsi_ref_titles.get(ref, "Unbekanntes Kürzel")
         return None
 
-    elif is_pdf(filename):
+    elif is_pdf(filename) or is_docx(filename):
         ref = filename.split()[0]
         if ref.startswith("CCON"):
             ref = "CON" + ref[4:]
@@ -171,12 +171,12 @@ def id_check(file_or_dir):
         df = df[["ID-Anforderung"]].dropna()
 
         if df["ID-Anforderung"].astype(str).str.match(r'.*\d$').all():
-            return 1
+            return 1 # Default: nicht eindeutig
         else:
             if df["ID-Anforderung"].duplicated().any():
-                return 3
+                return 3 # Gemischt
             else:
-                return 2
+                return 2 # Nur eindeutige
     else:
         results = {}
         for file_name in os.listdir(file_or_dir):
@@ -390,7 +390,7 @@ def percentages(path):
 def profile_handler(file_or_dir):
     if os.path.isdir(file_or_dir):
 
-        print("Folgende IT-Grundschutz-Profile stehen zur Verfügung (auch auf PDFs anwendbar):")
+        print("Folgende IT-Grundschutz-Profile stehen zur Verfügung (auch auf PDF, DOCX anwendbar):")
         for key, value in mapping.profile_names.items():
             print(f"{key}: {value}")
         print("Wähle mit der Zahl aus. Hinweis: Es werden nur die Bausteine, die auf jeden Fall ausgeschlossen sind, verschoben.\nManche Profile besitzen außerdem zusätzliche Bausteine, die hiermit nicht installiert werden.")
@@ -409,13 +409,18 @@ def profile_handler(file_or_dir):
             target_dir = os.path.join(file_or_dir, "Nach Profil nicht benötigt")
             os.makedirs(target_dir, exist_ok=True)
 
+            moved = False
             for file in os.listdir(file_or_dir):
-                if is_format(file) or is_pdf(file):
+                if is_format(file) or is_pdf(file) or is_docx(file):
                     file_path = os.path.join(file_or_dir, file)
                     file_short = get_name(file, True)
                     if file_short not in profile and file_short in mapping.bsi_ref_titles:
                         shutil.move(file_path, os.path.join(target_dir, file))
                         print(f"{get_name(file, True)}: {get_name(file, False)} wurde entfernt")
+                        moved = True
+            if not moved:
+                print("Keine Datei entfernt, entweder fehlen Dateien oder das Profil ist nur ein Platzhalter und muss manuell ergänzt werden")
+
 
     else: print("Verzeichnis nicht gefunden")
 
@@ -691,6 +696,7 @@ def export_handler(file_or_dir):
         export(file_or_dir, file_format, columns, omitted, unnecessary, implemented, baustein, gefahren, index_numbers, types_to_remove)
         print("\nDatei erfolgreich exportiert")
     elif os.path.isdir(file_or_dir):
+        print("Exportiere...")
         exported_count = 0
         for file_name in os.listdir(file_or_dir):
             file_path = os.path.join(file_or_dir, file_name)
@@ -719,7 +725,7 @@ def get_export_settings():
     ]
     column_options = {str(i + 1): col for i, col in enumerate(columns)}
 
-    selected_column_keys = multiple_choice(column_options, "\nSpaltenauswahl (z.B. 1,3,5 oder Enter für 'Alle'):", multi=True, default_value="Alle")
+    selected_column_keys = multiple_choice(column_options, "\nSpaltenauswahl (z.B. 1,3,5 oder Enter für Alle):", multi=True, default_value="Alle")
 
     if "Alle" in selected_column_keys:
         selected_columns = columns
@@ -749,7 +755,7 @@ def get_export_settings():
         "3": "Hoch"
     }
 
-    types_to_remove_keys = multiple_choice(type_options, "\nAuswahl zur Entfernung der Schutzbedarfstypen (z.B. 2,3 oder Enter für 'Keine'):", multi=True, default_value=[])
+    types_to_remove_keys = multiple_choice(type_options, "\nAuswahl zur Entfernung der Schutzbedarfstypen (z.B. 2,3 oder Enter für Keine):", multi=True, default_value=[])
 
     types_to_remove = [type_options[key] for key in types_to_remove_keys if key in type_options]
 
@@ -771,12 +777,10 @@ def export(file_path, file_format, columns, omitted, unnecessary, implemented, b
         temp_id_anforderung = df["ID-Anforderung"].astype(str).copy()
         if id_check(file_path) == 2:
             temp_id_anforderung = temp_id_anforderung.apply(lambda x: x[:-1] if len(x) > 1 else x)
+        krt_map = {entry['id']: entry for entry in mapping.krt}
 
         def get_krt_eintrag(req_id):
-            for entry in mapping.krt:
-                if entry.get('id') == str(req_id):
-                    return entry
-            return {}
+            return krt_map.get(str(req_id), {})
 
         def get_gefahren(req_id):
             krt_entry = get_krt_eintrag(req_id)
@@ -1082,7 +1086,7 @@ def save_results_to_pdf(results, file_name, reports_dir, risk, file_path):
         bullet_list = []
         for _, row in entb_df.iterrows():
             bullet_list.append(Paragraph(f"- {row['ID-Anforderung']}", normal_style))
-            story.extend(bullet_list)
+        story.extend(bullet_list)
 
     ums_df = df
     ums_df = remove_specific_requirements(ums_df, "Titel", "ENTFALLEN")
@@ -1095,7 +1099,7 @@ def save_results_to_pdf(results, file_name, reports_dir, risk, file_path):
         bullet_list = []
         for _, row in ums_df.iterrows():
             bullet_list.append(Paragraph(f"- {row['ID-Anforderung']}", normal_style))
-            story.extend(bullet_list)
+        story.extend(bullet_list)
 
     doc.build(story)
 
@@ -1305,9 +1309,11 @@ def save_whole_results_to_pdf(directory, results, reports_dir):
 
 
     story.append(Spacer(1, 20))
+
     image_path2 = plot_pie_chart_to_image(results["Nicht umgesetzte Anforderungen nach Typ"],
                                               "Insgesamt nicht umgesetzte Anforderungen nach Typ aufgeschlüsselt")
     story.append(Image(image_path2, width=400, height=300))
+
 
     if not_implemented:
         story.append(Spacer(1, 10))
@@ -1413,8 +1419,7 @@ def save_whole_results_to_pdf(directory, results, reports_dir):
     doc.build(story)
 
     os.remove(image_path1)
-    if not ni_df.empty:
-        os.remove(image_path2)
+    os.remove(image_path2)
 
 # Löst Konflikte für verschiedene Werte in "Entbehrlich", "Umsetzung", "Umsetzung bis"
 def resolve_conflict(values, column_name, file1_path, file2_path):
@@ -1856,7 +1861,7 @@ def search(directory):
     save_df(df, export_file_path, False)
 
 # Analysiert die abgedeckten elementaren Gefährdungen einer Datei
-def risk_analysis(file_path):
+def risk_analysis(file_path, krt_map):
     df = load_data(file_path)
     implemented = get_specific_df(df, "Umsetzung", "ja")
     covered_risks = set()
@@ -1868,25 +1873,23 @@ def risk_analysis(file_path):
     elif id_status == 2:
         ids = [req_id[:-1] for req_id in implemented["ID-Anforderung"].unique()]
     else:
-        print(f"Die Datei {file_path} enthält sowohl eindeutige als auch nicht eindeutige IDs, möglicherweise können nicht alle Gefährdungen zugeordnet werden")
+        print(
+            f"Die Datei {file_path} enthält sowohl eindeutige als auch nicht eindeutige IDs, möglicherweise können nicht alle Gefährdungen zugeordnet werden")
         ids = implemented["ID-Anforderung"].unique()
 
     for req_id in ids:
-        for item in mapping.krt:
-            if item['id'] == req_id:
-                covered_risks.update(item['gefahren'])
-                if item['cia']:
-                    for char in item['cia']:
-                        if char not in covered_cia:
-                            covered_cia.add(char)
-                break
+        item = krt_map.get(req_id)
+        covered_risks.update(item['gefahren'])
+        if 'cia' in item and item['cia']:
+            covered_cia.update(item['cia'])
 
     return covered_risks, covered_cia
 
 # Handler für Datei oder Ordner
 def risk_handler(file_or_dir):
+    krt_map = {item['id']: item for item in mapping.krt}
     if os.path.isfile(file_or_dir) and is_format(file_or_dir):
-        covered_risks_codes, covered_cia_codes = risk_analysis(file_or_dir)
+        covered_risks_codes, covered_cia_codes = risk_analysis(file_or_dir, krt_map)
 
         print(f"\n--- Analyse für Datei: {os.path.basename(file_or_dir)} ---")
 
@@ -1913,7 +1916,7 @@ def risk_handler(file_or_dir):
         for file_name in os.listdir(file_or_dir):
             file_path = os.path.join(file_or_dir, file_name)
             if os.path.isfile(file_path) and is_format(file_name):
-                covered_risks_for_file, covered_cia_for_file = risk_analysis(file_path)
+                covered_risks_for_file, covered_cia_for_file = risk_analysis(file_path, krt_map)
 
                 all_covered_risks_across_files.update(covered_risks_for_file)
                 all_covered_cia_across_files.update(covered_cia_for_file)
