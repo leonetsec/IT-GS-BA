@@ -35,5 +35,6 @@ Weitere Funktionen mittels Parameter, die sowohl auf einzelne Dateien als auch g
 - ```--search```: Durchsucht alle Tabellen auf verschiedene Arten und speichert das Suchergebnis ab
 - ```--risks```: Zeigt die durch umgesetzte Anforderungen abgedeckten elementaren Gefährdungen nach Kreuzreferenztabelle an, entweder für eine Datei oder einen ganzen Ordner
 - ```--id```: Gibt den Anforderungen eindeutige IDs bzw. entfernt diese wieder. Andere Funktionen wurden angepasst, um auch mit eindeutigen IDs umzugehen
+- ```--snapshot```: Erstellt, vergleicht und stellt Snapshots der Tabellen wieder her
 
 Hinweis: Aus Sicherheitsgründen können Basis-Anforderungen und als nicht entbehrlich markierte Anforderungen nicht automatisch als entbehrlich gesetzt werden.

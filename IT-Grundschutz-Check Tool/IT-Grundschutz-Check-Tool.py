@@ -1,4 +1,5 @@
 import argparse
+import glob
 import os
 import shutil
 import re
@@ -51,6 +52,12 @@ def get_name(filename, short):
             return ref
         return mapping.bsi_ref_titles.get(ref, "Unbekanntes Kürzel")
     return None
+
+def get_baustein_from_id(anforderung_id):
+    if anforderung_id == "OPS.2.3A22":
+        return "OPS.2.3"
+    position = anforderung_id.find('.A')
+    return anforderung_id[:position]
 
 # Überprüft, ob eine PDF-Datei den Namen eines IT-Grundschutz-Bausteins hat
 def is_pdf(file):
@@ -226,9 +233,10 @@ def implementation_count(df):
 
 # Summiert die Kostenspalte
 def cost_count(df):
-    df["Kostenschätzung_cleaned"] = df["Kostenschätzung"].astype(str).str.replace('€', '').str.replace(',', '.').str.findall(r'\d+\.?\d*').str[0]
-    df["Kostenschätzung_cleaned"] = pd.to_numeric(df["Kostenschätzung_cleaned"], errors='coerce')
-    return df["Kostenschätzung_cleaned"].fillna(0).sum()
+    df_copy = df.copy()
+    df_copy["Kostenschätzung_cleaned"] = df_copy["Kostenschätzung"].astype(str).str.replace('€', '').str.replace(',', '.').str.findall(r'\d+\.?\d*').str[0]
+    df_copy["Kostenschätzung_cleaned"] = pd.to_numeric(df_copy["Kostenschätzung_cleaned"], errors='coerce')
+    return df_copy["Kostenschätzung_cleaned"].fillna(0).sum()
 
 # Zählt wie viele Basis, Standard und erhöhte Schutzbedarfsanforderungen vorliegen
 def get_type(df, default_len=True):
@@ -690,25 +698,80 @@ def scale_setter(file_path, values):
 
 # Handler für Datei oder Ordner
 def export_handler(file_or_dir):
-    file_format, columns, omitted, unnecessary, implemented, baustein, gefahren, index_numbers, types_to_remove = get_export_settings()
+    file_format, columns, omitted, unnecessary, implemented, baustein, gefahren, index_numbers, types_to_remove, merge = get_export_settings()
 
     if os.path.isfile(file_or_dir) and is_format(file_or_dir):
         export(file_or_dir, file_format, columns, omitted, unnecessary, implemented, baustein, gefahren, index_numbers, types_to_remove)
         print("\nDatei erfolgreich exportiert")
     elif os.path.isdir(file_or_dir):
-        print("Exportiere...")
+        print("\nExportiere...")
         exported_count = 0
+        new_files_list = []
         for file_name in os.listdir(file_or_dir):
             file_path = os.path.join(file_or_dir, file_name)
             if os.path.isfile(file_path) and is_format(file_name):  
-                export(file_path, file_format, columns, omitted, unnecessary, implemented, baustein, gefahren, index_numbers, types_to_remove)
+                new_file_path = export(file_path, file_format, columns, omitted, unnecessary, implemented, baustein, gefahren, index_numbers, types_to_remove)
                 exported_count += 1
+                new_files_list.append(new_file_path)
+        if merge and exported_count > 1:
+            merge_export(new_files_list, file_format, index_numbers)
+            print(f"\n{exported_count} Dateien erfolgreich exportiert und zusammengeführt.")
+            return
         if exported_count > 0:
-            print(f"\n{exported_count} Dateien erfolgreich exportiert")
-        else:
-            print("Keine passenden Excel-Dateien im Ordner gefunden.")
+            print(f"\n{exported_count} Dateien erfolgreich exportiert.")
+        else: print("Keine passenden Excel-Dateien im Ordner gefunden.")
     else:
         print(f"'{file_or_dir}' ist weder eine passende Excel-Datei noch ein Ordner.")
+
+# Fügt die exportierten Dateien zusammen und löscht die Einzeldateien
+def merge_export(file_list, file_format, index_numbers):
+    print("\nFüge Dateien zusammen...")
+    dfs_to_merge = []
+
+    for f_path in file_list:
+        if file_format == "1":
+            df = pd.read_excel(f_path)
+        elif file_format == "2":
+            df = pd.read_csv(f_path)
+        elif file_format == "3":
+            df = pd.read_json(f_path, orient="records")
+        elif file_format in ["7", "8"] or file_format.startswith("delimited:"):
+            delimiter = " " if file_format == "7" else "\t" if file_format == "8" else \
+                file_format.split(":")[1]
+            df = pd.read_csv(f_path, sep=delimiter)
+        else:
+            print("Warnung: Zusammenführen für das gewählte Format wird nicht unterstützt. Dieser Schritt wird übersprungen.")
+            dfs_to_merge = []
+            break
+        dfs_to_merge.append(df)
+
+    merged_df = pd.concat(dfs_to_merge, ignore_index=True)
+
+    export_dir = os.path.dirname(file_list[0])
+    merged_file_base = os.path.join(export_dir, "Export")
+
+    if file_format == "1":
+        merged_df.to_excel(merged_file_base + ".xlsx", index=index_numbers)
+    elif file_format == "2":
+        merged_df.to_csv(merged_file_base + ".csv", index=index_numbers)
+    elif file_format == "3":
+        merged_df.to_json(merged_file_base + ".json", orient="records")
+    elif file_format == "4":
+        merged_df.to_markdown(merged_file_base + ".md", index=index_numbers)
+    elif file_format == "5":
+        merged_df.to_html(merged_file_base + ".html", index=index_numbers)
+    elif file_format == "6":
+        merged_df.to_xml(merged_file_base + ".xml", index=index_numbers)
+    elif file_format == "7":
+        merged_df.to_csv(merged_file_base + ".txt", sep=" ", index=index_numbers)
+    elif file_format == "8":
+        merged_df.to_csv(merged_file_base + ".tsv", sep="\t", index=index_numbers)
+    elif file_format.startswith("delimited:"):
+        delimiter = file_format.split(":")[1]
+        merged_df.to_csv(merged_file_base + ".txt", sep=delimiter, index=index_numbers)
+
+    for f_path in file_list:
+        os.remove(f_path)
 
 # Fragt den Nutzer, welches Format und welche Spalten er exportieren möchte
 def get_export_settings():
@@ -732,13 +795,28 @@ def get_export_settings():
     else:
         selected_columns = [columns[int(key) - 1] for key in selected_column_keys]
 
+    type_options = {
+        "1": "Basis",
+        "2": "Standard",
+        "3": "Hoch"
+    }
+
+    types_to_remove_keys = multiple_choice(type_options,
+                                           "\nAuswahl zur Entfernung der Schutzbedarfstypen (z.B. 2,3 oder Enter für Keine):",
+                                           multi=True, default_value=[])
+
+    types_to_remove = [type_options[key] for key in types_to_remove_keys if key in type_options]
+
 
     omitted = ask_user("Möchten Sie entfallene Anforderungen entfernen?")
-    unnecessary = ask_user("Möchten Sie als entbehrlich markierte Anforderungen entfernen?")
+    unnecessary = ask_user("Möchten Sie als entbehrlich markierte Anforderungen entfernen?", default_yes=False)
     implemented = ask_user("Möchten Sie bereits umgesetzte Anforderungen entfernen?", default_yes=False)
     index_numbers = ask_user("Möchten Sie nummerierte Zeilen?")
+    if export_format == "json" and index_numbers:
+        print("\nNummerierte Zeilen bei JSON nicht möglich")
     baustein = ask_user("Soll jede Anforderung den Bausteinnamen enthalten?", default_yes=False)
     gefahren = ask_user("Sollen die elementaren Gefährdungen aus den Kreuzreferenztabellen hinzugefügt werden?", default_yes=False)
+    merge = ask_user("Sollen die Dateien am Ende zu einer einzelnen, großen Datei zusammengeführt werden?", default_yes=False)
 
     if baustein:
         selected_columns.append("Baustein")
@@ -746,20 +824,11 @@ def get_export_settings():
         selected_columns.append("Abgedeckte elementare Gefährdungen")
         selected_columns.append("Abgedeckte Schutzziele")
 
-    if export_format == "json" and index_numbers:
-        print("\nNummerierte Zeilen bei JSON nicht möglich")
 
-    type_options = {
-        "1": "Basis",
-        "2": "Standard",
-        "3": "Hoch"
-    }
 
-    types_to_remove_keys = multiple_choice(type_options, "\nAuswahl zur Entfernung der Schutzbedarfstypen (z.B. 2,3 oder Enter für Keine):", multi=True, default_value=[])
 
-    types_to_remove = [type_options[key] for key in types_to_remove_keys if key in type_options]
 
-    return export_format, selected_columns, omitted, unnecessary, implemented, baustein, gefahren, index_numbers, types_to_remove
+    return export_format, selected_columns, omitted, unnecessary, implemented, baustein, gefahren, index_numbers, types_to_remove, merge
 
 # Exportiert den Tabelleninhalt in ein gewünschtes Format mit diversen Anpassungsmöglichkeiten
 def export(file_path, file_format, columns, omitted, unnecessary, implemented, baustein, gefahren, index_numbers, types_to_remove):
@@ -816,27 +885,40 @@ def export(file_path, file_format, columns, omitted, unnecessary, implemented, b
     os.makedirs(export_dir, exist_ok=True)
 
     base_name = os.path.splitext(os.path.basename(file_path))[0]
-    export_file_path = os.path.join(export_dir, base_name)
+    export_file_base = os.path.join(export_dir, base_name)
+
+    final_export_path = None
 
     if file_format == "1":
-        df.to_excel(export_file_path + ".xlsx", index=index_numbers)
+        final_export_path = export_file_base + ".xlsx"
+        df.to_excel(final_export_path, index=index_numbers)
     elif file_format == "2":
-        df.to_csv(export_file_path + ".csv", index=index_numbers)
+        final_export_path = export_file_base + ".csv"
+        df.to_csv(final_export_path, index=index_numbers)
     elif file_format == "3":
-        df.to_json(export_file_path + ".json", orient="records")
+        final_export_path = export_file_base + ".json"
+        df.to_json(final_export_path, orient="records")
     elif file_format == "4":
-        df.to_markdown(export_file_path + ".md", index=index_numbers)
+        final_export_path = export_file_base + ".md"
+        df.to_markdown(final_export_path, index=index_numbers)
     elif file_format == "5":
-        df.to_markdown(export_file_path + ".html", index=index_numbers)
+        final_export_path = export_file_base + ".html"
+        df.to_html(final_export_path, index=index_numbers)
     elif file_format == "6":
-        df.to_xml(export_file_path + ".xml", index=index_numbers)
+        final_export_path = export_file_base + ".xml"
+        df.to_xml(final_export_path, index=index_numbers)
     elif file_format == "7":
-        df.to_csv(export_file_path + ".txt", sep=" ", index=index_numbers)
+        final_export_path = export_file_base + ".txt"
+        df.to_csv(final_export_path, sep=" ", index=index_numbers)
     elif file_format == "8":
-        df.to_csv(export_file_path + ".tsv", sep="\t", index=index_numbers)
+        final_export_path = export_file_base + ".tsv"
+        df.to_csv(final_export_path, sep="\t", index=index_numbers)
     elif file_format.startswith("delimited:"):
         delimiter = file_format.split(":")[1]
-        df.to_csv(export_file_path + ".txt", sep=delimiter, index=index_numbers)
+        final_export_path = export_file_base + ".txt"
+        df.to_csv(final_export_path, sep=delimiter, index=index_numbers)
+
+    return final_export_path
 
 # Überprüft, ob es nicht umgesetzte Basis-Anforderungen gibt
 def basis_risk_check(file_path):
@@ -1880,8 +1962,9 @@ def risk_analysis(file_path, krt_map):
     for req_id in ids:
         item = krt_map.get(req_id)
         covered_risks.update(item['gefahren'])
-        if 'cia' in item and item['cia']:
-            covered_cia.update(item['cia'])
+        if item['cia']:
+            for char in item['cia']:
+                covered_cia.update(char)
 
     return covered_risks, covered_cia
 
@@ -2034,6 +2117,289 @@ def id_handler(file_or_dir):
         elif mode == 2: print("Eindeutige IDs erfolgreich wieder entfernt")
     else: print("Keine gültige Datei gefunden")
 
+# Gibt eine eindeutige ID für eine Reihe in der Tabelle
+def get_row_key(row):
+    return f"{row.get('ID-Anforderung', '')}_{row.get('Inhalt', '')}"
+
+# Vergleicht zwei Dataframes für die Snapshot-Funktion
+def compare_dataframes (df1, df2):
+    df1 = remove_specific_requirements(df1.copy(), "Titel", "ENTFALLEN")
+    df2 = remove_specific_requirements(df2.copy(), "Titel", "ENTFALLEN")
+
+    if len(df1) != len(df2):
+        print(f"\nUnterschiedliche Zahl an Anforderungen gefunden ({abs(len(df1) - len(df2))}), Analysen werden womöglich beeinträchtigt")
+
+    not_implemented1, partly_implemented1, fully_implemented1, unnecessary1 = implementation_count(df1)
+    not_implemented2, partly_implemented2, fully_implemented2, unnecessary2 = implementation_count(df2)
+    cost1 = cost_count(df1)
+    cost2 = cost_count(df2)
+    all_responsibles1 = f"{', '.join(get_responsible(df1))}"
+    all_responsibles2 = f"{', '.join(get_responsible(df2))}"
+
+    ni1 = get_specific_df_with_two_conditions_and_emptiness(df1, "Umsetzung", "nein", "Entbehrlich", "nein")
+    ni2 = get_specific_df_with_two_conditions_and_emptiness(df2, "Umsetzung", "nein", "Entbehrlich", "nein")
+    ni_basis1, ni_standard1, ni_high1 = get_type(ni1)
+    ni_basis2, ni_standard2, ni_high2 = get_type(ni2)
+
+    # Erstellt eine schöne Zahl für die Differenz
+    def zahl(zahl_snapshot, zahl_aktuell):
+        if zahl_aktuell > zahl_snapshot:
+            return f"+{zahl_aktuell - zahl_snapshot}"
+        elif zahl_aktuell < zahl_snapshot:
+            return zahl_aktuell-zahl_snapshot
+        else: return "+/- 0"
+
+    print("\n ------ Übersicht ------\n")
+    print(f"Umgesetzte Anforderungen: {zahl(fully_implemented1, fully_implemented2)}")
+    print(f"Teilweise umgesetzte Anforderungen: {zahl(partly_implemented1, partly_implemented2)}")
+    print(f"Entbehrliche Anforderungen: {zahl(unnecessary1, unnecessary2)}")
+    print(f"Nicht umgesetzte Anforderungen: {zahl(not_implemented1, not_implemented2)}")
+    print(f"(Davon Basis: {zahl(ni_basis1, ni_basis2)}, Standard: {zahl(ni_standard1, ni_standard2)}, Erhöhter Schutzbedarf: {zahl(ni_high1, ni_high2)})")
+    print(f"Summierte Kostenschätzung: {zahl(cost1, cost2)}€")
+    print(f"Verantwortliche Snapshot: {all_responsibles1}")
+    print(f"Verantwortliche Aktuell: {all_responsibles2}")
+
+    df1['Baustein-ID'] = df1['ID-Anforderung'].apply(get_baustein_from_id)
+    df2['Baustein-ID'] = df2['ID-Anforderung'].apply(get_baustein_from_id)
+
+    df1['row_key'] = df1.apply(get_row_key, axis=1)
+    df2['row_key'] = df2.apply(get_row_key, axis=1)
+
+    all_baustein_ids = sorted(list(set(df1['Baustein-ID'].dropna().unique()).union(set(df2['Baustein-ID'].dropna().unique()))))
+
+    baustein_choice = ask_user("Änderungen pro Baustein anzeigen?")
+
+    if baustein_choice:
+        print("\n ------ Änderungen pro Baustein ------\n")
+
+    baustein_diffs = set()
+
+    for baustein_id in all_baustein_ids:
+        df1_baustein = df1[df1['Baustein-ID'] == baustein_id]
+        df2_baustein = df2[df2['Baustein-ID'] == baustein_id]
+
+        _, _, fully_implemented1, _ = implementation_count(df1_baustein)
+        _, _, fully_implemented2, _ = implementation_count(df2_baustein)
+
+        modified_counter = 0
+
+        all_keys_1 = set(df1_baustein['row_key'])
+        all_keys_2 = set(df2_baustein['row_key'])
+        common_keys = all_keys_1.intersection(all_keys_2)
+
+        for comp_key in common_keys:
+            row1 = df1_baustein[df1_baustein['row_key'] == comp_key].iloc[0]
+            row2 = df2_baustein[df2_baustein['row_key'] == comp_key].iloc[0]
+            for col in df1.columns.drop(['Baustein-ID', 'row_key']):
+                if col in row1 and col in row2 and not pd.isna(row1[col]) and not pd.isna(row2[col]):
+                    if str(row1[col]).strip() != str(row2[col]).strip():
+                        modified_counter += 1
+                        baustein_diffs.add(baustein_id)
+                elif pd.isna(row1[col]) != pd.isna(row2[col]):
+                    modified_counter += 1
+                    baustein_diffs.add(baustein_id)
+        if modified_counter > 0 and baustein_choice:
+            baustein_diffs.update(baustein_id)
+            if modified_counter > 2:
+                print(f"{baustein_id}: Umgesetzte Anforderungen: {zahl(fully_implemented1, fully_implemented2)} ({modified_counter} modifizierte Felder)")
+            else: print(f"{baustein_id}: Umgesetzte Anforderungen: {zahl(fully_implemented1, fully_implemented2)} ({modified_counter} modifiziertes Feld)")
+
+        elif baustein_choice: print(f"{baustein_id}: Umgesetzte Anforderungen: {zahl(fully_implemented1, fully_implemented2)}")
+
+    detail_options = {
+        "1": "Alle Differenzen anzeigen",
+        "2": "Spezifischen Baustein auswählen",
+        "3": "Beenden"
+    }
+    detail_choice = multiple_choice(detail_options, "\nDetaillierte Ansicht der Änderungen:", multi=False,
+                                    default_value="3")
+
+    if detail_choice == "1":
+        for baustein_id in all_baustein_ids:
+            if baustein_id in baustein_diffs:
+                print(f"\n--- Änderungen in Baustein {baustein_id} ---")
+                display_detailed_baustein_diff(df1[df1['Baustein-ID'] == baustein_id], df2[df2['Baustein-ID'] == baustein_id])
+    elif detail_choice == "2":
+        baustein_selection_options = {str(i + 1): bid for i, bid in enumerate(all_baustein_ids)}
+        selected_baustein_idx = multiple_choice(baustein_selection_options,"\nWählen Sie einen Baustein für die detaillierte Anzeige:",multi=False)
+        selected_baustein_id = baustein_selection_options[selected_baustein_idx]
+        if selected_baustein_id not in baustein_diffs:
+            print("Die Daten sind identisch")
+            return
+        print(f"\n--- Änderungen in Baustein {selected_baustein_id} ---")
+        display_detailed_baustein_diff(df1[df1['Baustein-ID'] == selected_baustein_id], df2[df2['Baustein-ID'] == selected_baustein_id])
+    else:
+        print("Vorgang beendet.")
+
+# Zeigt die Differenzen zwischen Baustein aus Snapshot und aktuellem Stand an
+def display_detailed_baustein_diff(df1_baustein, df2_baustein):
+    all_keys_1 = set(df1_baustein['row_key'])
+    all_keys_2 = set(df2_baustein['row_key'])
+
+    common_keys = all_keys_1.intersection(all_keys_2)
+
+    for comp_key in common_keys:
+        row1 = df1_baustein[df1_baustein['row_key'] == comp_key].iloc[0]
+        row2 = df2_baustein[df2_baustein['row_key'] == comp_key].iloc[0]
+
+        for col in df1_baustein.columns.drop(['Baustein-ID', 'row_key']):
+            val1 = row1.get(col)
+            val2 = row2.get(col)
+
+            val1_str = str(val1).strip() if not pd.isna(val1) else ''
+            val2_str = str(val2).strip() if not pd.isna(val2) else ''
+
+            if val1_str != val2_str:
+                print(f"  ID-Anforderung: {row1.get('ID-Anforderung')}, Titel: {row1.get('Titel')}")
+                print(f"    Feld '{col}':")
+                print(f"      Snapshot: '{val1_str}'")
+                print(f"      Aktuell:  '{val2_str}'")
+        for col in df1_baustein.columns.drop(['Baustein-ID', 'row_key']):
+            if pd.isna(row1.get(col)) != pd.isna(row2.get(col)):
+                print(f"  ID-Anforderung: {row1.get('ID-Anforderung')}, Titel: {row1.get('Titel')}")
+                print(f"    Feld '{col}':")
+                print(f"      Snapshot: {'' if pd.isna(row1.get(col)) else str(row1.get(col)).strip()}")
+                print(f"      Aktuell:  {'' if pd.isna(row2.get(col)) else str(row2.get(col)).strip()}")
+
+# Füllt eine Kopie der Checklisten mit den Daten aus Snapshot
+def restore_snapshot(directory, snapshot_df):
+    restored_dir = os.path.join(directory, "Restored")
+    if not os.path.exists(restored_dir):
+        os.makedirs(restored_dir)
+
+    excel_files_to_restore = []
+    for file_name in os.listdir(directory):
+        file_path = os.path.join(directory, file_name)
+        if os.path.isfile(file_path) and is_format(file_name):
+            destination_path = os.path.join(restored_dir, file_name)
+            shutil.copy2(file_path, destination_path)
+            excel_files_to_restore.append(destination_path)
+
+    if not excel_files_to_restore:
+        print("Keine passenden Excel-Dateien für die Wiederherstellung gefunden.")
+        return
+
+    snapshot_df['row_key'] = snapshot_df.apply(get_row_key, axis=1)
+
+    relevant_cols = [
+        "Entbehrlich", "Begründung für Entbehrlichkeit", "Umsetzung",
+        "Umsetzung bis", "Verantwortlich",
+        "Bemerkungen / Begründung für Nicht-Umsetzung", "Kostenschätzung"
+    ]
+    key_cols = ["ID-Anforderung", "Inhalt"]
+
+    for file_path in excel_files_to_restore:
+        try:
+            workbook = openpyxl.load_workbook(file_path)
+            sheet = workbook.active
+
+            header_row_index = 5
+
+            excel_header_map = {
+                cell.value: cell.column
+                for cell in sheet[header_row_index] if cell.value is not None
+            }
+
+            id_anforderung_col_excel = excel_header_map.get(key_cols[0])
+            inhalt_col_excel = excel_header_map.get(key_cols[1])
+
+            col_indices_to_update = {
+                col: excel_header_map[col]
+                for col in relevant_cols if col in excel_header_map
+            }
+
+            for excel_row_idx in range(header_row_index + 1, sheet.max_row + 1):
+                id_anforderung_val = sheet.cell(row=excel_row_idx, column=id_anforderung_col_excel).value
+                inhalt_val = sheet.cell(row=excel_row_idx, column=inhalt_col_excel).value
+
+                if id_anforderung_val is None or inhalt_val is None:
+                    continue
+                current_row_key = f"{id_anforderung_val}_{inhalt_val}"
+
+                matching_snapshot_rows = snapshot_df[snapshot_df['row_key'] == current_row_key]
+
+                if not matching_snapshot_rows.empty:
+                    snapshot_row = matching_snapshot_rows.iloc[0]
+                    for col_name, excel_col_idx in col_indices_to_update.items():
+                        sheet.cell(row=excel_row_idx, column=excel_col_idx).value = snapshot_row.get(col_name)
+                else:
+                    print(f"Hinweis: Zeile mit ID {id_anforderung_val}' in '{os.path.basename(file_path)}' wurde nicht im Snapshot gefunden.")
+
+            workbook.save(file_path)
+
+        except Exception as e:
+            print(f"Fehler beim Wiederherstellen von '{os.path.basename(file_path)}': {e}")
+
+    print("\nSnapshot-Wiederherstellung abgeschlossen.")
+
+# Erstellt, vergleicht oder stellt einen Snapshot der Tabellen wieder her
+def snapshot(directory):
+    if not os.path.isdir(directory):
+        print(f"Fehler: '{directory}' ist kein gültiges Verzeichnis.")
+        return
+
+    all_dfs = []
+    print("Lade Dateien...")
+    for file_name in os.listdir(directory):
+        file_path = os.path.join(directory, file_name)
+        if is_format(file_name):
+            df = load_data(file_path)
+            if df is not None:
+                all_dfs.append(df)
+
+    if all_dfs:
+        df = pd.concat(all_dfs, ignore_index=True)
+        id_status = id_check(directory)
+        if id_status == 2:
+            df["ID-Anforderung"] = df["ID-Anforderung"].astype(str).apply(lambda x: x[:-1] if len(x) > 1 else x)
+        if id_status == 3:
+            print("\nHinweis: Sowohl eindeutige als auch nicht eindeutige IDs gefunden, führt eventuell zu Problemen mit Snapshots")
+    else:
+        print("Keine Datei im Format Checkliste_XXX.X.X.xlsx gefunden")
+        return
+    df = df[["ID-Anforderung", "Titel", "Inhalt", "Typ", "Entbehrlich", "Begründung für Entbehrlichkeit", "Umsetzung",
+             "Umsetzung bis", "Verantwortlich", "Bemerkungen / Begründung für Nicht-Umsetzung", "Kostenschätzung"]]
+
+    snapshots_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "Snapshots")
+    snapshot_files = glob.glob(os.path.join(snapshots_dir, "Snapshot_*.csv"))
+
+    options = {
+        "1": "Snapshot erstellen",
+        "2": "Snapshot mit aktuellem Stand vergleichen",
+        "3": "Snapshot wiederherstellen",
+        "4": "Abbrechen"
+    }
+    choice = multiple_choice(options, "\nWählen Sie eine Option aus:", multi = False, default_value="4")
+    if choice == "1":
+        if not os.path.exists(snapshots_dir):
+            os.makedirs(snapshots_dir)
+
+        snapshot_file_name = f"Snapshot_{datetime.today().strftime('%Y-%m-%d_%H-%M')}.csv"
+        snapshot_file_path = os.path.join(snapshots_dir, snapshot_file_name)
+
+        df.to_csv(snapshot_file_path, index=False)
+        print(f"Snapshot erfolgreich gespeichert.")
+
+    if choice == "2" or choice == "3":
+        if not snapshot_files:
+            print("Keine Snapshots gefunden.")
+            return
+
+        snapshot_options = {str(i + 1): os.path.basename(f) for i, f in enumerate(sorted(snapshot_files))}
+
+        snapshot_choice = multiple_choice(snapshot_options, "\nWählen Sie einen Snapshot aus:", multi=False)
+
+        selected_snapshot_file = os.path.join(snapshots_dir, snapshot_options[snapshot_choice])
+        snapshot_df = pd.read_csv(selected_snapshot_file)
+        if choice == "2":
+            print("\nFühre Vergleich durch...")
+            compare_dataframes(snapshot_df, df)
+        if choice == "3":
+            print(f"\nStelle Snapshot wieder her...")
+            restore_snapshot(directory, snapshot_df)
+    else:
+        print("Vorgang wird abgebrochen")
+
 def main():
     parser = argparse.ArgumentParser(description='Arbeitet mit IT-Grundschutz-Check Excel Tabellen')
     parser.add_argument('file_or_dir', nargs="?", help='Pfad zur Datei oder zum Ordner')
@@ -2053,7 +2419,7 @@ def main():
     parser.add_argument('--search', action='store_true', help='Durchsuche alle Tabellen eines Ordners auf verschiedene Arten')
     parser.add_argument('--risks', action='store_true', help='Zeigt die von umgesetzten Anforderungen abgedeckten elementaren Gefährdungen an')
     parser.add_argument('--id', action='store_true', help='Gibt den einzelnen Anforderungen eine eindeutige ID bzw. entfernt sie wieder')
-
+    parser.add_argument('--snapshot', action='store_true', help='Erstellt einen Snapshot des aktuellen Stands, vergleicht ihn oder stellt ihn wieder her')
 
     args = parser.parse_args()
 
@@ -2071,7 +2437,8 @@ def main():
         args.modify: lambda: modify(args.file_or_dir),
         args.search: lambda: search(args.file_or_dir),
         args.risks: lambda: risk_handler(args.file_or_dir),
-        args.id: lambda: id_handler(args.file_or_dir)
+        args.id: lambda: id_handler(args.file_or_dir),
+        args.snapshot: lambda: snapshot(args.file_or_dir),
     }
 
     for condition, action in actions.items():
