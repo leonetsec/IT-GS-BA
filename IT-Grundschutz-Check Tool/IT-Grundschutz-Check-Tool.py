@@ -53,6 +53,7 @@ def get_name(filename, short):
         return mapping.bsi_ref_titles.get(ref, "Unbekanntes Kürzel")
     return None
 
+# Gibt das Bausteinkürzel einer Anforderungs ID zurück
 def get_baustein_from_id(anforderung_id):
     if anforderung_id == "OPS.2.3A22":
         return "OPS.2.3"
@@ -136,10 +137,7 @@ def multiple_choice(options_dict, prompt_message, multi, default_value=None):
         user_input = input("\nAuswahl: ").strip()
 
         if user_input == "" and default_value is not None:
-            if multi:
-                return [str(val) for val in default_value] if isinstance(default_value, list) else [str(default_value)]
-            else:
-                return str(default_value)
+            return default_value if isinstance(default_value, list) else [default_value]
 
         if multi:
             choices = []
@@ -162,6 +160,7 @@ def multiple_choice(options_dict, prompt_message, multi, default_value=None):
             else:
                 print("Ungültige Auswahl. Bitte geben Sie eine gültige Nummer ein.")
 
+# Erkennt anhand der Dateien eines Ordners, ob ein bestimmtes IT-Grundschutz-Profil ausgewählt wurde
 def match_profile(directory):
     files_in_dir = {get_name(file, True) for file in os.listdir(directory) if is_format(file)}
     matching_profiles = []
@@ -756,12 +755,6 @@ def merge_export(file_list, file_format, index_numbers):
         merged_df.to_csv(merged_file_base + ".csv", index=index_numbers)
     elif file_format == "3":
         merged_df.to_json(merged_file_base + ".json", orient="records")
-    elif file_format == "4":
-        merged_df.to_markdown(merged_file_base + ".md", index=index_numbers)
-    elif file_format == "5":
-        merged_df.to_html(merged_file_base + ".html", index=index_numbers)
-    elif file_format == "6":
-        merged_df.to_xml(merged_file_base + ".xml", index=index_numbers)
     elif file_format == "7":
         merged_df.to_csv(merged_file_base + ".txt", sep=" ", index=index_numbers)
     elif file_format == "8":
@@ -788,7 +781,8 @@ def get_export_settings():
     ]
     column_options = {str(i + 1): col for i, col in enumerate(columns)}
 
-    selected_column_keys = multiple_choice(column_options, "\nSpaltenauswahl (z.B. 1,3,5 oder Enter für Alle):", multi=True, default_value="Alle")
+    selected_column_keys = multiple_choice(column_options,"\nSpaltenauswahl (z.B. 1,3,5 oder Enter für Alle)", multi=True, default_value="Alle")
+    print("\nHinweis: Falls Daten später wieder importiert werden sollen, werden ID-Anforderung und Inhalt benötigt")
 
     if "Alle" in selected_column_keys:
         selected_columns = columns
@@ -2400,6 +2394,208 @@ def snapshot(directory):
     else:
         print("Vorgang wird abgebrochen")
 
+# Importiert Werte aus Dateien in verschiedenen Formaten
+def import_files(checklist_directory):
+    if not os.path.isdir(checklist_directory):
+        print(f"Fehler: '{checklist_directory}' ist kein gültiges Verzeichnis.")
+        return
+    print(f"\nVerzeichnis der Checklisten: {checklist_directory}")
+    files_list = []
+    while True:
+        import_dir_or_file = input("\nPfad zum Ordner oder Datei für Import: ").strip().strip('"')
+        if os.path.isdir(import_dir_or_file):
+            for file in os.listdir(import_dir_or_file):
+                path = os.path.join(import_dir_or_file, file)
+                files_list.append(path)
+            break
+        elif os.path.isfile(import_dir_or_file):
+            files_list.append(import_dir_or_file)
+            break
+        else: print("Kein gültiger Pfad")
+
+    formats = {
+        "1": "Excel",
+        "2": "CSV",
+        "3": "JSON",
+        "4": "Leerzeichengetrennt",
+        "5": "Tabstoppgetrennt",
+        "6": "Benutzerdefiniertes Trennzeichen",
+    }
+    file_format = multiple_choice(formats, "\nIn welchem Format sind die zu importierenden Dateien?", multi=False)
+    if file_format == "6":
+        delimiter = input("\nTrennzeichen: ")
+        file_format = f"delimited:{delimiter}"
+
+    dfs_to_merge = []
+
+    for f_path in files_list:
+        if file_format == "1":
+            df = pd.read_excel(f_path)
+        elif file_format == "2":
+            df = pd.read_csv(f_path)
+        elif file_format == "3":
+            df = pd.read_json(f_path, orient="records")
+        elif file_format in ["4", "5"] or file_format.startswith("delimited:"):
+            delimiter = " " if file_format == "4" else "\t" if file_format == "5" else \
+                file_format.split(":")[1]
+            df = pd.read_csv(f_path, sep=delimiter)
+        dfs_to_merge.append(df)
+
+    merged_df = pd.concat(dfs_to_merge, ignore_index=True)
+
+    import_columns = list(merged_df.columns)
+
+    key_cols = ["ID-Anforderung", "Inhalt"]
+    for key_col in key_cols:
+        if key_col not in merged_df.columns:
+            print(f"\nFehler: Die erforderliche Schlüsselspalte '{key_col}' wurde in den Importdaten nicht gefunden.")
+            return
+    non_import_cols = ["ID-Anforderung", "Titel", "Inhalt", "Typ"]
+
+    relevant_cols = [
+        "Entbehrlich", "Begründung für Entbehrlichkeit", "Umsetzung",
+        "Umsetzung bis", "Verantwortlich",
+        "Bemerkungen / Begründung für Nicht-Umsetzung", "Kostenschätzung"
+    ]
+
+
+    selectable_cols = [col for col in import_columns if col not in non_import_cols and col in relevant_cols]
+    col_options = {str(i + 1): col for i, col in enumerate(selectable_cols)}
+
+    selected_keys = multiple_choice(
+        col_options,
+        "\nWelche dieser Spalten sollen importiert werden? Enter für Alle",
+        multi=True,
+        default_value=list(col_options.keys())
+    )
+    relevant_cols = [col_options[key] for key in selected_keys]
+
+
+    import_modes = {
+        "1": "Vorhandene Daten überschreiben",
+        "2": "Nur in leere Felder einfügen",
+        "3": "Vorhandene Daten zusammenfügen (mit Konfliktbehandlung)"
+    }
+    import_mode = multiple_choice(import_modes, "\nWählen Sie den Import-Modus:", multi=False)
+    if import_mode == "1":
+        print("\nHinweis: Daten, die nicht im Import vorkommen oder dort leer sind, werden in den Tabellen wie bisher beibehalten")
+
+    conflict_strategy = {}
+    if import_mode == "3":
+        conflict_cols = ["Umsetzung", "Umsetzung bis", "Entbehrlich"]
+        print("\nLegen Sie die globale Strategie zur Konfliktlösung fest:")
+        for col in conflict_cols:
+            if col in relevant_cols:
+                strategy_choice = multiple_choice({
+                    "1": "Bisherige Daten aus Tabelle behalten",
+                    "2": "Neue Daten aus Import übernehmen"
+                }, f"\nWenn bei '{col}' ein Konflikt besteht:", multi=False)
+                conflict_strategy[col] = "import" if strategy_choice == "2" else "existing"
+        if "Kostenschätzung" in relevant_cols:
+            conflict_strategy["Kostenschätzung"] = multiple_choice({
+                "1": "Bisherige Daten aus Tabelle behalten",
+                "2": "Neue Daten aus Import übernehmen",
+                "3": "Kosten summieren",
+                "4": "Mittelwert bilden",
+                "5": "Beide Werte hinterlegen"
+            }, f"\nWie soll mit 'Kostenschätzung' umgegangen werden?", multi=False)
+
+    import_dir = os.path.join(checklist_directory, "Import")
+    if not os.path.exists(import_dir):
+        os.makedirs(import_dir)
+
+    baustein_ids_from_import = set(merged_df['ID-Anforderung'].apply(get_baustein_from_id).dropna().unique())
+
+    excel_files_to_import_to = []
+    for file_name in os.listdir(checklist_directory):
+        file_path = os.path.join(checklist_directory, file_name)
+        if os.path.isfile(file_path) and is_format(file_name):
+            checklist_baustein_id = get_name(file_name, True)
+            if checklist_baustein_id in baustein_ids_from_import:
+                destination_path = os.path.join(import_dir, file_name)
+                shutil.copy2(file_path, destination_path)
+                excel_files_to_import_to.append(destination_path)
+
+    if not excel_files_to_import_to:
+        print("Keine passenden Excel-Dateien zum Importieren gefunden.")
+        return
+
+    merged_df['row_key'] = merged_df.apply(get_row_key, axis=1)
+
+    for file_path in excel_files_to_import_to:
+        try:
+            workbook = openpyxl.load_workbook(file_path)
+            sheet = workbook.active
+            header_row_index = 5
+
+            excel_header_map = {cell.value: cell.column for cell in sheet[header_row_index] if cell.value is not None}
+            id_anforderung_col_excel = excel_header_map.get(key_cols[0])
+            inhalt_col_excel = excel_header_map.get(key_cols[1])
+
+            col_indices_to_update = {col: excel_header_map.get(col) for col in relevant_cols if col in excel_header_map}
+
+            for excel_row_idx in range(header_row_index + 1, sheet.max_row + 1):
+                id_anforderung_val = sheet.cell(row=excel_row_idx, column=id_anforderung_col_excel).value
+                inhalt_val = sheet.cell(row=excel_row_idx, column=inhalt_col_excel).value
+
+                current_row_key = f"{id_anforderung_val}_{inhalt_val}"
+
+                matching_merged_rows = merged_df[merged_df['row_key'] == current_row_key]
+
+                if not matching_merged_rows.empty:
+                    merged_row = matching_merged_rows.iloc[0]
+                    for col_name, excel_col_idx in col_indices_to_update.items():
+                        if not excel_col_idx: continue
+
+                        import_value = merged_row.get(col_name)
+                        if pd.isna(import_value):
+                            import_value = None
+
+                        current_cell = sheet.cell(row=excel_row_idx, column=excel_col_idx)
+
+                        if import_mode == "1":
+                            current_cell.value = import_value
+
+                        elif import_mode == "2":
+                            if current_cell.value is None or str(current_cell.value).strip() == "":
+                                current_cell.value = import_value
+
+                        elif import_mode == "3":
+                            is_empty = current_cell.value is None or str(current_cell.value).strip() == ""
+
+                            if is_empty:
+                                current_cell.value = import_value
+                            elif col_name == "Kostenschätzung" and col_name in conflict_strategy:
+                                try:
+                                    current_cost = float(current_cell.value) if current_cell.value is not None else 0.0
+                                    imported_cost = float(import_value) if import_value is not None else 0.0
+
+                                    cost_strat = conflict_strategy[col_name]
+                                    if cost_strat == "2":
+                                        current_cell.value = imported_cost
+                                    elif cost_strat == "3":
+                                        current_cell.value = current_cost + imported_cost
+                                    elif cost_strat == "4":
+                                        current_cell.value = (current_cost + imported_cost) / 2
+                                    elif cost_strat == "5":
+                                        current_cell.value = f"{current_cost}, {imported_cost}"
+                                except (ValueError, TypeError):
+                                    current_cell.value = f"{str(current_cell.value)}, {str(import_value)}"
+                            elif col_name in conflict_strategy:
+                                if str(current_cell.value) != str(import_value):
+                                    if conflict_strategy[col_name] == 'import':
+                                        current_cell.value = import_value
+                            else:
+                                if import_value is not None and str(import_value).strip() != '':
+                                    current_cell.value = f"{str(current_cell.value)}, {str(import_value)}"
+
+            workbook.save(file_path)
+        except Exception as e:(
+            print(f"Fehler beim Importieren in '{os.path.basename(file_path)}': {e}"))
+
+    print("\nImport abgeschlossen.")
+
+
 def main():
     parser = argparse.ArgumentParser(description='Arbeitet mit IT-Grundschutz-Check Excel Tabellen')
     parser.add_argument('file_or_dir', nargs="?", help='Pfad zur Datei oder zum Ordner')
@@ -2413,6 +2609,7 @@ def main():
     parser.add_argument('--wiba-transfer', action='store_true', help='Markiert alle leeren, in WiBA enthaltenen Anforderungen als umgesetzt')
     parser.add_argument('--set-scale', action='store_true', help='Ändert die Umsetzungsskala. Führt evtl. zu Funktionseinschränkungen des Tools.')
     parser.add_argument('--export', action='store_true', help='Exportiere beliebige Spalten der Dateien in verschiedene Formate')
+    parser.add_argument('--import-files', action='store_true', help='Importiert beliebige Spalten aus verschiedenen Dateiformaten')
     parser.add_argument('--report', action='store_true', help='Erstelle einen PDF-Report für eine oder alle Dateien')
     parser.add_argument('--merge', nargs=2, metavar=("file1", "file2"), help="Führt zwei Tabellen der selben Art zusammen und behandelt Konflikte")
     parser.add_argument('--modify', action='store_true', help='Modifiziert alle Bausteine eines Ordners im docx-Format, wahlweise Export zu PDF (Menü öffnet sich)')
@@ -2433,6 +2630,7 @@ def main():
         args.wiba_transfer: lambda: wiba_transfer(args.file_or_dir),
         args.set_scale: lambda: scale_setter_handler(args.file_or_dir),
         args.export: lambda: export_handler(args.file_or_dir),
+        args.import_files: lambda: import_files(args.file_or_dir),
         args.report: lambda: report(args.file_or_dir),
         args.modify: lambda: modify(args.file_or_dir),
         args.search: lambda: search(args.file_or_dir),
