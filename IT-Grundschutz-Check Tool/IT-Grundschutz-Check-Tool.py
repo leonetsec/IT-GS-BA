@@ -768,7 +768,7 @@ def merge_export(file_list, file_format, index_numbers):
 
 # Fragt den Nutzer, welches Format und welche Spalten er exportieren möchte
 def get_export_settings():
-    export_format = multiple_choice(mapping.format_options, "Wählen Sie das Exportformat:", multi=False, default_value="1")
+    export_format = multiple_choice(mapping.format_options, "Wählen Sie das Exportformat:", multi=False)
 
     if export_format == "9":
         delimiter = input("Geben Sie das Trennzeichen ein: ")
@@ -1862,7 +1862,7 @@ def checklist_integration(checklist_path, filename, dokument, implemented, partl
 
 # Speichert einen Dataframe in einem gewünschten Format
 def save_df(df, export_file_path, index_number):
-    file_format_choice_key = multiple_choice(mapping.format_options,"\nIn welchem Format soll die Tabelle gespeichert werden?", multi=False, default_value="1")
+    file_format_choice_key = multiple_choice(mapping.format_options,"\nIn welchem Format soll die Tabelle gespeichert werden?", multi=False)
 
     if file_format_choice_key == "1":
         df.to_excel(export_file_path + ".xlsx", index=index_number)
