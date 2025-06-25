@@ -8,6 +8,7 @@ Dieses Tool vereinfacht den IT-Grundschutz-Check ([Version 2023](https://www.bsi
 - Ggf. Kompendium im Docx-Format herunterladen
 - Dateien des Tools herunterladen 
 - Requirements installieren
+- Optional: Default-Pfad zu Checklisten im Code hinterlegen
 
 ## Nutzung
 ```python IT-Grundschutz-Check-Tool.py [--param] C://Path//To//FileOrDir```

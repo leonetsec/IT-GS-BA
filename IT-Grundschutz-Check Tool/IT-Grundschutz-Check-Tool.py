@@ -25,9 +25,9 @@ import string
 
 import mapping
 
-FILENAME_PATTERN = re.compile(r"(?<=\bCheckliste[_\s])([A-Z]{3,4}(?:\.[0-9]+){1,3})(?:.*?)?(?=\.xlsx$)")
+DEFAULT_PATH = None      # "C:\\Users\\Pfad\\Zu\\checklisten_2023"
 
-# Default-Wert für Skalenmodifikation kann in scale_setter() gesetzt werden
+DEFAULT_SCALE = '"Ja, Teilweise, Nein"' # Für scale_setter() relevant, sonst nicht. Format der Anführungsstriche muss beibehalten werden.
 
 # Gibt zurück, ob eine Datei dem Format der Checkliste entspricht
 def is_format(filename):
@@ -35,8 +35,10 @@ def is_format(filename):
 
 # Gibt den Namen eines Bausteins anhand des Dateinamens zurück, entweder kurz "APP.1.1" oder lang "Office Produkte"
 def get_name(filename, short):
+    filename_pattern = re.compile(r"(?<=\bCheckliste[_\s])([A-Z]{3,4}(?:\.[0-9]+){1,3})(?:.*?)?(?=\.xlsx$)")
+
     if is_format(filename):
-        match = FILENAME_PATTERN.search(filename)
+        match = filename_pattern.search(filename)
         if match:
             ref = match.group(1)
             if short:
@@ -301,7 +303,6 @@ def analyze_single_file(file_path):
     print(f"(Teilweise) abgedeckte elementare Gefährdungen: {len(covered_risks)}/47")
     print(f"(Teilweise) abgedeckte Schutzziele: {len(covered_cia)}/3")
 
-
 # Analysiere alle Tabellen nach diversen Aspekten
 def analyze_all_files(folder_path):
     total_files = 0
@@ -427,7 +428,6 @@ def profile_handler(file_or_dir):
                         moved = True
             if not moved:
                 print("Keine Datei entfernt, entweder fehlen Dateien oder das Profil ist nur ein Platzhalter und muss manuell ergänzt werden")
-
 
     else: print("Verzeichnis nicht gefunden")
 
@@ -665,7 +665,7 @@ def scale_setter(file_path, values):
     df = load_data(file_path)
     cell_max = len(df) + 5
     if values is None:
-        values = '"Ja, Teilweise, Nein"'            # HIER DEFAULT FESTLEGEN
+        values = DEFAULT_SCALE
 
     wb = openpyxl.load_workbook(file_path)
     sheet_name = get_name(file_path, True)
@@ -801,7 +801,6 @@ def get_export_settings():
 
     types_to_remove = [type_options[key] for key in types_to_remove_keys if key in type_options]
 
-
     omitted = ask_user("Möchten Sie entfallene Anforderungen entfernen?")
     unnecessary = ask_user("Möchten Sie als entbehrlich markierte Anforderungen entfernen?", default_yes=False)
     implemented = ask_user("Möchten Sie bereits umgesetzte Anforderungen entfernen?", default_yes=False)
@@ -817,10 +816,6 @@ def get_export_settings():
     if gefahren:
         selected_columns.append("Abgedeckte elementare Gefährdungen")
         selected_columns.append("Abgedeckte Schutzziele")
-
-
-
-
 
     return export_format, selected_columns, omitted, unnecessary, implemented, baustein, gefahren, index_numbers, types_to_remove, merge
 
@@ -1383,13 +1378,11 @@ def save_whole_results_to_pdf(directory, results, reports_dir):
     }, "Umsetzungsstatus")
     story.append(Image(image_path1, width=400, height=300))
 
-
     story.append(Spacer(1, 20))
 
     image_path2 = plot_pie_chart_to_image(results["Nicht umgesetzte Anforderungen nach Typ"],
                                               "Insgesamt nicht umgesetzte Anforderungen nach Typ aufgeschlüsselt")
     story.append(Image(image_path2, width=400, height=300))
-
 
     if not_implemented:
         story.append(Spacer(1, 10))
@@ -1488,7 +1481,6 @@ def save_whole_results_to_pdf(directory, results, reports_dir):
         story.append(Paragraph(f"Nicht abgedeckte Schutzziele:", title_style))
         for goal_id in uncovered_cia:
             story.append(Paragraph(f"- {mapping.cia[goal_id]} ({goal_id})", normal_style))
-
 
     print("Tabellen und Grafiken erstellt")
 
@@ -1664,7 +1656,6 @@ def modify(directory):
         print("Keine Aktion ausgewählt.")
         return
 
-
     for filename in os.listdir(directory):
         if is_docx(filename):
             original_file_path = os.path.join(directory, filename)
@@ -1755,7 +1746,7 @@ def remove_sections(dokument, sections_to_remove, section_titles):
             element.getparent().remove(element)
     return
 
-
+# Entfernt entfallene Anforderungen aus Docx-Dokument
 def remove_entfallene_anforderungen(dokument):
     paragraphs = dokument.paragraphs
     body_elements = list(dokument.element.body.iterchildren())
@@ -1794,7 +1785,6 @@ def checklist_integration(checklist_path, filename, dokument, implemented, partl
     if found_checklist is None:
         print(f"Keine passende Checkliste für {filename} gefunden")
         return
-
 
     df = load_data(found_checklist)
     id_status = id_check(found_checklist)
@@ -1937,7 +1927,8 @@ def search(directory):
     save_df(df, export_file_path, False)
 
 # Analysiert die abgedeckten elementaren Gefährdungen einer Datei
-def risk_analysis(file_path, krt_map):
+def risk_analysis(file_path):
+    krt_map = {item['id']: item for item in mapping.krt}
     df = load_data(file_path)
     implemented = get_specific_df(df, "Umsetzung", "ja")
     covered_risks = set()
@@ -1964,9 +1955,8 @@ def risk_analysis(file_path, krt_map):
 
 # Handler für Datei oder Ordner
 def risk_handler(file_or_dir):
-    krt_map = {item['id']: item for item in mapping.krt}
     if os.path.isfile(file_or_dir) and is_format(file_or_dir):
-        covered_risks_codes, covered_cia_codes = risk_analysis(file_or_dir, krt_map)
+        covered_risks_codes, covered_cia_codes = risk_analysis(file_or_dir)
 
         print(f"\n--- Analyse für Datei: {os.path.basename(file_or_dir)} ---")
 
@@ -1993,7 +1983,7 @@ def risk_handler(file_or_dir):
         for file_name in os.listdir(file_or_dir):
             file_path = os.path.join(file_or_dir, file_name)
             if os.path.isfile(file_path) and is_format(file_name):
-                covered_risks_for_file, covered_cia_for_file = risk_analysis(file_path, krt_map)
+                covered_risks_for_file, covered_cia_for_file = risk_analysis(file_path)
 
                 all_covered_risks_across_files.update(covered_risks_for_file)
                 all_covered_cia_across_files.update(covered_cia_for_file)
@@ -2412,6 +2402,8 @@ def import_files(checklist_directory):
             files_list.append(import_dir_or_file)
             break
         else: print("Kein gültiger Pfad")
+    if id_check(checklist_directory) != 1:
+        print("\nModifzierte IDs in den Checklisten gefunden, beinträchtigt möglicherweise die Zuordnung beim Import.")
 
     formats = {
         "1": "Excel",
@@ -2458,7 +2450,6 @@ def import_files(checklist_directory):
         "Bemerkungen / Begründung für Nicht-Umsetzung", "Kostenschätzung"
     ]
 
-
     selectable_cols = [col for col in import_columns if col not in non_import_cols and col in relevant_cols]
     col_options = {str(i + 1): col for i, col in enumerate(selectable_cols)}
 
@@ -2469,7 +2460,6 @@ def import_files(checklist_directory):
         default_value=list(col_options.keys())
     )
     relevant_cols = [col_options[key] for key in selected_keys]
-
 
     import_modes = {
         "1": "Vorhandene Daten überschreiben",
@@ -2598,7 +2588,8 @@ def import_files(checklist_directory):
 
 def main():
     parser = argparse.ArgumentParser(description='Arbeitet mit IT-Grundschutz-Check Excel Tabellen')
-    parser.add_argument('file_or_dir', nargs="?", help='Pfad zur Datei oder zum Ordner')
+    parser.add_argument('file_or_dir', nargs="?", default=DEFAULT_PATH,
+                        help='Pfad zur Datei oder zum Ordner (Kann im Code hinterlegt werden)')
     parser.add_argument('--mapping', action='store_true', help='Ordne der/den Tabelle(n) den Namen des Bausteins zu')
     parser.add_argument('--prozent', action='store_true', help='Zeigt wie viel Prozent eines Bausteins umgesetzt sind (ENTFALLEN und Entbehrlich wird ignoriert, Teilweise zählt als nicht umgesetzt)')
     parser.add_argument('--profil', action='store_true', help='Verschiebt nicht relevante Bausteine in einen Ordner nach IT-Grundschutz-Profilen (Menü öffnet sich); Auch für IT-Grundschutz-PDFs nutzbar')
@@ -2655,8 +2646,7 @@ def main():
             analyze_all_files(args.file_or_dir)
         else:
             print("Datei oder Ordner nicht gefunden")
-    else: print("Fehlendes Argument file_or_dir")
-
+    else: print("Fehlendes Argument file_or_dir, kann übergeben oder im Code hinterlegt werden")
 
 if __name__ == '__main__':
     main()
