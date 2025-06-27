@@ -2414,7 +2414,9 @@ def import_files(checklist_directory):
         "6": "Benutzerdefiniertes Trennzeichen",
     }
     file_format = multiple_choice(formats, "\nIn welchem Format sind die zu importierenden Dateien?", multi=False)
-    if file_format == "6":
+    if file_format == "1":
+        skip = int(input("\nIn welcher Zeile liegen die Spaltenüberschriften? Auswahl (z.B. 1 oder 5): ")) - 1
+    elif file_format == "6":
         delimiter = input("\nTrennzeichen: ")
         file_format = f"delimited:{delimiter}"
 
@@ -2422,7 +2424,7 @@ def import_files(checklist_directory):
 
     for f_path in files_list:
         if file_format == "1":
-            df = pd.read_excel(f_path)
+            df = pd.read_excel(f_path, skiprows=skip)
         elif file_format == "2":
             df = pd.read_csv(f_path)
         elif file_format == "3":
@@ -2455,7 +2457,7 @@ def import_files(checklist_directory):
 
     selected_keys = multiple_choice(
         col_options,
-        "\nWelche dieser Spalten sollen importiert werden? Enter für Alle",
+        "\nWelche dieser gefundenen Spalten sollen importiert werden? Enter für Alle",
         multi=True,
         default_value=list(col_options.keys())
     )
@@ -2476,11 +2478,24 @@ def import_files(checklist_directory):
         print("\nLegen Sie die globale Strategie zur Konfliktlösung fest:")
         for col in conflict_cols:
             if col in relevant_cols:
-                strategy_choice = multiple_choice({
-                    "1": "Bisherige Daten aus Tabelle behalten",
-                    "2": "Neue Daten aus Import übernehmen"
-                }, f"\nWenn bei '{col}' ein Konflikt besteht:", multi=False)
-                conflict_strategy[col] = "import" if strategy_choice == "2" else "existing"
+                if col == "Umsetzung bis":
+                    strategy_choice = multiple_choice({
+                        "1": "Bisherige Daten aus Tabelle behalten",
+                        "2": "Neue Daten aus Import übernehmen",
+                        "3": "Beide Werte hinterlegen"
+                    }, f"\nWenn bei '{col}' ein Konflikt besteht?", multi=False)
+                    if strategy_choice == "2":
+                        conflict_strategy[col] = "import"
+                    elif strategy_choice == "3":
+                        conflict_strategy[col] = "both"
+                    else:
+                        conflict_strategy[col] = "existing"
+                else:
+                    strategy_choice = multiple_choice({
+                        "1": "Bisherige Daten aus Tabelle behalten",
+                        "2": "Neue Daten aus Import übernehmen"
+                    }, f"\nWenn bei '{col}' ein Konflikt besteht:", multi=False)
+                    conflict_strategy[col] = "import" if strategy_choice == "2" else "existing"
         if "Kostenschätzung" in relevant_cols:
             conflict_strategy["Kostenschätzung"] = multiple_choice({
                 "1": "Bisherige Daten aus Tabelle behalten",
@@ -2489,6 +2504,7 @@ def import_files(checklist_directory):
                 "4": "Mittelwert bilden",
                 "5": "Beide Werte hinterlegen"
             }, f"\nWie soll mit 'Kostenschätzung' umgegangen werden?", multi=False)
+        print("\nHinweis: Falls in zwei Feldern dieselben Werte vorkommen, werden sie nicht doppelt hinterlegt.")
 
     import_dir = os.path.join(checklist_directory, "Import")
     if not os.path.exists(import_dir):
@@ -2511,6 +2527,8 @@ def import_files(checklist_directory):
         return
 
     merged_df['row_key'] = merged_df.apply(get_row_key, axis=1)
+
+    print("\nImportiere...")
 
     for file_path in excel_files_to_import_to:
         try:
@@ -2555,6 +2573,13 @@ def import_files(checklist_directory):
 
                             if is_empty:
                                 current_cell.value = import_value
+                            elif col_name == "Umsetzung bis" and col_name in conflict_strategy:
+                                strategy = conflict_strategy[col_name]
+                                if str(current_cell.value) != str(import_value):
+                                    if strategy == 'import':
+                                        current_cell.value = format_dates(import_value)
+                                    elif strategy == 'both':
+                                        current_cell.value = f"{str(format_dates(current_cell.value))}, {str(format_dates(import_value))}"
                             elif col_name == "Kostenschätzung" and col_name in conflict_strategy:
                                 try:
                                     current_cost = float(current_cell.value) if current_cell.value is not None else 0.0
@@ -2568,23 +2593,24 @@ def import_files(checklist_directory):
                                     elif cost_strat == "4":
                                         current_cell.value = (current_cost + imported_cost) / 2
                                     elif cost_strat == "5":
-                                        current_cell.value = f"{current_cost}, {imported_cost}"
+                                        if current_cost != imported_cost:
+                                            current_cell.value = f"{current_cost}, {imported_cost}"
                                 except (ValueError, TypeError):
-                                    current_cell.value = f"{str(current_cell.value)}, {str(import_value)}"
+                                    if str(current_cell.value) != str(import_value):
+                                        current_cell.value = f"{str(current_cell.value)}, {str(import_value)}"
                             elif col_name in conflict_strategy:
                                 if str(current_cell.value) != str(import_value):
                                     if conflict_strategy[col_name] == 'import':
                                         current_cell.value = import_value
                             else:
-                                if import_value is not None and str(import_value).strip() != '':
+                                if str(current_cell.value) != str(import_value):
                                     current_cell.value = f"{str(current_cell.value)}, {str(import_value)}"
 
             workbook.save(file_path)
-        except Exception as e:(
-            print(f"Fehler beim Importieren in '{os.path.basename(file_path)}': {e}"))
+        except Exception as e:
+            print(f"Fehler beim Importieren in '{os.path.basename(file_path)}': {e}")
 
     print("\nImport abgeschlossen.")
-
 
 def main():
     parser = argparse.ArgumentParser(description='Arbeitet mit IT-Grundschutz-Check Excel Tabellen')
