@@ -55,7 +55,7 @@ def get_name(filename, short):
         return mapping.bsi_ref_titles.get(ref, "Unbekanntes Kürzel")
     return None
 
-# Gibt das Bausteinkürzel einer Anforderungs ID zurück
+# Gibt das Bausteinkürzel einer Anforderungs-ID zurück
 def get_baustein_from_id(anforderung_id):
     if anforderung_id == "OPS.2.3A22":
         return "OPS.2.3"
@@ -85,27 +85,6 @@ def is_docx(file):
             if ref in mapping.bsi_ref_titles:
                 return True
     return False
-
-# Ordnet den Tabellen ihren Namen zu und gibt aus, wenn die Dateien einem IT-Grundschutz-Profil entsprechen
-def map_xlsx_files(path):
-    if os.path.isfile(path):
-        file_name = os.path.basename(path)
-        mapped_name = get_name(file_name, False)
-        print(f"{file_name} → {mapped_name if mapped_name else 'Keine Zuordnung gefunden'}")
-    elif os.path.isdir(path):
-        for filename in os.listdir(path):
-            mapped_name = get_name(filename, False)
-            print(f"{filename} → {mapped_name if mapped_name else 'Keine Zuordnung gefunden'}")
-
-        matching_profiles, files_in_dir = match_profile(path)
-
-        if matching_profiles and len(files_in_dir) < 111:
-            if len(matching_profiles) == 1:
-                print(f"\nZugeordnetes IT-Grundschutz-Profil: {matching_profiles[0]}")
-            else:
-                print(f"\nPassende zugeordnete IT-Grundschutz-Profile: {', '.join(matching_profiles)})")
-
-    else: print("Datei oder Ordner nicht gefunden")
 
 # Lädt Exceldateien und überspringt Metadaten
 def load_data(file_path):
@@ -212,10 +191,6 @@ def id_check(file_or_dir):
 def remove_specific_requirements(df, where, is_value):
     return df[df[where] != is_value]
 
-# Gibt Dataframe zurück, bei dem die Zeile leer oder ein bestimmter Wert ist
-def get_specific_df_with_emptiness(df, column, value):
-    return df[(df[column].isna() | (df[column].fillna('').str.strip().str.lower() == value))]
-
 # Gibt Dataframe zurück, bei dem die Zeile ein bestimmter Wert ist
 def get_specific_df(df, column, value):
     return df[(df[column].fillna('').str.strip().str.lower() == value)]
@@ -252,6 +227,10 @@ def get_type(df, default_len=True):
 def get_responsible(df):
     return set(df["Verantwortlich"].dropna().unique())
 
+# Gibt eine eindeutige ID für eine Reihe in der Tabelle
+def get_row_key(row):
+    return f"{row.get('ID-Anforderung', '')}_{row.get('Inhalt', '')}"
+
 # Gibt eine Prozentzahl an bisher umgesetzten Anforderungen zurück
 def get_percentage_missing(df):
     df = df[["Titel", "Typ", "Entbehrlich", "Umsetzung"]]
@@ -271,6 +250,27 @@ def get_colored_percentage(percentage):
 
     reset = "\033[0m"  # Reset der Farbe
     return f"{color} {percentage:.2f}% {reset}"
+
+# Ordnet den Tabellen ihren Namen zu und gibt aus, wenn die Dateien einem IT-Grundschutz-Profil entsprechen
+def map_xlsx_files(path):
+    if os.path.isfile(path):
+        file_name = os.path.basename(path)
+        mapped_name = get_name(file_name, False)
+        print(f"{file_name} → {mapped_name if mapped_name else 'Keine Zuordnung gefunden'}")
+    elif os.path.isdir(path):
+        for filename in os.listdir(path):
+            mapped_name = get_name(filename, False)
+            print(f"{filename} → {mapped_name if mapped_name else 'Keine Zuordnung gefunden'}")
+
+        matching_profiles, files_in_dir = match_profile(path)
+
+        if matching_profiles and len(files_in_dir) < 111:
+            if len(matching_profiles) == 1:
+                print(f"\nZugeordnetes IT-Grundschutz-Profil: {matching_profiles[0]}")
+            else:
+                print(f"\nPassende zugeordnete IT-Grundschutz-Profile: {', '.join(matching_profiles)})")
+
+    else: print("Datei oder Ordner nicht gefunden")
 
 # Analysiert eine Tabelle nach diversen Aspekten
 def analyze_single_file(file_path):
@@ -1204,9 +1204,9 @@ def get_custom_table(table_data):
 # Vereinheitlicht die Daten in der "Umsetzung bis" Spalte
 def format_dates(date_value):
     if isinstance(date_value, np.datetime64):
-        return pd.to_datetime(date_value).strftime('%Y-%m-%d')
+        return pd.to_datetime(date_value).strftime('%d.%m.%Y')
     elif isinstance(date_value, datetime):
-        return date_value.strftime('%Y-%m-%d')
+        return date_value.strftime('%d.%m.%Y')
     else:
         return date_value
 
@@ -1494,6 +1494,10 @@ def resolve_conflict(values, column_name, file1_path, file2_path):
     unique_values = values.unique()
     if len(unique_values) == 1:
         return unique_values[0]
+    elif pd.isna(unique_values[0]):
+        return unique_values[1]
+    elif pd.isna(unique_values[1]):
+        return unique_values[0]
     else:
         if column_name == "Umsetzung bis":
             unique_values = [format_dates(val) for val in unique_values]
@@ -1515,18 +1519,16 @@ def resolve_conflict(values, column_name, file1_path, file2_path):
         print(f"  Inhalt: {inhalt}")
         print(f"  Typ: {typ}")
 
-        print(f"\n  Verschiedene Werte:")
-        print(f"    {os.path.basename(file1_path)}: {unique_values[0]}")
-        print(f"    {os.path.basename(file2_path)}: {unique_values[1]}")
+        print(f"\nVerschiedene Werte:")
+        print(f"  {os.path.basename(file1_path)}: {unique_values[0]}")
+        print(f"  {os.path.basename(file2_path)}: {unique_values[1]}")
 
-        while True:
-            if column_name == "Umsetzung":
-                unique_values = "Ja", "Nein", "Teilweise"
-            choice = input(f"\nWählen Sie einen Wert für '{column_name}' ({'/'.join(map(str, unique_values))}): ")
-            if choice in map(str, unique_values):
-                return choice
-            else:
-                print("Ungültige Eingabe.")
+        if column_name == "Umsetzung":
+            unique_values = "Ja", "Nein", "Teilweise"
+        options = [str(val) for val in unique_values]
+        options_dict = {str(i + 1): option for i, option in enumerate(options)}
+        choice = multiple_choice(options_dict, f"\nWählen Sie einen Wert für '{column_name}':", multi = False)
+        return options_dict[choice]
 
 # Vereint zwei gleichartige Tabellen
 def merge_tables(file1_path, file2_path):
@@ -1550,7 +1552,7 @@ def merge_tables(file1_path, file2_path):
 
     # Hilfsfunktion zum Zusammenfassen von Feldern
     def concatenate_values(series):
-        return " / ".join(map(str, series.dropna().unique()))
+        return ", ".join(map(str, series.dropna().unique()))
 
     agg_dict = {
         **{col: "first" for col in ["ID-Anforderung", "Titel", "Inhalt", "Typ"]},
@@ -2100,10 +2102,6 @@ def id_handler(file_or_dir):
         if mode == 1: print("Eindeutige IDs erfolgreich hinzugefügt")
         elif mode == 2: print("Eindeutige IDs erfolgreich wieder entfernt")
     else: print("Keine gültige Datei gefunden")
-
-# Gibt eine eindeutige ID für eine Reihe in der Tabelle
-def get_row_key(row):
-    return f"{row.get('ID-Anforderung', '')}_{row.get('Inhalt', '')}"
 
 # Vergleicht zwei Dataframes für die Snapshot-Funktion
 def compare_dataframes (df1, df2):

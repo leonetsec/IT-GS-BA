@@ -9,6 +9,7 @@ Dieses Tool vereinfacht den IT-Grundschutz-Check ([Version 2023](https://www.bsi
 - Dateien des Tools herunterladen 
 - Requirements installieren
 - Optional: Default-Pfad zu Checklisten im Code hinterlegen
+- Eventuell ```mapping.py``` anpassen, falls Bausteinnamen und Kürzel in Zukunft geändert werden
 
 ## Nutzung
 ```python IT-Grundschutz-Check-Tool.py [--param] C://Path//To//FileOrDir```
