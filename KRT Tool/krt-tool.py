@@ -259,7 +259,7 @@ def print_bausteine(krt):
         print("Für die ausgewählten Bausteine wurden keine passenden Anforderungen gefunden.")
         return
 
-    print("\n--- Anforderungen ---")
+    print("\n--- Anforderungen ---\n")
     for an_krt in sorted(filtered_anforderungen, key=lambda x: x['id']):
         print(f" - {an_krt['id']} - {an_krt.get('name')}")
         cia_info = an_krt.get('cia')
@@ -341,7 +341,7 @@ def print_schutzziele(krt):
         print("Für die ausgewählten Schutzziele wurden keine passenden Anforderungen gefunden.")
         return
 
-    print("\n--- Gefundene Anforderungen ---")
+    print("\n--- Gefundene Anforderungen ---\n")
     for an_krt in sorted(anforderungen_fuer_schutzziele, key=lambda x: x['id']):
         print(f" - {an_krt['id']} - {an_krt.get('name')}")
         cia_info = an_krt.get('cia')
@@ -356,7 +356,7 @@ def print_schutzziele(krt):
 
 # Ermöglicht eine Textsuche über alle Anforderungen
 def suchfunktion(krt):
-    print("\n--- Suchfunktion ---")
+    print("\n--- Suchfunktion ---\n")
     displayed_baustein_ids_glossar = set()
     displayed_gefaehrdung_ids_glossar = set()
     search_term = input("Geben Sie den Suchbegriff ein: ").strip().lower()
@@ -399,7 +399,7 @@ def suchfunktion(krt):
 
 # Liest die Kreuzreferenztabellen in ein einfacheres Format ein
 def get_krt(path):
-    with warnings.catch_warnings():
+    with warnings.catch_warnings(): # Unterdrückt eine harmlose Warnung
         warnings.simplefilter("ignore", category=UserWarning, lineno=48, append=False)
         try:
             all_sheets = pd.read_excel(path, sheet_name=None, header=0)
@@ -408,12 +408,14 @@ def get_krt(path):
             sys.exit(1)
 
     krt_data = []
+    bausteine = set()
     for _, df in all_sheets.items():
 
         gefahr_cols = df.columns[3:]
 
         for _, row in df.iterrows():
-            if pd.isna(row.iloc[0]) or not str(row.iloc[0]).strip():
+            an_id = str(row.iloc[0]).strip()
+            if pd.isna(row.iloc[0]) or len(an_id)<2:
                 continue
 
             gefahren_list = [
@@ -426,11 +428,16 @@ def get_krt(path):
 
             if cia_val or gefahren_list:
                 krt_data.append({
-                    'id': str(row.iloc[0]).strip(),
+                    'id': an_id,
                     'name': name_val,
                     'cia': cia_val,
                     'gefahren': gefahren_list
                 })
+            bausteine.add(get_baustein_id_for_anforderung(an_id))
+
+    for baustein in bausteine:
+        if baustein not in mapping.bsi_ref_titles.keys():
+            print(f"\nNeuer Baustein {baustein} gefunden. Bitte manuell mit vollständigem Namen in bsi_ref_titles in mapping.py ergänzen")
 
     return krt_data
 
@@ -447,7 +454,7 @@ def update_krt():
 
     mapping_file_path = os.path.join(current_dir, 'mapping.py')
 
-    print(f"Aktualisiere '{mapping_file_path}'...")
+    print(f"\nAktualisiere '{mapping_file_path}'...")
 
     try:
         with open(mapping_file_path, 'w', encoding='utf-8') as f:
@@ -456,7 +463,7 @@ def update_krt():
             f.write(f"cia = {pprint.pformat(cia)}\n\n")
             f.write(f"gefahren = {pprint.pformat(gefahren)}\n\n")
             f.write(f"krt = {pprint.pformat(krt)}\n\n")
-        print("Die Kreuzreferenztabellen wurden erfolgreich aktualisiert\n")
+        print("\nDie Kreuzreferenztabellen wurden erfolgreich aktualisiert\n")
     except Exception as e:
         print(f"Ein Fehler ist aufgetreten: {e}")
 
@@ -476,7 +483,7 @@ def profile(krt):
 
     while True:
         print("\nWählen Sie eine Option per Zahl aus:")
-        choice = input("1. Elementare Gefährdungen\n2. Bausteine\n3. Schutzziele\n4. Suchfunktion\n\nAuswahl: ")
+        choice = input("1. Elementare Gefährdungen\n2. Bausteine\n3. Schutzziele\n4. Suchfunktion\n5. Top-Anforderungen\n\nAuswahl: ")
         if choice == "1":
             print_gefaehrdungen(profil_krt)
             break
@@ -489,9 +496,104 @@ def profile(krt):
         elif choice == "4":
             suchfunktion(profil_krt)
             break
+        elif choice == "5":
+            top(profil_krt)
         else:
             print(f"\nUngültige Auswahl")
 
+# Gibt Bausteine und Anforderungen mit den meisten abgedeckten Gefährdungen aus
+def top(krt):
+    print("\n--- Ausgabe der Anforderungen absteigend nach Zahl der abgedeckten Gefährdungen ---")
+    while True:
+        choice = input("\n1. Nach Bausteinen sortiert\n2. Nach Anforderungen sortiert\n\nAuswahl: ").strip()
+        displayed_baustein_ids_glossar = set()
+        displayed_gefaehrdung_ids_glossar = set()
+
+        if choice == "1":
+
+            count_type = int(input("\nMöchten Sie die insgesamt abgedeckten Gefährdungen oder unterschiedliche abgedeckte Gefährdungen zählen?\nAuswahl (1 oder 2): ").strip())
+
+            baustein_gefaehrdungen_count = collections.defaultdict(int)
+            bausteine_anforderungen = collections.defaultdict(list)
+
+            if count_type == 1:
+                for anforderung_krt in krt:
+                    b_id = get_baustein_id_for_anforderung(anforderung_krt['id'])
+                    if b_id:
+                        bausteine_anforderungen[b_id].append(anforderung_krt)
+                        baustein_gefaehrdungen_count[b_id] += len(anforderung_krt.get('gefahren', []))
+            elif count_type == 2:
+                baustein_unique_gefahren = collections.defaultdict(set)
+                for anforderung_krt in krt:
+                    b_id = get_baustein_id_for_anforderung(anforderung_krt['id'])
+                    if b_id:
+                        bausteine_anforderungen[b_id].append(anforderung_krt)
+                        baustein_unique_gefahren[b_id].update(anforderung_krt.get('gefahren', []))
+                for b_id, gefahren_set in baustein_unique_gefahren.items():
+                    baustein_gefaehrdungen_count[b_id] = len(gefahren_set)
+
+            sorted_bausteine = sorted(baustein_gefaehrdungen_count.items(), key=lambda item: item[1], reverse=True)
+
+            print(f"\n--- Bausteine sortiert nach abgedeckten Gefährdungen ---\n")
+            for i, (b_id, count) in enumerate(sorted_bausteine):
+                title = mapping.bsi_ref_titles.get(b_id)
+                print(f"  {i + 1}. {b_id}: {title} ({count} Gefährdungen abgedeckt)")
+
+            while True:
+                select_baustein_choice = int(input("\nBaustein anzeigen (Nummer): ").strip())
+                try:
+                    chosen_baustein_index = int(select_baustein_choice) - 1
+                    if 0 <= chosen_baustein_index < len(sorted_bausteine):
+                        selected_b_id = sorted_bausteine[chosen_baustein_index][0]
+                        print(
+                            f"\n--- Anforderungen für Baustein {selected_b_id}: {mapping.bsi_ref_titles.get(selected_b_id)} (absteigend nach Gefährdungen) ---\n")
+
+                        anforderungen_in_baustein = sorted(
+                            bausteine_anforderungen[selected_b_id],
+                            key=lambda x: len(x.get('gefahren', [])),
+                            reverse=True
+                        )
+
+                        for an_krt in anforderungen_in_baustein:
+                            print(f" - {an_krt['id']} - {an_krt.get('name')}")
+                            cia_info = an_krt.get('cia')
+                            gefahren_info = ", ".join(an_krt.get('gefahren', []))
+                            displayed_gefaehrdung_ids_glossar.update(an_krt.get('gefahren', []))
+                            displayed_baustein_ids_glossar.add(get_baustein_id_for_anforderung(an_krt['id']))
+                            if cia_info is None:
+                                print(
+                                    f"    Gefährdungen: {gefahren_info} ({len(an_krt.get('gefahren', []))} abgedeckte Gefährdungen)")
+                            else:
+                                print(
+                                    f"    CIA: {cia_info}, Gefährdungen: {gefahren_info} ({len(an_krt.get('gefahren', []))} abgedeckte Gefährdungen)")
+                        print_glossar(displayed_baustein_ids_glossar, displayed_gefaehrdung_ids_glossar)
+                    else:
+                        print(f"Ungültige Nummer: {chosen_baustein_index + 1}")
+                except ValueError:
+                    print("Ungültige Eingabe.")
+
+        elif choice == "2":
+            number_of_entrys = int(input("\nWie viele Anforderungen sollen geladen werden?\nAuswahl (z.B. 10): ").strip())
+
+            sorted_anforderungen = sorted(krt, key=lambda x: len(x.get('gefahren', [])), reverse=True)
+
+            print(f"\n--- Top {number_of_entrys} Anforderungen mit den meisten abgedeckten Gefährdungen ---")
+            for an_krt in sorted_anforderungen[:number_of_entrys]:
+                print(f" - {an_krt['id']} - {an_krt.get('name')}")
+                cia_info = an_krt.get('cia')
+                gefahren_info = ", ".join(an_krt.get('gefahren', []))
+                displayed_gefaehrdung_ids_glossar.update(an_krt.get('gefahren', []))
+                displayed_baustein_ids_glossar.add(get_baustein_id_for_anforderung(an_krt['id']))
+                if cia_info is None:
+                    print(
+                        f"    Gefährdungen: {gefahren_info} ({len(an_krt.get('gefahren', []))} abgedeckte Gefährdungen)")
+                else:
+                    print(
+                        f"    CIA: {cia_info}, Gefährdungen: {gefahren_info} ({len(an_krt.get('gefahren', []))} abgedeckte Gefährdungen)")
+            print_glossar(displayed_baustein_ids_glossar, displayed_gefaehrdung_ids_glossar)
+            break
+        else:
+            print(f"\nUngültige Auswahl")
 
 def main():
     parser = argparse.ArgumentParser(description='Tool zur Ansicht der Kreuzreferenztabellen des BSI IT-Grundschutzes.')
@@ -505,7 +607,7 @@ def main():
     krt = mapping.krt
     while True:
         print("\nWählen Sie eine Option per Zahl aus:")
-        choice = input("1. Elementare Gefährdungen\n2. Bausteine\n3. Schutzziele\n4. Suchfunktion\n5. Profile\n\nAuswahl: ")
+        choice = input("1. Elementare Gefährdungen\n2. Bausteine\n3. Schutzziele\n4. Suchfunktion\n5. Profile\n6. Top-Anforderungen\n\nAuswahl: ")
         if choice == "1":
             print_gefaehrdungen(krt)
             break
@@ -520,6 +622,9 @@ def main():
             break
         elif choice == "5":
             profile(krt)
+            break
+        elif choice == "6":
+            top(krt)
             break
         else:
             print(f"\nUngültige Auswahl")

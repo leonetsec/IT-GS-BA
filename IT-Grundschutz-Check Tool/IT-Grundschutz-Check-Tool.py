@@ -619,11 +619,11 @@ def wiba_transfer(path):
     wiba = mapping.wiba
     wiba_ids = mapping.wiba_id
     if os.path.isfile(path) and is_format(path):
-        print("Starte WiBA Integration")
+        print("Starte WiBA Integration...")
         wiba_setter(path, wiba, wiba_ids)
         print(f"WiBA erfolgreich in {get_name(path, True)} integriert")
     elif os.path.isdir(path):
-        print("Starte WiBA Integration")
+        print("Starte WiBA Integration...")
         temp = 0
         for file_name in os.listdir(path):
             file_path = os.path.join(path, file_name)
@@ -781,8 +781,8 @@ def get_export_settings():
     ]
     column_options = {str(i + 1): col for i, col in enumerate(columns)}
 
-    selected_column_keys = multiple_choice(column_options,"\nSpaltenauswahl (z.B. 1,3,5 oder Enter für Alle)", multi=True, default_value="Alle")
     print("\nHinweis: Falls Daten später wieder importiert werden sollen, werden ID-Anforderung und Inhalt benötigt")
+    selected_column_keys = multiple_choice(column_options,"\nSpaltenauswahl (z.B. 1,3,5 oder Enter für Alle)", multi=True, default_value="Alle")
 
     if "Alle" in selected_column_keys:
         selected_columns = columns
@@ -837,9 +837,11 @@ def export(file_path, file_format, columns, omitted, unnecessary, implemented, b
             temp_id_anforderung = temp_id_anforderung.apply(lambda x: x[:-1] if len(x) > 1 else x)
         krt_map = {entry['id']: entry for entry in mapping.krt}
 
+        # Hilfsfunktion für effiziente Suche der Kreuzreferenztabellen
         def get_krt_eintrag(req_id):
             return krt_map.get(str(req_id), {})
 
+        # Hilfsfunktion, um elementare Gefährdungen zuzuordnen
         def get_gefahren(req_id):
             krt_entry = get_krt_eintrag(req_id)
             gefahren_ids = krt_entry.get('gefahren')
@@ -851,6 +853,7 @@ def export(file_path, file_format, columns, omitted, unnecessary, implemented, b
                 return ", ".join(gefahren_definitions)
             return ""
 
+        # Hilfsfunktion, um Schutzziele zuzuordnen
         def get_cia(req_id):
             krt_entry = get_krt_eintrag(req_id)
             cia_string = krt_entry.get('cia')
@@ -2362,7 +2365,7 @@ def snapshot(directory):
         df.to_csv(snapshot_file_path, index=False)
         print(f"Snapshot erfolgreich gespeichert.")
 
-    if choice == "2" or choice == "3":
+    elif choice == "2" or choice == "3":
         if not snapshot_files:
             print("Keine Snapshots gefunden.")
             return
@@ -2421,17 +2424,20 @@ def import_files(checklist_directory):
     dfs_to_merge = []
 
     for f_path in files_list:
-        if file_format == "1":
+        df = None
+        if file_format == "1" and f_path.endswith('.xlsx'):
             df = pd.read_excel(f_path, skiprows=skip)
-        elif file_format == "2":
+        elif file_format == "2" and f_path.endswith('.csv'):
             df = pd.read_csv(f_path)
-        elif file_format == "3":
+        elif file_format == "3" and f_path.endswith('.json'):
             df = pd.read_json(f_path, orient="records")
         elif file_format in ["4", "5"] or file_format.startswith("delimited:"):
             delimiter = " " if file_format == "4" else "\t" if file_format == "5" else \
                 file_format.split(":")[1]
-            df = pd.read_csv(f_path, sep=delimiter)
-        dfs_to_merge.append(df)
+            if f_path.endswith(('.txt', '.tsv')):
+                df = pd.read_csv(f_path, sep=delimiter)
+        if df is not None and not df.empty:
+            dfs_to_merge.append(df)
 
     merged_df = pd.concat(dfs_to_merge, ignore_index=True)
 
@@ -2464,14 +2470,14 @@ def import_files(checklist_directory):
     import_modes = {
         "1": "Vorhandene Daten überschreiben",
         "2": "Nur in leere Felder einfügen",
-        "3": "Vorhandene Daten zusammenfügen (mit Konfliktbehandlung)"
+        "3": "Alle Daten zusammenfügen (mit Konfliktbehandlung)"
     }
     import_mode = multiple_choice(import_modes, "\nWählen Sie den Import-Modus:", multi=False)
+    conflict_strategy = {}
+
     if import_mode == "1":
         print("\nHinweis: Daten, die nicht im Import vorkommen oder dort leer sind, werden in den Tabellen wie bisher beibehalten")
-
-    conflict_strategy = {}
-    if import_mode == "3":
+    elif import_mode == "3":
         conflict_cols = ["Umsetzung", "Umsetzung bis", "Entbehrlich"]
         print("\nLegen Sie die globale Strategie zur Konfliktlösung fest:")
         for col in conflict_cols:
