@@ -6,6 +6,7 @@
 - Config erstellen, Confluence API Key erstellen und in ```config``` einfügen (s.u.)
 - Aktuelles IT-Grundschutz-Jahr, Ort der config und Default Confluence Zielort in ```richtlinien_tool.py``` festlegen
 - Optional: Richtlinien Template in ```mapping.py``` ändern (evtl. funktioniert Tool dann nicht mehr wie gewünscht)
+- Eventuell ```mapping.py``` anpassen, wenn in Zukunft der Aufbau oder die Links des IT-Grundschutzes geändert werden
 
 ## Einführung
 

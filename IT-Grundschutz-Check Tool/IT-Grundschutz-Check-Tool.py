@@ -697,10 +697,10 @@ def scale_setter(file_path, values):
 
 # Handler für Datei oder Ordner
 def export_handler(file_or_dir):
-    file_format, columns, omitted, unnecessary, implemented, baustein, gefahren, index_numbers, types_to_remove, merge = get_export_settings()
+    file_format, columns, omitted, unnecessary, implemented, baustein, gefahren, index_numbers, types_to_remove, merge, index_choice = get_export_settings()
 
     if os.path.isfile(file_or_dir) and is_format(file_or_dir):
-        export(file_or_dir, file_format, columns, omitted, unnecessary, implemented, baustein, gefahren, index_numbers, types_to_remove)
+        export(file_or_dir, file_format, columns, omitted, unnecessary, implemented, baustein, gefahren, index_numbers, types_to_remove, index_choice)
         print("\nDatei erfolgreich exportiert")
     elif os.path.isdir(file_or_dir):
         print("\nExportiere...")
@@ -709,11 +709,11 @@ def export_handler(file_or_dir):
         for file_name in os.listdir(file_or_dir):
             file_path = os.path.join(file_or_dir, file_name)
             if os.path.isfile(file_path) and is_format(file_name):  
-                new_file_path = export(file_path, file_format, columns, omitted, unnecessary, implemented, baustein, gefahren, index_numbers, types_to_remove)
+                new_file_path = export(file_path, file_format, columns, omitted, unnecessary, implemented, baustein, gefahren, index_numbers, types_to_remove, index_choice)
                 exported_count += 1
                 new_files_list.append(new_file_path)
         if merge and exported_count > 1:
-            merge_export(new_files_list, file_format, index_numbers)
+            merge_export(new_files_list, file_format, index_choice)
             print(f"\n{exported_count} Dateien erfolgreich exportiert und zusammengeführt.")
             return
         if exported_count > 0:
@@ -723,7 +723,7 @@ def export_handler(file_or_dir):
         print(f"'{file_or_dir}' ist weder eine passende Excel-Datei noch ein Ordner.")
 
 # Fügt die exportierten Dateien zusammen und löscht die Einzeldateien
-def merge_export(file_list, file_format, index_numbers):
+def merge_export(file_list, file_format, index_choice):
     print("\nFüge Dateien zusammen...")
     dfs_to_merge = []
 
@@ -733,15 +733,15 @@ def merge_export(file_list, file_format, index_numbers):
         elif file_format == "2":
             df = pd.read_csv(f_path)
         elif file_format == "3":
-            df = pd.read_json(f_path, orient="records")
+            df = pd.read_json(f_path, orient="records", lines=True)
         elif file_format in ["7", "8"] or file_format.startswith("delimited:"):
             delimiter = " " if file_format == "7" else "\t" if file_format == "8" else \
                 file_format.split(":")[1]
             df = pd.read_csv(f_path, sep=delimiter)
         else:
-            print("Warnung: Zusammenführen für das gewählte Format wird nicht unterstützt. Dieser Schritt wird übersprungen.")
-            dfs_to_merge = []
-            break
+            print("\nWarnung: Zusammenführen für das gewählte Format wird nicht unterstützt. Dieser Schritt wird übersprungen.")
+            print(f"\nDateien erfolgreich exportiert.")
+            exit(0)
         dfs_to_merge.append(df)
 
     merged_df = pd.concat(dfs_to_merge, ignore_index=True)
@@ -749,12 +749,14 @@ def merge_export(file_list, file_format, index_numbers):
     export_dir = os.path.dirname(file_list[0])
     merged_file_base = os.path.join(export_dir, "Export")
 
+    index_numbers = index_choice in ["2", "3"]
+
     if file_format == "1":
         merged_df.to_excel(merged_file_base + ".xlsx", index=index_numbers)
     elif file_format == "2":
         merged_df.to_csv(merged_file_base + ".csv", index=index_numbers)
     elif file_format == "3":
-        merged_df.to_json(merged_file_base + ".json", orient="records")
+        merged_df.to_json(merged_file_base + ".json", orient="records", lines=True, force_ascii=False)
     elif file_format == "7":
         merged_df.to_csv(merged_file_base + ".txt", sep=" ", index=index_numbers)
     elif file_format == "8":
@@ -804,12 +806,20 @@ def get_export_settings():
     omitted = ask_user("Möchten Sie entfallene Anforderungen entfernen?")
     unnecessary = ask_user("Möchten Sie als entbehrlich markierte Anforderungen entfernen?", default_yes=False)
     implemented = ask_user("Möchten Sie bereits umgesetzte Anforderungen entfernen?", default_yes=False)
-    index_numbers = ask_user("Möchten Sie nummerierte Zeilen?")
-    if export_format == "json" and index_numbers:
-        print("\nNummerierte Zeilen bei JSON nicht möglich")
+    index_numbers = False
+    if export_format != "3":
+        index_numbers = ask_user("Möchten Sie nummerierte Zeilen?")
     baustein = ask_user("Soll jede Anforderung den Bausteinnamen enthalten?", default_yes=False)
     gefahren = ask_user("Sollen die elementaren Gefährdungen aus den Kreuzreferenztabellen hinzugefügt werden?", default_yes=False)
     merge = ask_user("Sollen die Dateien am Ende zu einer einzelnen, großen Datei zusammengeführt werden?", default_yes=False)
+    index_choice = None
+    if merge and index_numbers:
+        index_options = {
+            "1": "Indexzahlen für jeden Baustein einzeln",
+            "2": "Indexzahlen für alle Anforderungen insgesamt",
+            "3": "Beides"
+        }
+        index_choice = multiple_choice(index_options, "\nSpezifizierung für die Indexzahlen nötig:", multi=False)
 
     if baustein:
         selected_columns.append("Baustein")
@@ -817,10 +827,10 @@ def get_export_settings():
         selected_columns.append("Abgedeckte elementare Gefährdungen")
         selected_columns.append("Abgedeckte Schutzziele")
 
-    return export_format, selected_columns, omitted, unnecessary, implemented, baustein, gefahren, index_numbers, types_to_remove, merge
+    return export_format, selected_columns, omitted, unnecessary, implemented, baustein, gefahren, index_numbers, types_to_remove, merge, index_choice
 
 # Exportiert den Tabelleninhalt in ein gewünschtes Format mit diversen Anpassungsmöglichkeiten
-def export(file_path, file_format, columns, omitted, unnecessary, implemented, baustein, gefahren, index_numbers, types_to_remove):
+def export(file_path, file_format, columns, omitted, unnecessary, implemented, baustein, gefahren, index_numbers, types_to_remove, index_choice):
     df = load_data(file_path)
     if omitted:
         df = remove_specific_requirements(df, "Titel", "ENTFALLEN")
@@ -881,6 +891,9 @@ def export(file_path, file_format, columns, omitted, unnecessary, implemented, b
 
     final_export_path = None
 
+    if index_numbers and index_choice == "2":
+        index_numbers = False
+
     if file_format == "1":
         final_export_path = export_file_base + ".xlsx"
         df.to_excel(final_export_path, index=index_numbers)
@@ -889,7 +902,7 @@ def export(file_path, file_format, columns, omitted, unnecessary, implemented, b
         df.to_csv(final_export_path, index=index_numbers)
     elif file_format == "3":
         final_export_path = export_file_base + ".json"
-        df.to_json(final_export_path, orient="records")
+        df.to_json(final_export_path, orient="records", lines=True, force_ascii=False)
     elif file_format == "4":
         final_export_path = export_file_base + ".md"
         df.to_markdown(final_export_path, index=index_numbers)
