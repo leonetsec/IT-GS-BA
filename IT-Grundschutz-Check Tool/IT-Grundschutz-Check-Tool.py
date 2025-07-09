@@ -1877,7 +1877,7 @@ def save_df(df, export_file_path, index_number):
     elif file_format_choice_key == "2":
         df.to_csv(export_file_path + ".csv", index=index_number)
     elif file_format_choice_key == "3":
-        df.to_json(export_file_path + ".json", orient="records")
+        df.to_json(export_file_path + ".json", orient="records", lines=True, force_ascii=False)
     elif file_format_choice_key == "4":
         df.to_markdown(export_file_path + ".md", index=index_number)
     elif file_format_choice_key == "5":
@@ -2119,111 +2119,119 @@ def id_handler(file_or_dir):
         elif mode == 2: print("Eindeutige IDs erfolgreich wieder entfernt")
     else: print("Keine gültige Datei gefunden")
 
+
 # Vergleicht zwei Dataframes für die Snapshot-Funktion
-def compare_dataframes (df1, df2):
+def compare_dataframes(df1, df2):
     df1 = remove_specific_requirements(df1.copy(), "Titel", "ENTFALLEN")
     df2 = remove_specific_requirements(df2.copy(), "Titel", "ENTFALLEN")
 
     if len(df1) != len(df2):
         print(f"\nUnterschiedliche Zahl an Anforderungen gefunden ({abs(len(df1) - len(df2))}), Analysen werden womöglich beeinträchtigt")
 
+    # Erstellt eine schöne Zahl für die Differenz
+    def zahl(zahl_snapshot, zahl_aktuell):
+        diff = zahl_aktuell - zahl_snapshot
+        if diff > 0: return f"+{diff}"
+        elif diff < 0: return str(diff)
+        else: return "+/- 0"
+
+    df1['Baustein-ID'] = df1['ID-Anforderung'].apply(get_baustein_from_id)
+    df2['Baustein-ID'] = df2['ID-Anforderung'].apply(get_baustein_from_id)
+    df1['row_key'] = df1.apply(get_row_key, axis=1)
+    df2['row_key'] = df2.apply(get_row_key, axis=1)
+
+    all_baustein_ids = sorted(list(set(df1['Baustein-ID'].dropna().unique()).union(set(df2['Baustein-ID'].dropna().unique()))))
+
+    total_modified_fields = 0
+    baustein_diffs = set()
+    baustein_summary = {}
+
+    for baustein_id in all_baustein_ids:
+        df1_baustein = df1[df1['Baustein-ID'] == baustein_id]
+        df2_baustein = df2[df2['Baustein-ID'] == baustein_id]
+        modified_counter = 0
+
+        common_keys = set(df1_baustein['row_key']).intersection(set(df2_baustein['row_key']))
+
+        for comp_key in common_keys:
+            row1 = df1_baustein[df1_baustein['row_key'] == comp_key].iloc[0]
+            row2 = df2_baustein[df2_baustein['row_key'] == comp_key].iloc[0]
+
+            for col in df1.columns.drop(['Baustein-ID', 'row_key', 'ID-Anforderung', 'Titel', 'Inhalt', 'Typ']):
+                val1 = row1.get(col)
+                val2 = row2.get(col)
+                val1_str = str(val1).strip() if not pd.isna(val1) else ''
+                val2_str = str(val2).strip() if not pd.isna(val2) else ''
+
+                if val1_str != val2_str:
+                    modified_counter += 1
+
+        if modified_counter > 0:
+            total_modified_fields += modified_counter
+            baustein_diffs.add(baustein_id)
+
+            _, _, fully_implemented1, _ = implementation_count(df1_baustein)
+            _, _, fully_implemented2, _ = implementation_count(df2_baustein)
+            text = "modifiziertes Feld" if modified_counter == 1 else "modifizierte Felder"
+            baustein_summary[baustein_id] = f"{baustein_id}: Umgesetzte Anforderungen: {zahl(fully_implemented1, fully_implemented2)} ({modified_counter} {text})"
+
     not_implemented1, partly_implemented1, fully_implemented1, unnecessary1 = implementation_count(df1)
     not_implemented2, partly_implemented2, fully_implemented2, unnecessary2 = implementation_count(df2)
-    cost1 = cost_count(df1)
-    cost2 = cost_count(df2)
-    all_responsibles1 = f"{', '.join(get_responsible(df1))}"
-    all_responsibles2 = f"{', '.join(get_responsible(df2))}"
+    cost1, cost2 = cost_count(df1), cost_count(df2)
+    all_responsibles1, all_responsibles2 = f"{', '.join(get_responsible(df1))}", f"{', '.join(get_responsible(df2))}"
 
     ni1 = get_specific_df_with_two_conditions_and_emptiness(df1, "Umsetzung", "nein", "Entbehrlich", "nein")
     ni2 = get_specific_df_with_two_conditions_and_emptiness(df2, "Umsetzung", "nein", "Entbehrlich", "nein")
     ni_basis1, ni_standard1, ni_high1 = get_type(ni1)
     ni_basis2, ni_standard2, ni_high2 = get_type(ni2)
 
-    # Erstellt eine schöne Zahl für die Differenz
-    def zahl(zahl_snapshot, zahl_aktuell):
-        if zahl_aktuell > zahl_snapshot:
-            return f"+{zahl_aktuell - zahl_snapshot}"
-        elif zahl_aktuell < zahl_snapshot:
-            return zahl_aktuell-zahl_snapshot
-        else: return "+/- 0"
-
     print("\n ------ Übersicht ------\n")
+    print(f"Modifizierte Felder: {total_modified_fields}")
     print(f"Umgesetzte Anforderungen: {zahl(fully_implemented1, fully_implemented2)}")
     print(f"Teilweise umgesetzte Anforderungen: {zahl(partly_implemented1, partly_implemented2)}")
     print(f"Entbehrliche Anforderungen: {zahl(unnecessary1, unnecessary2)}")
     print(f"Nicht umgesetzte Anforderungen: {zahl(not_implemented1, not_implemented2)}")
-    print(f"(Davon Basis: {zahl(ni_basis1, ni_basis2)}, Standard: {zahl(ni_standard1, ni_standard2)}, Erhöhter Schutzbedarf: {zahl(ni_high1, ni_high2)})")
+    print(f"  (Davon Basis: {zahl(ni_basis1, ni_basis2)}, Standard: {zahl(ni_standard1, ni_standard2)}, Erhöhter Schutzbedarf: {zahl(ni_high1, ni_high2)})")
     print(f"Summierte Kostenschätzung: {zahl(cost1, cost2)}€")
     print(f"Verantwortliche Snapshot: {all_responsibles1}")
     print(f"Verantwortliche Aktuell: {all_responsibles2}")
 
-    df1['Baustein-ID'] = df1['ID-Anforderung'].apply(get_baustein_from_id)
-    df2['Baustein-ID'] = df2['ID-Anforderung'].apply(get_baustein_from_id)
+    snapshot_ids = set(df1['Baustein-ID'].dropna().unique())
+    current_ids = set(df2['Baustein-ID'].dropna().unique())
 
-    df1['row_key'] = df1.apply(get_row_key, axis=1)
-    df2['row_key'] = df2.apply(get_row_key, axis=1)
+    added_ids = sorted(list(current_ids - snapshot_ids))
+    removed_ids = sorted(list(snapshot_ids - current_ids))
 
-    all_baustein_ids = sorted(list(set(df1['Baustein-ID'].dropna().unique()).union(set(df2['Baustein-ID'].dropna().unique()))))
+    if added_ids or removed_ids:
+        for baustein_id in added_ids:
+            print(f"\nBaustein hinzugefügt: {baustein_id}")
+        for baustein_id in removed_ids:
+            print(f"\nBaustein entfernt: {baustein_id}")
 
-    baustein_choice = ask_user("Änderungen pro Baustein anzeigen?")
+    if not baustein_diffs:
+        return
 
-    if baustein_choice:
+    if ask_user("\nÄnderungen pro Baustein anzeigen?"):
         print("\n ------ Änderungen pro Baustein ------\n")
-
-    baustein_diffs = set()
-
-    for baustein_id in all_baustein_ids:
-        df1_baustein = df1[df1['Baustein-ID'] == baustein_id]
-        df2_baustein = df2[df2['Baustein-ID'] == baustein_id]
-
-        _, _, fully_implemented1, _ = implementation_count(df1_baustein)
-        _, _, fully_implemented2, _ = implementation_count(df2_baustein)
-
-        modified_counter = 0
-
-        all_keys_1 = set(df1_baustein['row_key'])
-        all_keys_2 = set(df2_baustein['row_key'])
-        common_keys = all_keys_1.intersection(all_keys_2)
-
-        for comp_key in common_keys:
-            row1 = df1_baustein[df1_baustein['row_key'] == comp_key].iloc[0]
-            row2 = df2_baustein[df2_baustein['row_key'] == comp_key].iloc[0]
-            for col in df1.columns.drop(['Baustein-ID', 'row_key']):
-                if col in row1 and col in row2 and not pd.isna(row1[col]) and not pd.isna(row2[col]):
-                    if str(row1[col]).strip() != str(row2[col]).strip():
-                        modified_counter += 1
-                        baustein_diffs.add(baustein_id)
-                elif pd.isna(row1[col]) != pd.isna(row2[col]):
-                    modified_counter += 1
-                    baustein_diffs.add(baustein_id)
-        if modified_counter > 0 and baustein_choice:
-            baustein_diffs.update(baustein_id)
-            if modified_counter > 2:
-                print(f"{baustein_id}: Umgesetzte Anforderungen: {zahl(fully_implemented1, fully_implemented2)} ({modified_counter} modifizierte Felder)")
-            else: print(f"{baustein_id}: Umgesetzte Anforderungen: {zahl(fully_implemented1, fully_implemented2)} ({modified_counter} modifiziertes Feld)")
-
-        elif baustein_choice: print(f"{baustein_id}: Umgesetzte Anforderungen: {zahl(fully_implemented1, fully_implemented2)}")
+        for baustein_id in all_baustein_ids:
+            if baustein_id in baustein_summary:
+                print(baustein_summary[baustein_id])
 
     detail_options = {
         "1": "Alle Differenzen anzeigen",
         "2": "Spezifischen Baustein auswählen",
         "3": "Beenden"
     }
-    detail_choice = multiple_choice(detail_options, "\nDetaillierte Ansicht der Änderungen:", multi=False,
-                                    default_value="3")
+    detail_choice = multiple_choice(detail_options, "\nDetaillierte Ansicht der Änderungen:", multi=False, default_value="3")
 
     if detail_choice == "1":
-        for baustein_id in all_baustein_ids:
-            if baustein_id in baustein_diffs:
-                print(f"\n--- Änderungen in Baustein {baustein_id} ---")
-                display_detailed_baustein_diff(df1[df1['Baustein-ID'] == baustein_id], df2[df2['Baustein-ID'] == baustein_id])
+        for baustein_id in sorted(list(baustein_diffs)):
+            print(f"\n--- Änderungen in Baustein {baustein_id} ---")
+            display_detailed_baustein_diff(df1[df1['Baustein-ID'] == baustein_id], df2[df2['Baustein-ID'] == baustein_id])
     elif detail_choice == "2":
-        baustein_selection_options = {str(i + 1): bid for i, bid in enumerate(all_baustein_ids)}
-        selected_baustein_idx = multiple_choice(baustein_selection_options,"\nWählen Sie einen Baustein für die detaillierte Anzeige:",multi=False)
+        baustein_selection_options = {str(i + 1): bid for i, bid in enumerate(sorted(list(baustein_diffs)))}
+        selected_baustein_idx = multiple_choice(baustein_selection_options, "\nWählen Sie einen Baustein:", multi=False)
         selected_baustein_id = baustein_selection_options[selected_baustein_idx]
-        if selected_baustein_id not in baustein_diffs:
-            print("Die Daten sind identisch")
-            return
         print(f"\n--- Änderungen in Baustein {selected_baustein_id} ---")
         display_detailed_baustein_diff(df1[df1['Baustein-ID'] == selected_baustein_id], df2[df2['Baustein-ID'] == selected_baustein_id])
     else:
@@ -2249,15 +2257,9 @@ def display_detailed_baustein_diff(df1_baustein, df2_baustein):
 
             if val1_str != val2_str:
                 print(f"  ID-Anforderung: {row1.get('ID-Anforderung')}, Titel: {row1.get('Titel')}")
-                print(f"    Feld '{col}':")
-                print(f"      Snapshot: '{val1_str}'")
-                print(f"      Aktuell:  '{val2_str}'")
-        for col in df1_baustein.columns.drop(['Baustein-ID', 'row_key']):
-            if pd.isna(row1.get(col)) != pd.isna(row2.get(col)):
-                print(f"  ID-Anforderung: {row1.get('ID-Anforderung')}, Titel: {row1.get('Titel')}")
-                print(f"    Feld '{col}':")
-                print(f"      Snapshot: {'' if pd.isna(row1.get(col)) else str(row1.get(col)).strip()}")
-                print(f"      Aktuell:  {'' if pd.isna(row2.get(col)) else str(row2.get(col)).strip()}")
+                print(f"    Feld: {col}")
+                print(f"      Snapshot: {val1_str}")
+                print(f"      Aktuell:  {val2_str}")
 
 # Füllt eine Kopie der Checklisten mit den Daten aus Snapshot
 def restore_snapshot(directory, snapshot_df):
@@ -2406,7 +2408,7 @@ def import_files(checklist_directory):
     print(f"\nVerzeichnis der Checklisten: {checklist_directory}")
     files_list = []
     while True:
-        import_dir_or_file = input("\nPfad zum Ordner oder Datei für Import: ").strip().strip('"')
+        import_dir_or_file = input("\nPfad zu Ordner oder Datei für Import: ").strip().strip('"')
         if os.path.isdir(import_dir_or_file):
             for file in os.listdir(import_dir_or_file):
                 path = os.path.join(import_dir_or_file, file)
@@ -2443,7 +2445,11 @@ def import_files(checklist_directory):
         elif file_format == "2" and f_path.endswith('.csv'):
             df = pd.read_csv(f_path)
         elif file_format == "3" and f_path.endswith('.json'):
-            df = pd.read_json(f_path, orient="records")
+            try:
+                df = pd.read_json(f_path, orient='records')
+            except ValueError as e:
+                if "Trailing data" in str(e):
+                    df = pd.read_json(f_path, lines=True, orient='records')
         elif file_format in ["4", "5"] or file_format.startswith("delimited:"):
             delimiter = " " if file_format == "4" else "\t" if file_format == "5" else \
                 file_format.split(":")[1]
