@@ -733,7 +733,7 @@ def merge_export(file_list, file_format, index_choice):
         elif file_format == "2":
             df = pd.read_csv(f_path)
         elif file_format == "3":
-            df = pd.read_json(f_path, orient="records", lines=True)
+            df = pd.read_json(f_path, orient="records")
         elif file_format in ["7", "8"] or file_format.startswith("delimited:"):
             delimiter = " " if file_format == "7" else "\t" if file_format == "8" else \
                 file_format.split(":")[1]
@@ -756,7 +756,7 @@ def merge_export(file_list, file_format, index_choice):
     elif file_format == "2":
         merged_df.to_csv(merged_file_base + ".csv", index=index_numbers)
     elif file_format == "3":
-        merged_df.to_json(merged_file_base + ".json", orient="records", lines=True, force_ascii=False)
+        merged_df.to_json(merged_file_base + ".json", orient="records", indent=4, force_ascii=False)
     elif file_format == "7":
         merged_df.to_csv(merged_file_base + ".txt", sep=" ", index=index_numbers)
     elif file_format == "8":
@@ -902,7 +902,7 @@ def export(file_path, file_format, columns, omitted, unnecessary, implemented, b
         df.to_csv(final_export_path, index=index_numbers)
     elif file_format == "3":
         final_export_path = export_file_base + ".json"
-        df.to_json(final_export_path, orient="records", lines=True, force_ascii=False)
+        df.to_json(final_export_path, orient="records", indent=4, force_ascii=False)
     elif file_format == "4":
         final_export_path = export_file_base + ".md"
         df.to_markdown(final_export_path, index=index_numbers)
@@ -1877,7 +1877,7 @@ def save_df(df, export_file_path, index_number):
     elif file_format_choice_key == "2":
         df.to_csv(export_file_path + ".csv", index=index_number)
     elif file_format_choice_key == "3":
-        df.to_json(export_file_path + ".json", orient="records", lines=True, force_ascii=False)
+        df.to_json(export_file_path + ".json", orient="records", indent=4, force_ascii=False)
     elif file_format_choice_key == "4":
         df.to_markdown(export_file_path + ".md", index=index_number)
     elif file_format_choice_key == "5":
@@ -2477,6 +2477,10 @@ def import_files(checklist_directory):
 
     selectable_cols = [col for col in import_columns if col not in non_import_cols and col in relevant_cols]
     col_options = {str(i + 1): col for i, col in enumerate(selectable_cols)}
+
+    if not col_options:
+        print("\nKeine importierbaren Spalten gefunden, Vorgang wird abgebrochen.")
+        return
 
     selected_keys = multiple_choice(
         col_options,
