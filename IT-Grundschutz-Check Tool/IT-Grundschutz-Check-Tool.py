@@ -128,13 +128,13 @@ def multiple_choice(options_dict, prompt_message, multi, default_value=None):
                     if key in options_dict:
                         choices.append(key)
                     else:
-                        print(f"'{key}' ist keine gültige Auswahl. Bitte geben Sie gültige Nummern ein.")
+                        print("Ungültige Auswahl. Bitte geben Sie gültige, kommagetrennte Nummern ein (z.B. 1,3,5).")
                         choices = []
                         break
                 if choices:
                     return choices
             except Exception:
-                print("Ungültige Eingabe. Bitte geben Sie kommagetrennte Nummern ein (z.B. 1,3,5).")
+                print("Ungültige Auswahl. Bitte geben Sie gültige, kommagetrennte Nummern ein (z.B. 1,3,5).")
         else:
             if user_input in options_dict:
                 return user_input
@@ -184,7 +184,7 @@ def id_check(file_or_dir):
         if len(unique_values) == 1:
             return unique_values.pop()
         else:
-            status_map = {1: "Nicht eindeutige IDs", 2: "Eindeutige IDs", 3: "Gemischte IDs"}
+            status_map = {1: "\033[43m Nicht eindeutige IDs \033[0m", 2: "\033[42m Eindeutige IDs \033[0m", 3: "\033[41m Gemischte IDs \033[0m"}
             return {file: status_map.get(status) for file, status in results.items()}
 
 # Entfernt Anforderungen, bei denen eine spezifische Bedingung erfüllt ist, z.B. "Titel" ist "ENTFALLEN"
@@ -482,18 +482,7 @@ def sort_list(directory):
         print("Ordner nicht gefunden")
         return
 
-    print("Die Dateien können nach folgenden Kriterien absteigend sortiert werden:")
-    for key, value in mapping.sort_list.items():
-        print(f"{key}: {value}")
-    print("Wähle mit der Zahl aus.")
-    sort_key = input("\nAuswahl (oder exit): ").strip()
-    if sort_key.lower() == "exit":
-        print("Abgebrochen")
-        return
-
-    if sort_key not in mapping.sort_list:
-        print("Ungültige Auswahl")
-        return
+    sort_key = multiple_choice(mapping.sort_list,"\nDie Dateien können nach folgenden Kriterien absteigend sortiert werden:\n", multi = False)
 
     files_data = []
 
@@ -797,9 +786,7 @@ def get_export_settings():
         "3": "Hoch"
     }
 
-    types_to_remove_keys = multiple_choice(type_options,
-                                           "\nAuswahl zur Entfernung der Schutzbedarfstypen (z.B. 2,3 oder Enter für Keine):",
-                                           multi=True, default_value=[])
+    types_to_remove_keys = multiple_choice(type_options,"\nAuswahl zur Entfernung der Schutzbedarfstypen (z.B. 2,3 oder Enter für Keine):", multi=True, default_value=[])
 
     types_to_remove = [type_options[key] for key in types_to_remove_keys if key in type_options]
 
@@ -1868,35 +1855,6 @@ def checklist_integration(checklist_path, filename, dokument, implemented, partl
         else:
             i += 1
 
-# Speichert einen Dataframe in einem gewünschten Format
-def save_df(df, export_file_path, index_number):
-    file_format_choice_key = multiple_choice(mapping.format_options,"\nIn welchem Format soll die Tabelle gespeichert werden?", multi=False)
-
-    if file_format_choice_key == "1":
-        df.to_excel(export_file_path + ".xlsx", index=index_number)
-    elif file_format_choice_key == "2":
-        df.to_csv(export_file_path + ".csv", index=index_number)
-    elif file_format_choice_key == "3":
-        df.to_json(export_file_path + ".json", orient="records", indent=4, force_ascii=False)
-    elif file_format_choice_key == "4":
-        df.to_markdown(export_file_path + ".md", index=index_number)
-    elif file_format_choice_key == "5":
-        df.to_html(export_file_path + ".html", index=index_number)
-    elif file_format_choice_key == "6":
-        df.to_xml(export_file_path + ".xml", index=index_number)
-    elif file_format_choice_key == "7":
-        df.to_csv(export_file_path + ".txt", sep=" ", index=index_number)
-    elif file_format_choice_key == "8":
-        df.to_csv(export_file_path + ".tsv", sep="\t", index=index_number)
-    elif file_format_choice_key == "9":
-        delimiter = input("\nTrennzeichen: ")
-        df.to_csv(export_file_path + ".txt", sep=delimiter, index=index_number)
-    else:
-        print("Keine gültige Auswahl, wird als .xlsx Datei gespeichert")
-        df.to_excel(export_file_path + ".xlsx", index=index_number)
-
-    print("Datei erfolgreich gespeichert")
-
 # Durchsucht die Tabellen eines Ordners nach verschiedenen Möglichkeiten
 def search(directory):
     if not os.path.isdir(directory):
@@ -1919,7 +1877,13 @@ def search(directory):
         return
     df = df[["ID-Anforderung", "Titel", "Inhalt", "Typ", "Entbehrlich", "Begründung für Entbehrlichkeit", "Umsetzung", "Umsetzung bis", "Verantwortlich", "Bemerkungen / Begründung für Nicht-Umsetzung", "Kostenschätzung"]]
 
-    choice = input("Auf welche Art sollen die Tabellen durchsucht werden?\n\n1 - Text\n2 - Regex\n3 - SQL\n\nAuswahl (1-3): ")
+    search_options = {
+        "1": "Text",
+        "2": "Regex",
+        "3": "SQL"
+    }
+
+    choice = multiple_choice(search_options, "\nAuf welche Art sollen die Tabellen durchsucht werden?", multi=False)
     if choice == "1":
         search_term = input("\nSuchbegriff: ")
         mask = df.apply(lambda row: row.astype(str).str.contains(search_term, case=False).any(), axis=1)
@@ -1942,7 +1906,30 @@ def search(directory):
     export_dir = os.path.join(os.path.abspath(directory), "Search result")
     os.makedirs(export_dir, exist_ok=True)
     export_file_path = os.path.join(export_dir, f"Search result {datetime.today().strftime('%d-%m-%Y')}")
-    save_df(df, export_file_path, False)
+
+    file_format = multiple_choice(mapping.format_options, "\nIn welchem Format soll das Suchergebnis gespeichert werden?", multi=False)
+
+    if file_format == "1":
+        df.to_excel(export_file_path + ".xlsx")
+    elif file_format == "2":
+        df.to_csv(export_file_path + ".csv")
+    elif file_format == "3":
+        df.to_json(export_file_path + ".json", orient="records", indent=4, force_ascii=False)
+    elif file_format == "4":
+        df.to_markdown(export_file_path + ".md")
+    elif file_format == "5":
+        df.to_html(export_file_path + ".html")
+    elif file_format == "6":
+        df.to_xml(export_file_path + ".xml")
+    elif file_format == "7":
+        df.to_csv(export_file_path + ".txt", sep=" ")
+    elif file_format == "8":
+        df.to_csv(export_file_path + ".tsv", sep="\t")
+    elif file_format == "9":
+        delimiter = input("\nTrennzeichen: ")
+        df.to_csv(export_file_path + ".txt", sep=delimiter)
+
+    print(f"\nDatei erfolgreich unter {export_file_path} gespeichert.")
 
 # Analysiert die abgedeckten elementaren Gefährdungen einer Datei
 def risk_analysis(file_path):
@@ -2052,6 +2039,9 @@ def risk_handler(file_or_dir):
 
 # Setzt die IDs einer Datei, eindeutig bei 1, zurück auf nicht eindeutig bei 2
 def id_setter(file, mode):
+    id_status = id_check(file)
+    if id_status != mode and id_status != 3:
+        return
     workbook = openpyxl.load_workbook(file)
     sheet = workbook.active
 
@@ -2060,7 +2050,7 @@ def id_setter(file, mode):
         for row in range(6, sheet.max_row + 1):
             cell = sheet.cell(row=row, column=2)
             original_value = str(cell.value) if cell.value else ""
-            if original_value:
+            if original_value and not cell.value[-1].isalpha():
                 letter_to_add = string.ascii_lowercase[id_counts[original_value]]
                 cell.value = f"{original_value}{letter_to_add}"
                 id_counts[original_value] += 1
@@ -2087,28 +2077,29 @@ def id_handler(file_or_dir):
         print("Starte ID-Modifikation...")
         mode = id_check(file_or_dir)
         if mode not in [1,2]:
-            print("Sowohl eindeutige als auch nicht eindeutige IDs gefunden, wie soll verfahren werden?")
-            choice = input("\n1. Alle IDs eindeutig machen\n2. Alle IDs auf nicht eindeutig zurücksetzen\n3. Liste ausgeben\n4. Abbruch\n\nAuswahl: ").strip()
+            options = {
+                "1": "Alle IDs eindeutig machen",
+                "2": "Alle IDs auf nicht eindeutig zurücksetzen",
+                "3": "Liste ausgeben",
+                "4": "Abbruch"
+            }
+            choice = multiple_choice(options, "\nSowohl eindeutige als auch nicht eindeutige IDs gefunden, wie soll verfahren werden?", multi = False)
+            choice2 = None
             if choice in ['1','2']:
                 mode = int(choice)
             elif choice == '3':
                 for file, status in mode.items():
                     print(f"- {file}: {status}")
-                print("\nWie soll verfahren werden?")
-                choice2 = input("\n1. Alle IDs eindeutig machen\n2. Alle IDs auf nicht eindeutig zurücksetzen\n3. Abbruch\n\nAuswahl: ").strip()
+                options2 = {
+                    "1": "Alle IDs eindeutig machen",
+                    "2": "Alle IDs auf nicht eindeutig zurücksetzen",
+                    "3": "Abbruch"
+                }
+                choice2 = multiple_choice(options2, "\nWie soll verfahren werden?", multi = False)
                 if choice2 in ['1','2']:
                     mode = int(choice2)
-                elif choice2 == '3':
-                    print("Vorgang wird abgebrochen")
-                    return
-                else:
-                    print("Ungültige Auswahl, Vorgang wird abgebrochen.")
-                    return
-            elif choice == '4':
-                print("Vorgang wird abgebrochen.")
-                return
-            else:
-                print("Ungültige Auswahl, Vorgang wird abgebrochen.")
+            if choice == '4' or choice2 == '3':
+                print("\nVorgang wird abgebrochen.")
                 return
 
         for file_name in os.listdir(file_or_dir):
