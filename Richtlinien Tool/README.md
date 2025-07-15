@@ -7,6 +7,7 @@
 - Aktuelles IT-Grundschutz-Jahr, Ort der config und Default Confluence Zielort in ```richtlinien_tool.py``` festlegen
 - Optional: Richtlinien Template in ```mapping.py``` ändern (evtl. funktioniert Tool dann nicht mehr wie gewünscht)
 - Eventuell ```mapping.py``` anpassen, wenn in Zukunft der Aufbau oder die Links des IT-Grundschutzes geändert werden
+- ```IT-Grundschutz.json``` einfügen/anpassen (für --check-reqs). Dafür mit IT-Grundschutz-Check Tool exportieren (Entfallene Anforderungen entfernen, zu einer Datei zusammenfassen)
 
 ## Einführung
 
@@ -60,6 +61,15 @@ Weitere Befehle, die das Tool unterstützt sind:
 - --changes-only: Nur geänderte Dokumente hochladen
 - --mark-arg: Argument(e) an Mark-Tool weitergeben
 - --new: Erstellt eine neue Richtlinien nach Template
-
+- --check-reqs: Überprüft, ob die in den Metadaten vorkommenden Bausteine in der Richtlinie abgedeckt werden
+- --typ: (Mit --check-regs): Definiert, ob für die Überprüfung der Schutzbedarfstyp Basis, Standard oder Hoch ausgewählt wird, Default: Standard
 
 Sollten bereits Dateien mit dem gleichen Namen im gleichen Verzeichnis vorhanden sein werde diese mit dem Hochladen auf Confluence überschrieben. Der Seitenname für Confluence wird aus den Metadaten entnommen, als erste Überschrift eingefügt und dann entfernt.
+
+Bei der Nutzung von --check-regs muss in Markdown-Kommentaren hinterlegt werden, welche Anforderungen durch die Richtlinie umgesetzt werden
+Format der Kommentare: 
+<!-- APP.2.1.1A3[: Umsetzungsstand] -->
+<!-- APP.2.1.1A4: entbehrlich -->
+<!-- APP.3.3.2A5: teilweise -->
+<!-- APP.1.1.1A1 --> == <-- APP.1.1.1A1: erfüllt -->
+<!-- APP.1.1.1A1, APP.1.1.1A2, APP.1.1.1A3  --> 

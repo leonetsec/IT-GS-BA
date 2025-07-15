@@ -17,7 +17,7 @@ def print_glossar(displayed_baustein_ids, displayed_gefaehrdung_ids):
     print("\n" + "=" * 25 + " GLOSSAR " + "=" * 26)
 
     if displayed_baustein_ids:
-        print("\n--- Referenzierte Bausteine ---")
+        print("--- Referenzierte Bausteine ---")
         for b_id in sorted(list(displayed_baustein_ids)):
             title = mapping.bsi_ref_titles.get(b_id)
             print(f"  {b_id}: {title}")
@@ -382,9 +382,13 @@ def suchfunktion(krt):
         print(f"Keine Anforderungen gefunden, die den Suchbegriff enthalten.")
         return
 
-    print(f"\n{len(matching_anforderungen)} Anforderungen gefunden")
+    if len(matching_anforderungen)>1:
+        print(f"\n{len(matching_anforderungen)} Anforderungen gefunden")
+        print("\n--- Passende Anforderungen ---")
+    else:
+        print("\n1 Anforderung gefunden")
+        print("\n--- Passende Anforderung ---")
 
-    print("\n--- Passende Anforderungen ---")
     for an_krt in sorted(matching_anforderungen, key=lambda x: x['id']):
         print(f" - {an_krt['id']} - {an_krt.get('name')}")
         cia_info = an_krt.get('cia')
