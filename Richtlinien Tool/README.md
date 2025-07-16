@@ -66,10 +66,12 @@ Weitere Befehle, die das Tool unterstützt sind:
 
 Sollten bereits Dateien mit dem gleichen Namen im gleichen Verzeichnis vorhanden sein werde diese mit dem Hochladen auf Confluence überschrieben. Der Seitenname für Confluence wird aus den Metadaten entnommen, als erste Überschrift eingefügt und dann entfernt.
 
-Bei der Nutzung von --check-regs muss in Markdown-Kommentaren hinterlegt werden, welche Anforderungen durch die Richtlinie umgesetzt werden
+Bei der Nutzung von --check-reqs muss in Markdown-Kommentaren hinterlegt werden, welche Anforderungen durch die Richtlinie umgesetzt werden
 Format der Kommentare: 
+```
 <!-- APP.2.1.1A3[: Umsetzungsstand] -->
 <!-- APP.2.1.1A4: entbehrlich -->
 <!-- APP.3.3.2A5: teilweise -->
 <!-- APP.1.1.1A1 --> == <-- APP.1.1.1A1: erfüllt -->
 <!-- APP.1.1.1A1, APP.1.1.1A2, APP.1.1.1A3  --> 
+```
