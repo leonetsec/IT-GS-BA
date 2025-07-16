@@ -226,8 +226,13 @@ def new_file_with_template(directory):
 
 # Vereinheitlicht IDs, falls eindeutige IDs verwendet werden
 def id_unify(id):
+    id = id.upper()
     if id[-1].isalpha():
-        return id[:-1]
+        id = id[:-1]
+    if 'A' in id and '.A' not in id:
+        last_a_index = id.rfind('A')
+        if last_a_index != -1:
+            id = id[:last_a_index] + '.' + id[last_a_index:]
     return id
 
 # Überprüft den Umsetzungsstatus von Anforderungen in Richtlinien
@@ -342,6 +347,7 @@ def check_reqs(path, typ):
         print(f"========================================================")
 
         print("\n--- Übersicht ---")
+        print(f"Schutzbedarfstyp: {typ.capitalize()}")
         print(f"Umgesetzt: {len(erfuellt)}")
         print(f"Teilweise umgesetzt: {len(teilweise)}")
         print(f"Entbehrlich: {len(entbehrlich)}")

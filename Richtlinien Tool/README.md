@@ -69,9 +69,9 @@ Sollten bereits Dateien mit dem gleichen Namen im gleichen Verzeichnis vorhanden
 Bei der Nutzung von --check-reqs muss in Markdown-Kommentaren hinterlegt werden, welche Anforderungen durch die Richtlinie umgesetzt werden
 Format der Kommentare: 
 ```
-<!-- APP.2.1.1A3[: Umsetzungsstand] -->
-<!-- APP.2.1.1A4: entbehrlich -->
-<!-- APP.3.3.2A5: teilweise -->
-<!-- APP.1.1.1A1 --> == <-- APP.1.1.1A1: erfüllt -->
-<!-- APP.1.1.1A1, APP.1.1.1A2, APP.1.1.1A3  --> 
+<!-- APP.2.1.A3[: Umsetzungsstand] -->
+<!-- APP.2.1.A4: entbehrlich -->
+<!-- APP.3.3.A5: teilweise -->
+<!-- APP.1.1.A1 --> == <-- APP.1.1.A1: erfüllt -->
+<!-- APP.1.1.A1, APP.1.1.A2, APP.1.1.A3  --> 
 ```
