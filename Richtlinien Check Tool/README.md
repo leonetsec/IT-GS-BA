@@ -3,7 +3,7 @@
 ## Installation
 - Requirements installieren
 - Optional: Richtlinien Template in ```template.py``` ändern
-- ```IT-Grundschutz.json``` einfügen/anpassen. Dafür mit IT-Grundschutz-Check Tool exportieren (Entfallene Anforderungen entfernen, zu einer Datei zusammenfassen)
+- ```IT-Grundschutz.json``` einfügen/anpassen. Dafür mit IT-Grundschutz-Check Tool exportieren (Entfallene Anforderungen entfernen, Bausteinnamen hinzufügen, zu einer Datei zusammenfassen)
 
 ## Nutzung
 

@@ -24,6 +24,7 @@ def new_file_with_template(directory):
 # Vereinheitlicht IDs, falls eindeutige IDs verwendet werden
 def id_unify(id):
     id = id.upper()
+    id = id.replace("-", ".")
     if id[-1].isalpha():
         id = id[:-1]
     if 'A' in id and '.A' not in id:
@@ -33,7 +34,7 @@ def id_unify(id):
     return id
 
 # Überprüft den Umsetzungsstatus von Anforderungen in Richtlinien
-def check(path, typ):
+def check(path, typ, show_status, inhalt):
     files = set()
     if os.path.isfile(path):
         files.add(path)
@@ -57,11 +58,6 @@ def check(path, typ):
     it_gs['Baustein_ID'] = it_gs['ID-Anforderung'].str.split('.A', expand=True)[0]
     it_gs['ID_unified'] = it_gs['ID-Anforderung'].apply(id_unify)
 
-    inhalt_choice = input("\nInhalt der Anforderungen mit ausgeben? Antwort (j/N): ")
-    if inhalt_choice.lower() in ["j", "ja"]:
-        inhalt = True
-    else:
-        inhalt = False
 
     for file_path in files:
 
@@ -119,7 +115,7 @@ def check(path, typ):
 
                 unified_id = id_unify(single_id.strip().upper())
 
-                if status == "erfüllt":
+                if status == "erfüllt" or status == "umgesetzt":
                     erfuellt.append(unified_id)
                 elif status == "teilweise":
                     teilweise.append(unified_id)
@@ -128,12 +124,11 @@ def check(path, typ):
 
         relevante_anforderungen = it_gs[it_gs['Baustein_ID'].isin(baustein_references)].copy()
 
-        if typ == 'basis':
+        if typ.lower() == 'basis':
             relevante_anforderungen = relevante_anforderungen[relevante_anforderungen['Typ'] == 'Basis']
-        elif typ == 'standard':
-            relevante_anforderungen = relevante_anforderungen[
-                relevante_anforderungen['Typ'].isin(['Basis', 'Standard'])]
-        # Bei hoch werden alle beibehalten
+        elif typ.lower() == 'standard':
+            relevante_anforderungen = relevante_anforderungen[relevante_anforderungen['Typ'].isin(['Basis', 'Standard'])]
+        # Bei Hoch werden alle beibehalten
 
         dokumentierte_ids = set(erfuellt + teilweise + entbehrlich)
         alle_relevanten_ids = set(relevante_anforderungen['ID_unified'])
@@ -151,19 +146,25 @@ def check(path, typ):
         print(f"Nicht umgesetzt / Nicht dokumentiert: {len(nicht_umgesetzte_ids)}")
 
         # Hilfsfunktion für formatierte Ausgabe
-        def print_section(title, ids, df, inhalt):
+        def print_section(title, ids, df, status, inhalt):
             print(f"\n--- {title} ({len(ids)}) ---")
             if not ids:
                 print("Keine")
                 return
 
-            grouped_items = {}
+            status_map = {
+                "Umgesetzt": "(umgesetzt)",
+                "Teilweise umgesetzt": "(teilweise)",
+                "Entbehrlich": "(entbehrlich)"
+            }
+            status_text = status_map.get(title, "(offen)")
 
+            grouped_items = {}
             for anforderung_id in ids:
                 details = df[df['ID_unified'] == anforderung_id]
                 if not details.empty:
                     for index, detail in details.iterrows():
-                        key = (detail['ID_unified'], detail['Titel'])
+                        key = (detail['ID_unified'], detail['Titel'], detail['Baustein'], detail['Typ'])
                         if key not in grouped_items:
                             grouped_items[key] = []
                         grouped_items[key].append(detail['Inhalt'])
@@ -171,38 +172,97 @@ def check(path, typ):
             sorted_keys = sorted(grouped_items.keys())
 
             for id_title_key in sorted_keys:
-                anforderung_id, title = id_title_key
+                anforderung_id, title, baustein, typ_detail = id_title_key
                 contents = grouped_items[id_title_key]
-                print(f"\n{anforderung_id} - {title}")
-                if inhalt:
+
+                if not inhalt and not status:
+                    print(f"{anforderung_id} - {title}")
+
+                if not inhalt and status:
+                    print(f"{anforderung_id} - {title} {status_text}")
+
+                if inhalt and not status:
                     unique_contents = []
                     [unique_contents.append(x) for x in contents if x not in unique_contents]
-                    print(f"{' '.join(unique_contents)}")
+                    print(f"\n\n{anforderung_id} - {title}")
+                    print(f"Baustein: {baustein}\nTyp: {typ_detail}")
+                    print(f"Inhalt: {' '.join(unique_contents)}")
 
-        print_section("Umgesetzt", erfuellt, relevante_anforderungen, inhalt)
-        print_section("Teilweise umgesetzt", teilweise, relevante_anforderungen, inhalt)
-        print_section("Entbehrlich", entbehrlich, relevante_anforderungen, inhalt)
-        print_section("Nicht umgesetzt / Nicht dokumentiert", nicht_umgesetzte_ids, relevante_anforderungen, inhalt)
+                if inhalt and status:
+                    unique_contents = []
+                    [unique_contents.append(x) for x in contents if x not in unique_contents]
+                    print(f"\n\n{anforderung_id} - {title} {status_text}")
+                    print(f"Baustein: {baustein}\nTyp: {typ_detail}")
+                    print(f"Inhalt: {' '.join(unique_contents)}")
+
+        print_section("Umgesetzt", erfuellt, relevante_anforderungen, show_status, inhalt)
+        print_section("Teilweise umgesetzt", teilweise, relevante_anforderungen, show_status, inhalt)
+        print_section("Entbehrlich", entbehrlich, relevante_anforderungen, show_status, inhalt)
+        print_section("Nicht umgesetzt / Nicht dokumentiert", nicht_umgesetzte_ids, relevante_anforderungen, show_status, inhalt)
+
+# Gibt den Inhalt einer gewünschten Anforderung aus
+def explain(string):
+    id = id_unify(string)
+    try:
+        script_dir = os.path.dirname(__file__)
+        json_path = os.path.join(script_dir, "IT-Grundschutz.json")
+        it_gs = pd.read_json(json_path, orient="records")
+    except FileNotFoundError:
+        print("\nFehler: Die Datei 'IT-Grundschutz.json' wurde nicht im Skriptverzeichnis gefunden.")
+        return
+
+    it_gs['ID_unified'] = it_gs['ID-Anforderung'].apply(id_unify)
+
+    if 'ID-Anforderung' in it_gs.columns:
+        it_gs['Baustein_ID'] = it_gs['ID-Anforderung'].str.split('.A', expand=True)[0]
+
+    results = it_gs[it_gs['ID_unified'] == id]
+
+    if results.empty:
+        print(f"Anforderung '{string}' wurde nicht im IT-Grundschutz-Kompendium gefunden (evtl. entfallen).")
+        return
+
+    first_row = results.iloc[0]
+
+    content_parts = results['Inhalt'].dropna().tolist()
+    unique_contents = []
+    [unique_contents.append(x) for x in content_parts if x not in unique_contents]
+    full_content = ' '.join(unique_contents)
+
+    print(f"\n--- Details für Anforderung: {id} ---")
+    print(f"Titel: {first_row.get('Titel')}")
+    print(f"Baustein: {first_row.get('Baustein')}")
+    print(f"Typ: {first_row.get('Typ')}")
+    print(f"Inhalt: {full_content}")
 
 # Hauptprogramm zur Verarbeitung von Kommandozeilenargumenten
 def main():
-    parser = argparse.ArgumentParser(description='Verarbeitet Markdown-Richtlinien und lädt sie mit Mark hoch.')
+    parser = argparse.ArgumentParser(description='Hilft bei der Prüfung von Markdown-Richtlinien.')
     parser.add_argument('file_dir_or_string', help='Pfad zu Datei, Verzeichnis oder String')
     parser.add_argument("--check", action="store_true", help="Prüft die Anforderungen von Richtlinien auf Vollständigkeit")
-    parser.add_argument('--typ', choices=['basis', 'standard', 'hoch'], default='standard', help='(Mit --check-reqs) Gibt den Typ bei der Anforderungsprüfung an (Default: standard).')
+    parser.add_argument('--typ', choices=['Basis', 'Standard', 'Hoch'], default='Standard', help='(Mit --check) Gibt den Typ bei der Anforderungsprüfung an (Default: Standard}).')
+    parser.add_argument("--status", action="store_true", help="Zeigt zusätzlich in jeder Zeile den Umsetzungsstatus an")
+    parser.add_argument("--details", action="store_true", help="Zeigt zusätzlich Baustein und Inhalt an")
+    parser.add_argument("--explain", action="store_true", help="Zeigt Details einer bestimmten Anforderung an")
+
+
     parser.add_argument("--new", action="store_true", help="Erstellt eine neue Richtlinien nach Template")
 
     args = parser.parse_args()
 
     if args.check:
-        check(args.file_dir_or_string, args.typ)
+        check(args.file_dir_or_string, args.typ, args.status, args.details)
+        return
+
+    elif args.explain:
+        explain(args.file_dir_or_string)
         return
 
     elif args.new:
         new_file_with_template(args.file_or_dir)
         return
 
-    else: print("Kein Argument ausgewählt")
+    else: print("Kein Argument übergeben")
 
 if __name__ == '__main__':
     main()
