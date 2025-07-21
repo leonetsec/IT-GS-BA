@@ -3,7 +3,20 @@ import yaml
 import argparse
 import os
 import pandas as pd
+from natsort import natsorted
 from template import template
+
+# Stellt sicher, dass der Typ klein- und großgeschrieben werden kann
+def case_insensitive(choices):
+    lower_choices = [c.lower() for c in choices]
+    def check_choice(arg):
+        if arg.lower() in lower_choices:
+            return choices[lower_choices.index(arg.lower())]
+        else:
+            raise argparse.ArgumentTypeError(
+                f"invalid choice: '{arg}' (choose from {', '.join(choices)})"
+            )
+    return check_choice
 
 # Erstellt eine neue Markdown-Datei nach Template, falls sie nicht existiert                
 def new_file_with_template(directory):
@@ -13,7 +26,6 @@ def new_file_with_template(directory):
     filepath = f"{directory}/neue_richtlinie.md"
     os.makedirs(directory, exist_ok=True)
 
-    # Datei nur erstellen, wenn sie nicht existiert
     if not os.path.exists(filepath):
         with open(filepath, "w", encoding="utf-8") as file:
             file.write(template)
@@ -23,7 +35,7 @@ def new_file_with_template(directory):
 
 # Vereinheitlicht IDs, falls eindeutige IDs verwendet werden
 def id_unify(id):
-    id = id.upper()
+    id = id.upper().strip()
     id = id.replace("-", ".")
     if id[-1].isalpha():
         id = id[:-1]
@@ -34,7 +46,7 @@ def id_unify(id):
     return id
 
 # Überprüft den Umsetzungsstatus von Anforderungen in Richtlinien
-def check(path, typ, show_status, inhalt):
+def check(path, typ, show_status, inhalt, verbose):
     files = set()
     if os.path.isfile(path):
         files.add(path)
@@ -57,7 +69,7 @@ def check(path, typ, show_status, inhalt):
 
     it_gs['Baustein_ID'] = it_gs['ID-Anforderung'].str.split('.A', expand=True)[0]
     it_gs['ID_unified'] = it_gs['ID-Anforderung'].apply(id_unify)
-
+    valid_baustein_ids = set(it_gs['Baustein_ID'].unique())
 
     for file_path in files:
 
@@ -67,7 +79,7 @@ def check(path, typ, show_status, inhalt):
             content = file.read()
 
         metadata_match = re.match(r"^---\n(.*?)\n---\n", content, re.DOTALL)
-        if not metadata_match:
+        if not metadata_match and verbose:
             print(f"\nKeine Metadaten in {file_path} gefunden.")
             continue
 
@@ -75,9 +87,13 @@ def check(path, typ, show_status, inhalt):
         metadata = yaml.safe_load(metadata_block)
         bsi_references = metadata.get("refs", [{}])[0].get("bsi")
 
-        if not bsi_references:
+        if not bsi_references and verbose:
             print(f"\nKeine BSI IT-Grundschutz Referenzen in den Metadaten von {file_path} gefunden.")
             continue
+
+        print(f"\n\n========================================================")
+        print(f"   Analyse für Datei: {os.path.basename(file_path)}")
+        print(f"========================================================")
 
         for bsi_reference in bsi_references:
             main_reference = bsi_reference.upper()
@@ -85,7 +101,10 @@ def check(path, typ, show_status, inhalt):
 
             main_reference = main_reference.replace("-", ".")
 
-            baustein_references.add(main_reference)
+            if main_reference in valid_baustein_ids:
+                baustein_references.add(main_reference)
+            elif verbose:
+                print(f"WARNUNG: Ungültige Bausteinreferenz in Metadaten: {main_reference}")
 
         comment_pattern = re.compile(r"<!--\s*(.*?)\s*-->", re.DOTALL)
 
@@ -95,17 +114,33 @@ def check(path, typ, show_status, inhalt):
         teilweise = []
         entbehrlich = []
 
+        allowed_statuses = {"erfüllt", "umgesetzt", "teilweise", "entbehrlich"}
+        id_format_pattern = re.compile(r"^(?:orp|ops|sys|app|con|isms|der|ind|net|inf)\.\d+(?:\.\d+)*\.A\d+$", re.IGNORECASE)
+
         for item in comment_contents:
             cleaned_item = item.strip()
+
+            status_count = cleaned_item.count(':')
+
+            if status_count > 1:
+                raise ValueError(
+                    f"Mehrere Status-Trennungen (':') gefunden in Kommentar: '{item}'. "
+                    f"Es ist nur eine Statusangabe pro Kommentar erlaubt, diese gilt für alle Anforderungen."
+                )
 
             status = "erfüllt"
             ids_part = cleaned_item
 
-            if ':' in cleaned_item:
+            if status_count == 1:
                 parts = cleaned_item.rsplit(':', 1)
                 ids_part = parts[0].strip()
                 status = parts[1].strip().lower()
 
+                if status not in allowed_statuses:
+                    raise ValueError(
+                        f"Ungültiger Umsetzungsstatus '{status}' gefunden in Kommentar: '{item}'. "
+                        f"Erlaubt sind: {', '.join(allowed_statuses)} ausschließlich am Ende des Kommentars"
+                    )
 
             ids = re.split(r'[\s,;]+', ids_part)
 
@@ -113,7 +148,11 @@ def check(path, typ, show_status, inhalt):
                 if not single_id:
                     continue
 
-                unified_id = id_unify(single_id.strip().upper())
+                unified_id = id_unify(single_id)
+
+                if not id_format_pattern.match(unified_id) and verbose:
+                    print(f"Info: Kommentar '{item}' wird ignoriert.")
+                    continue
 
                 if status == "erfüllt" or status == "umgesetzt":
                     erfuellt.append(unified_id)
@@ -130,27 +169,33 @@ def check(path, typ, show_status, inhalt):
             relevante_anforderungen = relevante_anforderungen[relevante_anforderungen['Typ'].isin(['Basis', 'Standard'])]
         # Bei Hoch werden alle beibehalten
 
-        dokumentierte_ids = set(erfuellt + teilweise + entbehrlich)
         alle_relevanten_ids = set(relevante_anforderungen['ID_unified'])
-        nicht_umgesetzte_ids = list(alle_relevanten_ids - dokumentierte_ids)
 
-        print(f"\n\n========================================================")
-        print(f"   Analyse für Datei: {os.path.basename(file_path)}")
-        print(f"========================================================")
+        tmp_erfuellt = [id_ for id_ in erfuellt if id_ in alle_relevanten_ids]
+        tmp_teilweise = [id_ for id_ in teilweise if id_ in alle_relevanten_ids]
+        tmp_entbehrlich = [id_ for id_ in entbehrlich if id_ in alle_relevanten_ids]
+
+        rel_erfuellt = natsorted(tmp_erfuellt)
+        rel_teilweise = natsorted(tmp_teilweise)
+        rel_entbehrlich = natsorted(tmp_entbehrlich)
+        nicht_umgesetzte_ids = natsorted(list(alle_relevanten_ids - set(rel_erfuellt + rel_teilweise + rel_entbehrlich)))
 
         print("\n--- Übersicht ---")
         print(f"Schutzbedarfstyp: {typ.capitalize()}")
-        print(f"Umgesetzt: {len(erfuellt)}")
-        print(f"Teilweise umgesetzt: {len(teilweise)}")
-        print(f"Entbehrlich: {len(entbehrlich)}")
+        print(f"Umgesetzt: {len(rel_erfuellt)}")
+        print(f"Teilweise umgesetzt: {len(rel_teilweise)}")
+        print(f"Entbehrlich: {len(rel_entbehrlich)}")
         print(f"Nicht umgesetzt / Nicht dokumentiert: {len(nicht_umgesetzte_ids)}")
+        if show_status:
+            print()
 
         # Hilfsfunktion für formatierte Ausgabe
         def print_section(title, ids, df, status, inhalt):
-            print(f"\n--- {title} ({len(ids)}) ---")
-            if not ids:
-                print("Keine")
-                return
+            if not status:
+                print(f"\n--- {title} ({len(ids)}) ---")
+                if not ids:
+                    print("Keine")
+                    return
 
             status_map = {
                 "Umgesetzt": "(umgesetzt)",
@@ -169,7 +214,7 @@ def check(path, typ, show_status, inhalt):
                             grouped_items[key] = []
                         grouped_items[key].append(detail['Inhalt'])
 
-            sorted_keys = sorted(grouped_items.keys())
+            sorted_keys = natsorted(grouped_items.keys())
 
             for id_title_key in sorted_keys:
                 anforderung_id, title, baustein, typ_detail = id_title_key
@@ -195,9 +240,9 @@ def check(path, typ, show_status, inhalt):
                     print(f"Baustein: {baustein}\nTyp: {typ_detail}")
                     print(f"Inhalt: {' '.join(unique_contents)}")
 
-        print_section("Umgesetzt", erfuellt, relevante_anforderungen, show_status, inhalt)
-        print_section("Teilweise umgesetzt", teilweise, relevante_anforderungen, show_status, inhalt)
-        print_section("Entbehrlich", entbehrlich, relevante_anforderungen, show_status, inhalt)
+        print_section("Umgesetzt", rel_erfuellt, relevante_anforderungen, show_status, inhalt)
+        print_section("Teilweise umgesetzt", rel_teilweise, relevante_anforderungen, show_status, inhalt)
+        print_section("Entbehrlich", rel_entbehrlich, relevante_anforderungen, show_status, inhalt)
         print_section("Nicht umgesetzt / Nicht dokumentiert", nicht_umgesetzte_ids, relevante_anforderungen, show_status, inhalt)
 
 # Gibt den Inhalt einer gewünschten Anforderung aus
@@ -238,20 +283,20 @@ def explain(string):
 # Hauptprogramm zur Verarbeitung von Kommandozeilenargumenten
 def main():
     parser = argparse.ArgumentParser(description='Hilft bei der Prüfung von Markdown-Richtlinien.')
+    type_choices = ['Basis', 'Standard', 'Hoch']
     parser.add_argument('file_dir_or_string', help='Pfad zu Datei, Verzeichnis oder String')
     parser.add_argument("--check", action="store_true", help="Prüft die Anforderungen von Richtlinien auf Vollständigkeit")
-    parser.add_argument('--typ', choices=['Basis', 'Standard', 'Hoch'], default='Standard', help='(Mit --check) Gibt den Typ bei der Anforderungsprüfung an (Default: Standard}).')
-    parser.add_argument("--status", action="store_true", help="Zeigt zusätzlich in jeder Zeile den Umsetzungsstatus an")
-    parser.add_argument("--details", action="store_true", help="Zeigt zusätzlich Baustein und Inhalt an")
-    parser.add_argument("--explain", action="store_true", help="Zeigt Details einer bestimmten Anforderung an")
-
-
-    parser.add_argument("--new", action="store_true", help="Erstellt eine neue Richtlinien nach Template")
+    parser.add_argument('--typ', type=case_insensitive(type_choices), choices=type_choices, default='Standard', help='(Mit --check) Gibt den Typ bei der Anforderungsprüfung an (Default: Standard})')
+    parser.add_argument("--status", action="store_true", help="(Mit --check) Zeigt zusätzlich in jeder Zeile den Umsetzungsstatus an")
+    parser.add_argument("--details", action="store_true", help="(Mit --check) Zeigt zusätzlich Baustein und Inhalt an")
+    parser.add_argument("--explain", action="store_true", help="Zeigt Details zu einer bestimmten Anforderung an")
+    parser.add_argument("--new", action="store_true", help="Erstellt eine neue Richtlinien nach Template im übergebenen Ordner")
+    parser.add_argument("-v", "--verbose", action="store_true", help="Zeigt Infos und Warnungen während der Verarbeitung an.")
 
     args = parser.parse_args()
 
     if args.check:
-        check(args.file_dir_or_string, args.typ, args.status, args.details)
+        check(args.file_dir_or_string, args.typ, args.status, args.details, args.verbose)
         return
 
     elif args.explain:
@@ -259,7 +304,7 @@ def main():
         return
 
     elif args.new:
-        new_file_with_template(args.file_or_dir)
+        new_file_with_template(args.file_dir_or_string)
         return
 
     else: print("Kein Argument übergeben")

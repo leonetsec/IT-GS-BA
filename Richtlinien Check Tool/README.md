@@ -1,5 +1,8 @@
 # Readme Richtlinien Check Tool
 
+Unterstützt bei der Arbeit mit Richtlinien, indem es automatisiert prüft, ob die in den Metadaten vorkommenden Bausteine (siehe Template) vollständig durch die Richtlinie abgedeckt werden.
+Dafür muss in Markdown-Kommentaren die Umsetzung von Anforderungen hinterlegt werden (siehe unten).
+
 ## Installation
 - Requirements installieren
 - Optional: Richtlinien Template in ```template.py``` ändern
@@ -12,12 +15,14 @@
 Befehle, die das Tool unterstützt:
 
 - --check: Überprüft, ob die in den Metadaten vorkommenden Bausteine in der Richtlinie abgedeckt werden
-- --typ: (Mit --check-regs): Definiert, ob für die Überprüfung der Schutzbedarfstyp Basis, Standard oder Hoch ausgewählt wird, Default: Standard
+- --typ (Mit --check): Definiert, ob für die Überprüfung der Schutzbedarfstyp Basis, Standard oder Hoch ausgewählt wird, Default: Standard
+- --status (Mit --check): Zeigt in jeder Zeile den Umsetzungsstatus an 
+- --details (Mit --check): Zeigt zusätzlich Baustein, Typ und Inhalt an
+- --explain: Zeigt die Details zu einer gegebenen Anforderungs-ID an
 - --new: Erstellt eine neue Richtlinie nach Template
+- --verbose: Zeigt Infos und Warnungen, zum Beispiel zu ungültigen Referenzen und ignorierten Kommentaren an
 
-Bei der Nutzung von --check muss in Markdown-Kommentaren hinterlegt werden, welche Anforderungen durch die Richtlinie umgesetzt werden
-
-Format der Kommentare: 
+Format der Kommentare, um die Umsetzung zu markieren: 
 ```
 <!-- BAU.N.N.AN[,BAU.N.N.AN[,...]][:{erfüllt|entbehrlich|teilweise}] -->
 ```

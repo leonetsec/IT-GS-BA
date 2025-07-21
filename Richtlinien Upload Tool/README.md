@@ -51,8 +51,8 @@ Um eine Markdown Datei wie gewünscht umzuwandeln und auf Confluence zu parsen w
 Weitere Befehle, die das Tool unterstützt:
 
 - --all: Verarbeite alle Dateien im angegebenen Verzeichnis
-- --include-folders: (Mit --all) Verarbeite alle Dateien inkl. denen in Unterordnern
-- --keep-structure_ (Mit --include-folders) Behalte die Unterordnerstruktur für Confluence bei
+- --include-folders (Mit --all): Verarbeite alle Dateien inkl. denen in Unterordnern
+- --keep-structure (Mit --include-folders): Behalte die Unterordnerstruktur für Confluence bei
 - --space: Space für den Mark-Header einmalig ändern 
 - --parent: Parent-Ordner für den Mark-Header einmalig ändern
 - --config: Config einmalig ändern
