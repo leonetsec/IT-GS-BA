@@ -33,7 +33,7 @@ Beispiele:
 <!-- APP.2.1.A3: erfüllt -->
 <!-- APP.2.1.A4: entbehrlich -->
 <!-- APP.3.3.A5: teilweise -->
-<!-- APP.1.1.A2 --> == <-- APP.1.1.A2: erfüllt -->
+<!-- APP.1.1.A2 --> == <!-- APP.1.1.A2: erfüllt -->
 <!-- APP.2.1.A4, APP.2.1.A5: entbehrlich --> == beide entbehrlich
 <!-- APP.1.1.A2, APP.1.1.A3, APP.1.1.A4 --> 
 ```

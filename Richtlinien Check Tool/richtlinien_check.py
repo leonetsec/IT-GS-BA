@@ -70,6 +70,8 @@ def check(path, typ, show_status, inhalt, verbose):
     it_gs['Baustein_ID'] = it_gs['ID-Anforderung'].str.split('.A', expand=True)[0]
     it_gs['ID_unified'] = it_gs['ID-Anforderung'].apply(id_unify)
     valid_baustein_ids = set(it_gs['Baustein_ID'].unique())
+    valid_anforderung_ids = set(it_gs['ID_unified'].unique())
+
 
     for file_path in files:
 
@@ -152,6 +154,9 @@ def check(path, typ, show_status, inhalt, verbose):
 
                 if not id_format_pattern.match(unified_id) and verbose:
                     print(f"Info: Kommentar '{item}' wird ignoriert.")
+                    continue
+                if unified_id not in valid_anforderung_ids and verbose:
+                    print(f"WARNUNG: '{single_id}' (verarbeitet als '{unified_id}') ist keine gültige ID (evtl. entfallen).")
                     continue
 
                 if status == "erfüllt" or status == "umgesetzt":

@@ -7,7 +7,8 @@ approver:
 approved:
 refs:
   - bsi:
-    - orp-4-a16-2
+    - ORP.4
+    - CON.1
 ---
 
 # Richtlinie Template
@@ -30,6 +31,7 @@ Dies ist keine Zusammenfassung der Richtlinie, sondern eine kurze Einführung in
 
 Das Ziel der Richtlinie wird hier beschrieben.
 
+
 # Anwendungsbereich (Geltungsbereich)
 
 Allgemein für alle Mitarbeitenden: "Die Richtlinie gilt für alle Mitarbeitenden."
@@ -46,6 +48,7 @@ Für Rollen und Systeme kombiniert: "Die Richtlinie gilt für alle Mitarbeitende
 
 Für spezifische Personen: "Die Richtlinie gilt für den/die [(Titel der) Person, z. B. Informationssicherheitsbeauftragte(n), Datenschutzbeauftragte(n)], der/die für [Aufgabe] verantwortlich ist."
 
+
 # Verantwortlichkeiten
 
 Hier wird beschrieben, wer für die Einhaltung der Richtlinie verantwortlich ist.
@@ -55,6 +58,7 @@ An dieser Stelle nur interne Stellen verwenden.
 
 Für die Umsetzung: Mitarbeiter:innen (für allgemeines wie Passwörter)
                    Administratoren der Dienste (für technische Umsetzung)
+
 
 # Anforderungen
 
@@ -68,6 +72,7 @@ In übergeordneter Leitlinie festlegen, dass Ausnahmen nur in begründeten Fäll
 Und dokumentiert erfolgen.
 -->
 
+
 # Kontrolle
 
 Hier wird beschrieben, wer die Einhaltung kontrolliert
@@ -80,18 +85,16 @@ siehe: Richtlinie internes Audit
 regelmäßig: mindestens einmal im Jahr
 stichprobenartig: nicht immer die gleichen Systeme
 
+
 # Referenzen
 
 Hier werden Referenzen zu anderen Richtlinien oder Gesetzen angegeben.
 
-## BSI-Grundschutz
-
-Hier werden die Anforderungen aus den BSI IT-Grundschutzkatalogen aufgeführt, die
-durch die Richtlinie abgedeckt werden.
 
 ## Sonstige Referenzen
 
 Hier werden sonstige Referenzen aufgeführt. Beispielsweise Rundschreiben, Standards (ISO, DIN, etc.), Hilfestellungen in Confluence, etc.
+
 
 # Anhang
 

@@ -3,7 +3,7 @@ import yaml
 import subprocess
 import argparse
 import os
-from mapping import bsi_ref_mapping, bsi_ref_titles, template, bsi_ref_names
+from mapping import bsi_ref_mapping, bsi_ref_titles, bsi_ref_names
 
 # Jahr festlegen auf aktuellen IT-Grundschutz
 year = '2023'
