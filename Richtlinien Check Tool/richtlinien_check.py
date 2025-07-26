@@ -4,6 +4,9 @@ import argparse
 import os
 import pandas as pd
 from natsort import natsorted
+import openpyxl
+import openpyxl.utils
+import shutil
 from template import template
 
 # Stellt sicher, dass der Typ klein- und großgeschrieben werden kann
@@ -45,6 +48,96 @@ def id_unify(id):
             id = id[:last_a_index] + '.' + id[last_a_index:]
     return id
 
+def get_bausteine_from_metadata(content, file_path, valid_baustein_ids, verbose):
+    baustein_references = set()
+    metadata_match = re.match(r"^---\n(.*?)\n---\n", content, re.DOTALL)
+    if not metadata_match and verbose:
+        print(f"\nKeine Metadaten in {file_path} gefunden.")
+        return
+
+    metadata_block = metadata_match.group(1)
+    metadata = yaml.safe_load(metadata_block)
+    bsi_references = metadata.get("refs", [{}])[0].get("bsi")
+
+    if not bsi_references and verbose:
+        print(f"\nKeine BSI IT-Grundschutz Referenzen in den Metadaten von {file_path} gefunden.")
+        return
+
+    for bsi_reference in bsi_references:
+        main_reference = bsi_reference.upper()
+        main_reference = main_reference.split('.A')[0]
+
+        main_reference = main_reference.replace("-", ".")
+
+        if main_reference in valid_baustein_ids:
+            baustein_references.add(main_reference)
+        elif verbose:
+            print(f"WARNUNG: Ungültige Bausteinreferenz in Metadaten: {main_reference}")
+    return baustein_references
+
+def get_reqs_from_comments(content, valid_anforderung_ids, verbose):
+    comment_pattern = re.compile(r"<!--\s*(.*?)\s*-->", re.DOTALL)
+
+    comment_contents = comment_pattern.findall(content)
+
+    erfuellt = []
+    teilweise = []
+    entbehrlich = []
+
+    allowed_statuses = {"erfüllt", "umgesetzt", "teilweise", "entbehrlich"}
+    id_format_pattern = re.compile(r"^(?:orp|ops|sys|app|con|isms|der|ind|net|inf)\.\d+(?:\.\d+)*\.A\d+$",
+                                   re.IGNORECASE)
+
+    for item in comment_contents:
+        cleaned_item = item.strip()
+
+        status_count = cleaned_item.count(':')
+
+        if status_count > 1:
+            raise ValueError(
+                f"Mehrere Status-Trennungen (':') gefunden in Kommentar: '{item}'. "
+                f"Es ist nur eine Statusangabe pro Kommentar erlaubt, diese gilt für alle Anforderungen."
+            )
+
+        status = "erfüllt"
+        ids_part = cleaned_item
+
+        if status_count == 1:
+            parts = cleaned_item.rsplit(':', 1)
+            ids_part = parts[0].strip()
+            status = parts[1].strip().lower()
+
+            if status not in allowed_statuses:
+                raise ValueError(
+                    f"Ungültiger Umsetzungsstatus '{status}' gefunden in Kommentar: '{item}'. "
+                    f"Erlaubt sind: {', '.join(allowed_statuses)} ausschließlich am Ende des Kommentars"
+                )
+
+        ids = re.split(r'[\s,;]+', ids_part)
+
+        for single_id in ids:
+            if not single_id:
+                continue
+
+            unified_id = id_unify(single_id)
+
+            if not id_format_pattern.match(unified_id) and verbose:
+                print(f"Info: Kommentar '{item}' wird ignoriert.")
+                continue
+            if unified_id not in valid_anforderung_ids and verbose:
+                print(
+                    f"WARNUNG: '{single_id}' (verarbeitet als '{unified_id}') ist keine gültige ID (evtl. entfallen).")
+                continue
+
+            if status == "erfüllt" or status == "umgesetzt":
+                erfuellt.append(unified_id)
+            elif status == "teilweise":
+                teilweise.append(unified_id)
+            elif status == "entbehrlich":
+                entbehrlich.append(unified_id)
+    return erfuellt, teilweise, entbehrlich
+
+
 # Überprüft den Umsetzungsstatus von Anforderungen in Richtlinien
 def check(path, typ, show_status, inhalt, verbose):
     files = set()
@@ -75,96 +168,18 @@ def check(path, typ, show_status, inhalt, verbose):
 
     for file_path in files:
 
-        baustein_references = set()
-
         with open(file_path, 'r') as file:
             content = file.read()
 
-        metadata_match = re.match(r"^---\n(.*?)\n---\n", content, re.DOTALL)
-        if not metadata_match and verbose:
-            print(f"\nKeine Metadaten in {file_path} gefunden.")
-            continue
-
-        metadata_block = metadata_match.group(1)
-        metadata = yaml.safe_load(metadata_block)
-        bsi_references = metadata.get("refs", [{}])[0].get("bsi")
-
-        if not bsi_references and verbose:
-            print(f"\nKeine BSI IT-Grundschutz Referenzen in den Metadaten von {file_path} gefunden.")
+        baustein_references = get_bausteine_from_metadata(content, file_path, valid_baustein_ids, verbose)
+        if not baustein_references:
             continue
 
         print(f"\n\n========================================================")
         print(f"   Analyse für Datei: {os.path.basename(file_path)}")
         print(f"========================================================")
 
-        for bsi_reference in bsi_references:
-            main_reference = bsi_reference.upper()
-            main_reference = main_reference.split('.A')[0]
-
-            main_reference = main_reference.replace("-", ".")
-
-            if main_reference in valid_baustein_ids:
-                baustein_references.add(main_reference)
-            elif verbose:
-                print(f"WARNUNG: Ungültige Bausteinreferenz in Metadaten: {main_reference}")
-
-        comment_pattern = re.compile(r"<!--\s*(.*?)\s*-->", re.DOTALL)
-
-        comment_contents = comment_pattern.findall(content)
-
-        erfuellt = []
-        teilweise = []
-        entbehrlich = []
-
-        allowed_statuses = {"erfüllt", "umgesetzt", "teilweise", "entbehrlich"}
-        id_format_pattern = re.compile(r"^(?:orp|ops|sys|app|con|isms|der|ind|net|inf)\.\d+(?:\.\d+)*\.A\d+$", re.IGNORECASE)
-
-        for item in comment_contents:
-            cleaned_item = item.strip()
-
-            status_count = cleaned_item.count(':')
-
-            if status_count > 1:
-                raise ValueError(
-                    f"Mehrere Status-Trennungen (':') gefunden in Kommentar: '{item}'. "
-                    f"Es ist nur eine Statusangabe pro Kommentar erlaubt, diese gilt für alle Anforderungen."
-                )
-
-            status = "erfüllt"
-            ids_part = cleaned_item
-
-            if status_count == 1:
-                parts = cleaned_item.rsplit(':', 1)
-                ids_part = parts[0].strip()
-                status = parts[1].strip().lower()
-
-                if status not in allowed_statuses:
-                    raise ValueError(
-                        f"Ungültiger Umsetzungsstatus '{status}' gefunden in Kommentar: '{item}'. "
-                        f"Erlaubt sind: {', '.join(allowed_statuses)} ausschließlich am Ende des Kommentars"
-                    )
-
-            ids = re.split(r'[\s,;]+', ids_part)
-
-            for single_id in ids:
-                if not single_id:
-                    continue
-
-                unified_id = id_unify(single_id)
-
-                if not id_format_pattern.match(unified_id) and verbose:
-                    print(f"Info: Kommentar '{item}' wird ignoriert.")
-                    continue
-                if unified_id not in valid_anforderung_ids and verbose:
-                    print(f"WARNUNG: '{single_id}' (verarbeitet als '{unified_id}') ist keine gültige ID (evtl. entfallen).")
-                    continue
-
-                if status == "erfüllt" or status == "umgesetzt":
-                    erfuellt.append(unified_id)
-                elif status == "teilweise":
-                    teilweise.append(unified_id)
-                elif status == "entbehrlich":
-                    entbehrlich.append(unified_id)
+        erfuellt, teilweise, entbehrlich = get_reqs_from_comments(content, valid_anforderung_ids, verbose)
 
         relevante_anforderungen = it_gs[it_gs['Baustein_ID'].isin(baustein_references)].copy()
 
@@ -285,6 +300,112 @@ def explain(string):
     print(f"Typ: {first_row.get('Typ')}")
     print(f"Inhalt: {full_content}")
 
+# Füllt Checklisten aus Richtlinien aus
+def fill_checklists(path, verbose):
+    files = set()
+    if os.path.isfile(path):
+        files.add(path)
+    elif os.path.isdir(path):
+        for file in os.listdir(path):
+            file_path = os.path.join(path, file)
+            if os.path.isfile(file_path) and file_path.endswith(('.md', '.markdown')):
+                files.add(file_path)
+    else:
+        print("Kein gültiger Pfad, Vorgang wird abgebrochen.")
+        return
+
+    print(f"Pfad zu Richtlinie(n): {path}")
+    while True:
+        checklist_path = input("\nPfad zum Ordner mit den Checklisten: ").strip().strip('"')
+        if os.path.isdir(checklist_path):
+            break
+        else:
+            print("Kein gültiger Pfad zu einem Ordner")
+
+    try:
+        script_dir = os.path.dirname(__file__)
+        json_path = os.path.join(script_dir, "IT-Grundschutz.json")
+        it_gs = pd.read_json(json_path, orient="records")
+    except FileNotFoundError:
+        print("\nFehler: Die Datei 'IT-Grundschutz.json' wurde nicht im Skriptverzeichnis gefunden.")
+        return
+
+    it_gs['Baustein_ID'] = it_gs['ID-Anforderung'].str.split('.A', expand=True)[0]
+    it_gs['ID_unified'] = it_gs['ID-Anforderung'].apply(id_unify)
+    valid_baustein_ids = set(it_gs['Baustein_ID'].unique())
+    valid_anforderung_ids = set(it_gs['ID_unified'].unique())
+
+    for file_path in files:
+        with open(file_path, 'r') as file:
+            content = file.read()
+
+        baustein_references = get_bausteine_from_metadata(content, file_path, valid_baustein_ids, verbose)
+        if not baustein_references:
+            continue
+
+        checklist_files_to_process = []
+        for baustein_id in baustein_references:
+            potential_checklist = os.path.join(checklist_path, f"Checkliste_{baustein_id}.xlsx")
+            if os.path.exists(potential_checklist):
+                checklist_files_to_process.append(potential_checklist)
+            else:
+                print(
+                    f"WARNUNG: Checkliste für Baustein '{baustein_id}' nicht gefunden unter '{potential_checklist}'. Wird übersprungen.")
+
+        if not checklist_files_to_process:
+            continue
+
+        erfuellt, teilweise, entbehrlich = get_reqs_from_comments(content, valid_anforderung_ids, verbose)
+
+        relevante_anforderungen = it_gs[it_gs['Baustein_ID'].isin(baustein_references)].copy()
+
+        alle_relevanten_ids = set(relevante_anforderungen['ID_unified'])
+        rel_erfuellt = [id_ for id_ in erfuellt if id_ in alle_relevanten_ids]
+        rel_teilweise = [id_ for id_ in teilweise if id_ in alle_relevanten_ids]
+        rel_entbehrlich = [id_ for id_ in entbehrlich if id_ in alle_relevanten_ids]
+        nicht_umgesetzte_ids = list(alle_relevanten_ids - set(rel_erfuellt + rel_teilweise + rel_entbehrlich))
+
+        output_dir = os.path.join(checklist_path, "Aus Richtlinie generiert")
+        os.makedirs(output_dir, exist_ok=True)
+        c = 0
+
+        for source_checklist_path in checklist_files_to_process:
+            base_name = os.path.basename(source_checklist_path)
+            dest_checklist_path = os.path.join(output_dir, base_name)
+
+            shutil.copy(source_checklist_path, dest_checklist_path)
+
+            workbook = openpyxl.load_workbook(dest_checklist_path)
+            sheet = workbook.active
+
+            headers = {cell.value: cell.column for cell in sheet[5]}
+            id_col = headers.get("ID-Anforderung")
+            umsetzung_col = headers.get("Umsetzung")
+            entbehrlich_col = headers.get("Entbehrlich")
+
+            for row in range(6, sheet.max_row + 1):
+                req_id_cell = sheet.cell(row=row, column=id_col)
+                if req_id_cell.value:
+                    unified_id = id_unify(req_id_cell.value)
+
+                    umsetzung_cell = sheet.cell(row=row, column=umsetzung_col)
+                    current_value = umsetzung_cell.value
+
+                    if unified_id in rel_erfuellt:
+                        umsetzung_cell.value = "Ja"
+                    elif unified_id in rel_teilweise:
+                        if current_value is None or current_value == "Nein":
+                            umsetzung_cell.value = "Teilweise"
+                    elif unified_id in nicht_umgesetzte_ids:
+                        if current_value is None:
+                            umsetzung_cell.value = "Nein"
+                    if unified_id in rel_entbehrlich:
+                        sheet.cell(row=row, column=entbehrlich_col).value = "Ja"
+
+            workbook.save(dest_checklist_path)
+            c += 1
+        print(f"\n{c} Checklisten gefüllt und gespeichert")
+
 # Hauptprogramm zur Verarbeitung von Kommandozeilenargumenten
 def main():
     parser = argparse.ArgumentParser(description='Hilft bei der Prüfung von Markdown-Richtlinien.')
@@ -296,7 +417,8 @@ def main():
     parser.add_argument("--details", action="store_true", help="(Mit --check) Zeigt zusätzlich Baustein und Inhalt an")
     parser.add_argument("--explain", action="store_true", help="Zeigt Details zu einer bestimmten Anforderung an")
     parser.add_argument("--new", action="store_true", help="Erstellt eine neue Richtlinien nach Template im übergebenen Ordner")
-    parser.add_argument("-v", "--verbose", action="store_true", help="Zeigt Infos und Warnungen während der Verarbeitung an.")
+    parser.add_argument("--fill-checklists", action="store_true", help="Füllt automatisch die Checklisten basierend auf der Richtlinie aus")
+    parser.add_argument("-v", "--verbose", action="store_true", help="Zeigt Infos und Warnungen während der Verarbeitung an")
 
     args = parser.parse_args()
 
@@ -310,6 +432,10 @@ def main():
 
     elif args.new:
         new_file_with_template(args.file_dir_or_string)
+        return
+
+    elif args.fill_checklists:
+        fill_checklists(args.file_dir_or_string, args.verbose)
         return
 
     else: print("Kein Argument übergeben")

@@ -20,7 +20,8 @@ Befehle, die das Tool unterstützt:
 - --details (Mit --check): Zeigt zusätzlich Baustein, Typ und Inhalt an
 - --explain: Zeigt die Details zu einer gegebenen Anforderungs-ID an
 - --new: Erstellt eine neue Richtlinie nach Template
-- --verbose: Zeigt Infos und Warnungen, zum Beispiel zu ungültigen Referenzen und ignorierten Kommentaren an
+- --fill-checklists: Füllt automatisch die passenden Checklisten anhand der Richtlinien aus
+- --verbose: Zeigt Infos und Warnungen an, zum Beispiel zu ungültigen Referenzen und ignorierten Kommentaren
 
 Format der Kommentare, um die Umsetzung zu markieren: 
 ```
