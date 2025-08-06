@@ -686,7 +686,7 @@ def scale_setter(file_path, values):
 
 # Handler für Datei oder Ordner
 def export_handler(file_or_dir):
-    file_format, columns, omitted, unnecessary, implemented, baustein, gefahren, index_numbers, types_to_remove, merge, index_choice = get_export_settings()
+    file_format, columns, omitted, unnecessary, implemented, baustein, gefahren, index_numbers, types_to_remove, merge, index_choice = get_export_settings(file_or_dir)
 
     if os.path.isfile(file_or_dir) and is_format(file_or_dir):
         export(file_or_dir, file_format, columns, omitted, unnecessary, implemented, baustein, gefahren, index_numbers, types_to_remove, index_choice)
@@ -758,7 +758,7 @@ def merge_export(file_list, file_format, index_choice):
         os.remove(f_path)
 
 # Fragt den Nutzer, welches Format und welche Spalten er exportieren möchte
-def get_export_settings():
+def get_export_settings(path):
     export_format = multiple_choice(mapping.format_options, "Wählen Sie das Exportformat:", multi=False)
 
     if export_format == "9":
@@ -798,7 +798,9 @@ def get_export_settings():
         index_numbers = ask_user("Möchten Sie nummerierte Zeilen?")
     baustein = ask_user("Soll jede Anforderung den Bausteinnamen enthalten?", default_yes=False)
     gefahren = ask_user("Sollen die elementaren Gefährdungen aus den Kreuzreferenztabellen hinzugefügt werden?", default_yes=False)
-    merge = ask_user("Sollen die Dateien am Ende zu einer einzelnen, großen Datei zusammengeführt werden?", default_yes=False)
+    merge = False
+    if os.path.isdir(path):
+        merge = ask_user("Sollen die Dateien am Ende zu einer einzelnen, großen Datei zusammengeführt werden?", default_yes=False)
     index_choice = None
     if merge and index_numbers:
         index_options = {

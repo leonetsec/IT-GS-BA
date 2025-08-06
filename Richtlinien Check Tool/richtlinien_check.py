@@ -85,56 +85,62 @@ def get_reqs_from_comments(content, valid_anforderung_ids, verbose):
     entbehrlich = []
 
     allowed_statuses = {"erfüllt", "umgesetzt", "teilweise", "entbehrlich"}
-    id_format_pattern = re.compile(r"^(?:orp|ops|sys|app|con|isms|der|ind|net|inf)\.\d+(?:\.\d+)*\.A\d+$",
-                                   re.IGNORECASE)
+    id_format_pattern = re.compile(r"^(?:orp|ops|sys|app|con|isms|der|ind|net|inf)\.\d+(?:\.\d+)*\.A\d+$", re.IGNORECASE)
+
+    # Hilfsfunktion, um zu prüfen, ob ein String IDs enthält
+    def contains_valid_id(text):
+        potential_ids = re.split(r'[\s,;]+', text)
+        for pid in potential_ids:
+            pid = id_unify(pid)
+            if id_format_pattern.match(pid):
+                return True
+        return False
 
     for item in comment_contents:
         cleaned_item = item.strip()
 
-        status_count = cleaned_item.count(':')
-
-        if status_count > 1:
-            raise ValueError(
-                f"Mehrere Status-Trennungen (':') gefunden in Kommentar: '{item}'. "
-                f"Es ist nur eine Statusangabe pro Kommentar erlaubt, diese gilt für alle Anforderungen."
-            )
-
+        parts = cleaned_item.rsplit(':', 1)
         status = "erfüllt"
         ids_part = cleaned_item
 
-        if status_count == 1:
-            parts = cleaned_item.rsplit(':', 1)
-            ids_part = parts[0].strip()
-            status = parts[1].strip().lower()
+        comment_has_valid_ids = contains_valid_id(parts[0].strip())
 
-            if status not in allowed_statuses:
-                raise ValueError(
-                    f"Ungültiger Umsetzungsstatus '{status}' gefunden in Kommentar: '{item}'. "
-                    f"Erlaubt sind: {', '.join(allowed_statuses)} ausschließlich am Ende des Kommentars"
-                )
+        if len(parts) == 2:
+            potential_ids_part = parts[0].strip()
+            potential_status = parts[1].strip().lower()
 
-        ids = re.split(r'[\s,;]+', ids_part)
+            if potential_status in allowed_statuses:
+                status = potential_status
+                ids_part = potential_ids_part
+            else:
+                if comment_has_valid_ids:
+                    raise ValueError(
+                        f"Ungültiger Umsetzungsstatus '{parts[1].strip()}' in Kommentar: '{item}'. "
+                        f"Erlaubt sind: {', '.join(allowed_statuses)}."
+                    )
 
-        for single_id in ids:
+        found_ids_in_comment = re.split(r'[\s,;]+', ids_part)
+
+        for single_id in found_ids_in_comment:
             if not single_id:
                 continue
 
             unified_id = id_unify(single_id)
 
-            if not id_format_pattern.match(unified_id) and verbose:
-                print(f"Info: Kommentar '{item}' wird ignoriert.")
-                continue
-            if unified_id not in valid_anforderung_ids and verbose:
-                print(
-                    f"WARNUNG: '{single_id}' (verarbeitet als '{unified_id}') ist keine gültige ID (evtl. entfallen).")
-                continue
+            if id_format_pattern.match(unified_id):
+                if unified_id in valid_anforderung_ids:
+                    if status in {"erfüllt", "umgesetzt"}:
+                        erfuellt.append(unified_id)
+                    elif status == "teilweise":
+                        teilweise.append(unified_id)
+                    elif status == "entbehrlich":
+                        entbehrlich.append(unified_id)
+                elif verbose:
+                    print(f"WARNUNG: '{single_id}' (verarbeitet als '{unified_id}') ist keine gültige ID (evtl. entfallen).")
+            else: break
 
-            if status == "erfüllt" or status == "umgesetzt":
-                erfuellt.append(unified_id)
-            elif status == "teilweise":
-                teilweise.append(unified_id)
-            elif status == "entbehrlich":
-                entbehrlich.append(unified_id)
+        if not comment_has_valid_ids and verbose:
+            print(f"Info: Kommentar ignoriert: '{item}'")
     return erfuellt, teilweise, entbehrlich
 
 
@@ -167,7 +173,6 @@ def check(path, typ, show_status, inhalt, verbose):
 
 
     for file_path in files:
-
         with open(file_path, 'r') as file:
             content = file.read()
 
@@ -336,75 +341,76 @@ def fill_checklists(path, verbose):
     valid_anforderung_ids = set(it_gs['ID_unified'].unique())
 
     for file_path in files:
-        with open(file_path, 'r') as file:
-            content = file.read()
+        execute_checklist_filling(file_path, checklist_path, it_gs, valid_baustein_ids, valid_anforderung_ids, verbose)
+    print(f"Checklisten gefüllt und gespeichert")
 
-        baustein_references = get_bausteine_from_metadata(content, file_path, valid_baustein_ids, verbose)
-        if not baustein_references:
-            continue
+# Führt die Bearbeitung der Checklisten für jede Datei aus
+def execute_checklist_filling(file_path, checklist_path, it_gs, valid_baustein_ids, valid_anforderung_ids, verbose):
+    with open(file_path, 'r') as file:
+        content = file.read()
 
-        checklist_files_to_process = []
-        for baustein_id in baustein_references:
-            potential_checklist = os.path.join(checklist_path, f"Checkliste_{baustein_id}.xlsx")
-            if os.path.exists(potential_checklist):
-                checklist_files_to_process.append(potential_checklist)
-            else:
-                print(
-                    f"WARNUNG: Checkliste für Baustein '{baustein_id}' nicht gefunden unter '{potential_checklist}'. Wird übersprungen.")
+    baustein_references = get_bausteine_from_metadata(content, file_path, valid_baustein_ids, verbose)
+    if not baustein_references:
+        return
 
-        if not checklist_files_to_process:
-            continue
+    checklist_files_to_process = []
+    for baustein_id in baustein_references:
+        potential_checklist = os.path.join(checklist_path, f"Checkliste_{baustein_id}.xlsx")
+        if os.path.exists(potential_checklist):
+            checklist_files_to_process.append(potential_checklist)
+        else:
+            print(f"WARNUNG: Checkliste für Baustein '{baustein_id}' nicht gefunden unter '{potential_checklist}'. Wird übersprungen.")
 
-        erfuellt, teilweise, entbehrlich = get_reqs_from_comments(content, valid_anforderung_ids, verbose)
+    if not checklist_files_to_process:
+        return
 
-        relevante_anforderungen = it_gs[it_gs['Baustein_ID'].isin(baustein_references)].copy()
+    erfuellt, teilweise, entbehrlich = get_reqs_from_comments(content, valid_anforderung_ids, verbose)
 
-        alle_relevanten_ids = set(relevante_anforderungen['ID_unified'])
-        rel_erfuellt = [id_ for id_ in erfuellt if id_ in alle_relevanten_ids]
-        rel_teilweise = [id_ for id_ in teilweise if id_ in alle_relevanten_ids]
-        rel_entbehrlich = [id_ for id_ in entbehrlich if id_ in alle_relevanten_ids]
-        nicht_umgesetzte_ids = list(alle_relevanten_ids - set(rel_erfuellt + rel_teilweise + rel_entbehrlich))
+    relevante_anforderungen = it_gs[it_gs['Baustein_ID'].isin(baustein_references)].copy()
 
-        output_dir = os.path.join(checklist_path, "Aus Richtlinie generiert")
-        os.makedirs(output_dir, exist_ok=True)
-        c = 0
+    alle_relevanten_ids = set(relevante_anforderungen['ID_unified'])
+    rel_erfuellt = [id_ for id_ in erfuellt if id_ in alle_relevanten_ids]
+    rel_teilweise = [id_ for id_ in teilweise if id_ in alle_relevanten_ids]
+    rel_entbehrlich = [id_ for id_ in entbehrlich if id_ in alle_relevanten_ids]
+    nicht_umgesetzte_ids = list(alle_relevanten_ids - set(rel_erfuellt + rel_teilweise + rel_entbehrlich))
 
-        for source_checklist_path in checklist_files_to_process:
-            base_name = os.path.basename(source_checklist_path)
-            dest_checklist_path = os.path.join(output_dir, base_name)
+    output_dir = os.path.join(checklist_path, "Aus Richtlinie generiert")
+    os.makedirs(output_dir, exist_ok=True)
 
-            shutil.copy(source_checklist_path, dest_checklist_path)
+    for source_checklist_path in checklist_files_to_process:
+        base_name = os.path.basename(source_checklist_path)
+        dest_checklist_path = os.path.join(output_dir, base_name)
 
-            workbook = openpyxl.load_workbook(dest_checklist_path)
-            sheet = workbook.active
+        shutil.copy(source_checklist_path, dest_checklist_path)
 
-            headers = {cell.value: cell.column for cell in sheet[5]}
-            id_col = headers.get("ID-Anforderung")
-            umsetzung_col = headers.get("Umsetzung")
-            entbehrlich_col = headers.get("Entbehrlich")
+        workbook = openpyxl.load_workbook(dest_checklist_path)
+        sheet = workbook.active
 
-            for row in range(6, sheet.max_row + 1):
-                req_id_cell = sheet.cell(row=row, column=id_col)
-                if req_id_cell.value:
-                    unified_id = id_unify(req_id_cell.value)
+        headers = {cell.value: cell.column for cell in sheet[5]}
+        id_col = headers.get("ID-Anforderung")
+        umsetzung_col = headers.get("Umsetzung")
+        entbehrlich_col = headers.get("Entbehrlich")
 
-                    umsetzung_cell = sheet.cell(row=row, column=umsetzung_col)
-                    current_value = umsetzung_cell.value
+        for row in range(6, sheet.max_row + 1):
+            req_id_cell = sheet.cell(row=row, column=id_col)
+            if req_id_cell.value:
+                unified_id = id_unify(req_id_cell.value)
 
-                    if unified_id in rel_erfuellt:
-                        umsetzung_cell.value = "Ja"
-                    elif unified_id in rel_teilweise:
-                        if current_value is None or current_value == "Nein":
-                            umsetzung_cell.value = "Teilweise"
-                    elif unified_id in nicht_umgesetzte_ids:
-                        if current_value is None:
-                            umsetzung_cell.value = "Nein"
-                    if unified_id in rel_entbehrlich:
-                        sheet.cell(row=row, column=entbehrlich_col).value = "Ja"
+                umsetzung_cell = sheet.cell(row=row, column=umsetzung_col)
+                current_value = umsetzung_cell.value
 
-            workbook.save(dest_checklist_path)
-            c += 1
-        print(f"\n{c} Checklisten gefüllt und gespeichert")
+                if unified_id in rel_erfuellt:
+                    umsetzung_cell.value = "Ja"
+                elif unified_id in rel_teilweise:
+                    if current_value is None or current_value == "Nein":
+                        umsetzung_cell.value = "Teilweise"
+                elif unified_id in nicht_umgesetzte_ids:
+                    if current_value is None:
+                        umsetzung_cell.value = "Nein"
+                if unified_id in rel_entbehrlich:
+                    sheet.cell(row=row, column=entbehrlich_col).value = "Ja"
+
+        workbook.save(dest_checklist_path)
 
 # Hauptprogramm zur Verarbeitung von Kommandozeilenargumenten
 def main():
