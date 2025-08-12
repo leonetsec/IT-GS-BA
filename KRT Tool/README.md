@@ -4,7 +4,8 @@
 Dieses Tool vereinfacht die Arbeit mit den [Kreuzreferenztabellen](https://www.bsi.bund.de/SharedDocs/Downloads/DE/BSI/Grundschutz/IT-GS-Kompendium/krt2023_Excel.html) des BSI IT-Grundschutzes, indem es sie durchsuchbarer, interaktiver und informativer macht. Die Tabellen ordnen den Anforderungen die abgedeckten [elementaren Gefährdungen](https://www.bsi.bund.de/DE/Themen/Unternehmen-und-Organisationen/Standards-und-Zertifizierung/IT-Grundschutz/IT-Grundschutz-Kompendium/Elementare-Gefaehrdungen/elementare_gefaehrdungen.html) zu. 
 
 ## Installation
-- Dateien des Tools herunterladen 
+- Dateien des Tools herunterladen
+- Requirements installieren 
 - ggf. ```mapping.py``` mittels ```--update``` aktualisieren, wenn ein anderer Stand als 2023 benötigt wird und die KRT ihr Format beibehalten. Geänderte Bausteine und Gefahren müssen manuell ergänzt werden.
 - ggf. ```profiles.py``` aktualisieren, wenn ein anderes Profil benötigt wird oder Profile verändert wurden (Manche Profile sind außerdem Platzhalter, da die Daten nicht öffentlich verfügbar sind)
 
