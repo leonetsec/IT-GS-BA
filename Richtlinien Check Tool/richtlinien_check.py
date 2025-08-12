@@ -188,6 +188,15 @@ def check(path, typ, show_status, inhalt, verbose):
 
         relevante_anforderungen = it_gs[it_gs['Baustein_ID'].isin(baustein_references)].copy()
 
+        alle_gefundenen_ids = set(erfuellt + teilweise + entbehrlich)
+        relevante_ids = set(relevante_anforderungen['ID_unified'])
+        falsch_dokumentierte_ids = alle_gefundenen_ids - relevante_ids
+
+        if falsch_dokumentierte_ids and verbose:
+            for anforderung_id in list(falsch_dokumentierte_ids):
+                baustein_id = anforderung_id.split('.A')[0]
+                print(f"WARNUNG: '{anforderung_id}' wird genannt, aber der Baustein '{baustein_id}' ist nicht in den Metadaten der Datei.")
+
         if typ.lower() == 'basis':
             relevante_anforderungen = relevante_anforderungen[relevante_anforderungen['Typ'] == 'Basis']
         elif typ.lower() == 'standard':
