@@ -184,7 +184,9 @@ def process_markdown_file(file_path, space, parent, config, keep_structure, fold
     
     # Datei mit Mark hochladen
     try:
-        subprocess.run(["mark", "--config", config, "-f", output_path, mark_arg], check=True)
+        command = ["mark", "--config", config, "-f", output_path]
+        command.extend(mark_arg)
+        subprocess.run(command, check=True)
         print(f"Datei erfolgreich hochgeladen: {output_path}")
     except subprocess.CalledProcessError as e:
         print(f"Fehler beim Hochladen der Datei: {e}")
@@ -224,7 +226,8 @@ def main():
     parser.add_argument('--compile-only', action='store_true', help='Zeige kompiliertes HTML ohne es auf Confluence hochzuladen')
     parser.add_argument('--minor-edit', action='store_true', help='Sende keine Benachrichtigung wenn das Dokument auf Confluence aktualisiert wird')
     parser.add_argument('--changes-only', action='store_true', help='Nur geänderte Dokumente hochladen')
-    parser.add_argument('--mark-arg', default="", help='Argument(e) an Mark-Tool weitergeben')
+    parser.add_argument('--edit-lock', action='store_true', help='Read-Only auf Confluence (außer für Uploader)')
+    parser.add_argument('--mark-arg', default="", help='Argument(e) an Mark-Tool weitergeben (in Anführungszeichen)')
 
     args = parser.parse_args()
 
@@ -235,24 +238,24 @@ def main():
         mark_arg.append("--minor-edit")
     if args.changes_only:
         mark_arg.append("--changes-only")
+    if args.edit_lock:
+        mark_arg.append("--edit-lock")
     if args.mark_arg:
-        mark_arg.append(args.mark_arg)
-    
-    mark_arg_str = " ".join(mark_arg)
-    
+        mark_arg.extend(args.mark_arg.split())
+
     if args.all and args.include_folders:
         if os.path.isdir(args.file_or_dir):
-            process_all_files_including_subdirectories(args.file_or_dir, args.space, args.parent, args.config, args.keep_structure, args.folder, mark_arg_str)
+            process_all_files_including_subdirectories(args.file_or_dir, args.space, args.parent, args.config, args.keep_structure, args.folder, mark_arg)
         else:
             print(f"{args.file_or_dir} ist kein gültiges Verzeichnis.")
     elif args.all:
         if os.path.isdir(args.file_or_dir):
-            process_all_files_in_directory(args.file_or_dir, args.space, args.parent, args.config, args.keep_structure, args.folder, mark_arg_str)
+            process_all_files_in_directory(args.file_or_dir, args.space, args.parent, args.config, args.keep_structure, args.folder, mark_arg)
         else:
             print(f"{args.file_or_dir} ist kein gültiges Verzeichnis.")
     else:
         if os.path.isfile(args.file_or_dir):
-            process_markdown_file(args.file_or_dir, args.space, args.parent, args.config, args.keep_structure, args.folder, mark_arg_str)
+            process_markdown_file(args.file_or_dir, args.space, args.parent, args.config, args.keep_structure, args.folder, mark_arg)
         else:
             print(f"{args.file_or_dir} ist keine gültige Datei.")
 
