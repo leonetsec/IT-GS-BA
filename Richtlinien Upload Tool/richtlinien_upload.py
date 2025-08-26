@@ -227,7 +227,7 @@ def main():
     parser.add_argument('--minor-edit', action='store_true', help='Sende keine Benachrichtigung wenn das Dokument auf Confluence aktualisiert wird')
     parser.add_argument('--changes-only', action='store_true', help='Nur geänderte Dokumente hochladen')
     parser.add_argument('--edit-lock', action='store_true', help='Read-Only auf Confluence (außer für Uploader)')
-    parser.add_argument('--mark-arg', default="", help='Argument(e) an Mark-Tool weitergeben (in Anführungszeichen)')
+    parser.add_argument('--mark-arg', default="", help='Argument(e) an Mark-Tool weitergeben (in Anführungszeichen bzw. --mark-arg= )')
 
     args = parser.parse_args()
 

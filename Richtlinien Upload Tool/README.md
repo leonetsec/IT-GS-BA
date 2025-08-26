@@ -61,6 +61,6 @@ Weitere Befehle, die das Tool unterstützt:
 - --minor-edit: Sende keine Benachrichtigung wenn das Dokument auf Confluence aktualisiert wird
 - --changes-only: Nur geänderte Dokumente hochladen
 - --edit-lock: Datei auf Confluence Read-Only einstellen (außer für den Uploader)
-- --mark-arg: Argument(e) an Mark-Tool weitergeben (in Anführungszeichen)
+- --mark-arg: Argument(e) an Mark-Tool weitergeben (in Anführungszeichen bzw. --mark-arg= )
 
 Sollten bereits Dateien mit dem gleichen Namen im gleichen Verzeichnis vorhanden sein werde diese mit dem Hochladen auf Confluence überschrieben. Der Seitenname für Confluence wird aus den Metadaten entnommen, als erste Überschrift eingefügt und dann entfernt.
