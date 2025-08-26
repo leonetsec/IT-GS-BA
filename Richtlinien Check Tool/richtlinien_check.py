@@ -48,6 +48,7 @@ def id_unify(id):
             id = id[:last_a_index] + '.' + id[last_a_index:]
     return id
 
+# Extrahiert die referenzierten Bausteine aus den Metadaten
 def get_bausteine_from_metadata(content, file_path, valid_baustein_ids, verbose):
     baustein_references = set()
     metadata_match = re.match(r"^---\n(.*?)\n---\n", content, re.DOTALL)
@@ -75,6 +76,7 @@ def get_bausteine_from_metadata(content, file_path, valid_baustein_ids, verbose)
             print(f"WARNUNG: Ungültige Bausteinreferenz in Metadaten: {main_reference}")
     return baustein_references
 
+# Extrahiert die referenzierten Anforderungen aus den Markdown-Kommentaren
 def get_reqs_from_comments(content, valid_anforderung_ids, verbose):
     comment_pattern = re.compile(r"<!--\s*(.*?)\s*-->", re.DOTALL)
 
@@ -193,9 +195,10 @@ def check(path, typ, show_status, inhalt, verbose):
         falsch_dokumentierte_ids = alle_gefundenen_ids - relevante_ids
 
         if falsch_dokumentierte_ids and verbose:
-            for anforderung_id in list(falsch_dokumentierte_ids):
-                baustein_id = anforderung_id.split('.A')[0]
-                print(f"WARNUNG: '{anforderung_id}' wird genannt, aber der Baustein '{baustein_id}' ist nicht in den Metadaten der Datei.")
+            betroffene_bausteine = {anforderung_id.split('.A')[0] for anforderung_id in falsch_dokumentierte_ids}
+
+            for baustein_id in sorted(betroffene_bausteine):
+                print(f"WARNUNG: Für den Baustein '{baustein_id}' werden Anforderungen genannt, aber der Baustein ist nicht in den Metadaten der Datei.")
 
         if typ.lower() == 'basis':
             relevante_anforderungen = relevante_anforderungen[relevante_anforderungen['Typ'] == 'Basis']
