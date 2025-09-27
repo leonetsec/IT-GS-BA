@@ -1,6 +1,6 @@
 # IT-GS-BA
 
-Hinweis: Diese Tools wurden im Rahmen einer Bachelorarbeit für den IT-Grundschutz des BSI (2023) entwickelt, sind nicht für den kommerziellen Einsatz geeignet und werden nicht aktualisiert.
+Hinweis: Diese Tools wurden im Rahmen einer Bachelorarbeit für den IT-Grundschutz des BSI (2023) entwickelt. Bitte beachten Sie: Die Nutzung erfolgt auf eigene Verantwortung. Es wird keine Gewähr für die Fehlerfreiheit, Sicherheit oder Eignung für einen bestimmten Zweck übernommen, ebenso wenig eine Haftung für mögliche Schäden, die aus der Verwendung entstehen.
 
 ## Inhalt des Repositories
 
